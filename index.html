@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz · FMHY Theme</title>
+
+    <style>
+        /* ====== INTER VARIABLE ====== */
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 1 999;
+            src: url('https://raw.githubusercontent.com/loserbadbakht-wq/shs/refs/heads/main/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
+            font-display: swap;
+        }
+
+        /* ====== LOCAL VAZIR (Persian / Arabic) ====== */
+        @font-face {
+            font-family: 'Vazir';
+            src: url('fonts/Vazir.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Vazir Bold';
+            src: url('fonts/Vazir-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* ====== LOCAL BIZ UDPMINCHO (Japanese) ====== */
+        @font-face {
+            font-family: 'BIZ UDPMincho';
+            src: url('fonts/BIZUDPMincho-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'BIZ UDPMincho Bold';
+            src: url('fonts/BIZUDPMincho-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* ====== FONT AWESOME – LOCAL TTF ====== */
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-style: normal;
+            font-weight: 900;
+            src: url('fonts/fa-solid-900.ttf') format('truetype');
+            font-display: block;
+        }
+        .fas,
+        .fa-solid {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            width: 1em;
+            text-align: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ====== ICON DEFINITIONS ====== */
+        .fa-graduation-cap::before { content: "\f19d"; }
+        .fa-book::before          { content: "\f02d"; }
+        .fa-sync-alt::before      { content: "\f2f1"; }
+        .fa-undo::before          { content: "\f0e2"; }
+        .fa-check::before         { content: "\f00c"; }
+        .fa-forward-step::before  { content: "\f051"; }
+        .fa-folder-open::before   { content: "\f07c"; }
+        .fa-hourglass-half::before{ content: "\f252"; }
+        .fa-check-circle::before  { content: "\f058"; }
+        .fa-times-circle::before  { content: "\f057"; }
+        .fa-flag-checkered::before{ content: "\f11e"; }
+        .fa-pencil::before        { content: "\f303"; }
+        .fa-exclamation-circle::before { content: "\f06a"; }
+        .fa-star::before          { content: "\f005"; }
+
+        /* ─── ROOT (FMHY-inspired) ─── */
+        :root {
+            --bg: #0c0c0c;
+            --bg-card: #161616;
+            --bg-sidebar: #121212;
+            --bg-input: #1e1e1e;
+            --bg-hover: #242424;
+            --bg-active: #0d1f2a;
+            --text: #e6e6e6;
+            --text-secondary: #9a9a9a;
+            --text-muted: #5a5a5a;
+            --border: #262626;
+            --border-hover: #383838;
+            --primary: #00d4ff;
+            --primary-hover: #40e0ff;
+            --primary-light: #0a2833;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.2s ease;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --header-height: 56px;
+        }
+
+        /* ─── RESET & BASE ─── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background var(--transition), color var(--transition);
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-hover);
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ─── HEADER ─── */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background var(--transition), border var(--transition);
+            flex-shrink: 0;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+        }
+        .header-logo i { font-size: 22px; }
+        .header-logo span {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-actions .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+        }
+        .header-actions .btn-icon:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+
+        /* ─── APP LAYOUT ─── */
+        .app {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 24px 24px 32px;
+        }
+
+        /* ─── MAIN CARD ─── */
+        .card {
+            max-width: 720px;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 26px 26px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── LOAD BAR ─── */
+        .load-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CIRCULAR QUIZ PICKER
+           ⚠️  ANIMATION UNCHANGED (scale + icon rotate + shadow)
+           ═══════════════════════════════════════════════════════════ */
+        .quiz-picker {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .quiz-picker-btn {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            line-height: 1;
+            transition: background 0.2s ease, border-color 0.2s ease,
+                color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .quiz-picker-btn .fa-solid {
+            transition: transform 0.25s ease;
+        }
+        .quiz-picker-btn:hover:not(:disabled) {
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            color: var(--primary-hover);
+            transform: scale(1.08);
+            box-shadow: 0 4px 18px rgba(0, 212, 255, 0.35);
+        }
+        .quiz-picker-btn:hover:not(:disabled) .fa-solid {
+            transform: rotate(-12deg);
+        }
+        .quiz-picker-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+        .quiz-picker-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .quiz-picker.open .quiz-picker-btn {
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            color: var(--primary-hover);
+            box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
+        }
+
+        /* ─── DROPDOWN MENU ─── */
+        .quiz-picker-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            min-width: 220px;
+            max-width: 340px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px) scale(0.97);
+            transform-origin: top left;
+            transition: opacity 0.18s ease, transform 0.18s ease,
+                visibility 0s linear 0.18s;
+            z-index: 100;
+        }
+        .quiz-picker.open .quiz-picker-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            transition: opacity 0.18s ease, transform 0.18s ease,
+                visibility 0s linear 0s;
+        }
+        .quiz-picker-menu::-webkit-scrollbar { width: 4px; }
+        .quiz-picker-menu::-webkit-scrollbar-track { background: transparent; }
+        .quiz-picker-menu::-webkit-scrollbar-thumb {
+            background: var(--border-hover);
+            border-radius: 20px;
+        }
+        .quiz-picker-item {
+            display: block;
+            width: 100%;
+            padding: 9px 12px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            transition: background var(--transition), color var(--transition);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            direction: ltr;
+        }
+        .quiz-picker-item:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+        .quiz-picker-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .quiz-picker-item.active:hover {
+            background: var(--primary-light);
+            color: var(--primary-hover);
+        }
+        .quiz-picker-item.disabled {
+            color: var(--text-muted);
+            cursor: default;
+            font-style: italic;
+        }
+        .quiz-picker-item.disabled:hover {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        /* ─── RELOAD BUTTON ─── */
+        .load-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .load-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+        .load-btn:active { transform: scale(0.98); }
+        .load-btn .fa-solid {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .load-btn:hover .fa-solid { transform: rotate(180deg); }
+
+        /* ─── PROGRESS ─── */
+        .progress {
+            color: var(--text-muted);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .progress span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           QUESTION TEXT – ANIMATED GRADIENT
+           ⚠️  COLOR & ANIMATION UNCHANGED (#a78bfa → #34d399)
+           ═══════════════════════════════════════════════════════════ */
+        .question {
+            font-family: var(--font);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.55;
+            letter-spacing: -0.02em;
+            margin-bottom: 22px;
+            text-align: center;
+            white-space: pre-wrap;
+            min-height: 3.2rem;
+
+            background: linear-gradient(135deg, #a78bfa, #34d399);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradShift 5s ease-in-out infinite alternate;
+            transition: filter 0.3s ease;
+
+            dir: auto;
+        }
+        @keyframes gradShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .question::after {
+            content: '';
+            display: block;
+            width: 56px;
+            height: 3px;
+            margin: 14px auto 0;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #a78bfa, #34d399);
+            background-size: 200% 200%;
+            animation: gradShift 5s ease-in-out infinite alternate;
+            opacity: 0.4;
+        }
+
+        /* ─── INPUT ─── */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .input-group label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding-left: 2px;
+        }
+        .input-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 15px;
+            font-weight: 400;
+            font-family: var(--font);
+            color: var(--text);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: border var(--transition), box-shadow var(--transition),
+                background var(--transition);
+            caret-color: var(--primary);
+            resize: vertical;
+            min-height: 84px;
+            line-height: 1.55;
+            dir: auto;
+        }
+        .input-group textarea::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .input-group textarea:focus {
+            border-color: var(--primary);
+            background: var(--bg-hover);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
+        }
+        .input-group textarea:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        /* ─── SPOILER ─── */
+        .spoiler-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 4px 0;
+            flex-wrap: wrap;
+        }
+        .spoiler-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .spoiler-toggle:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .spoiler-toggle:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .spoiler-answer {
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            white-space: pre-wrap;
+            line-height: 1.55;
+            max-width: 100%;
+            word-break: break-word;
+            dir: auto;
+        }
+        .spoiler-answer.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           FONT SWITCHING BY LANGUAGE
+           ═══════════════════════════════════════════════════════════ */
+
+        /* --- VAZIR (Persian / Arabic) --- */
+        .card.font-vazir .question {
+            font-family: 'Vazir Bold', var(--font);
+        }
+        .card.font-vazir .input-group textarea {
+            font-family: 'Vazir', var(--font);
+        }
+        .card.font-vazir .spoiler-answer {
+            font-family: 'Vazir', var(--font);
+        }
+
+        /* --- BIZ UDPMINCHO (Japanese) --- */
+        .card.font-jp .question {
+            font-family: 'BIZ UDPMincho Bold', var(--font);
+        }
+        .card.font-jp .input-group textarea {
+            font-family: 'BIZ UDPMincho', var(--font);
+        }
+        .card.font-jp .spoiler-answer {
+            font-family: 'BIZ UDPMincho', var(--font);
+        }
+
+        /* ─── ACTION BUTTONS ─── */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .btn:hover:not(:disabled) {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+        }
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn span {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn .fa-solid {
+            font-size: 0.9em;
+            transition: transform 0.25s ease;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: #0c0c0c;
+            border-color: var(--primary);
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: #0c0c0c;
+        }
+        .btn-submit:hover:not(:disabled) .fa-check {
+            transform: scale(1.25);
+        }
+
+        .btn-skip {
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+        .btn-skip:hover:not(:disabled) {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+        .btn-skip:hover:not(:disabled) .fa-forward-step {
+            transform: translateX(4px);
+        }
+
+        .btn-reset {
+            color: var(--text-secondary);
+        }
+        .btn-reset:hover:not(:disabled) .fa-undo {
+            transform: rotate(-180deg);
+        }
+
+        /* ─── FEEDBACK ─── */
+        .feedback {
+            margin-top: 18px;
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+            min-height: 3.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            transition: border var(--transition), background var(--transition),
+                color var(--transition);
+        }
+        .feedback.correct {
+            background: rgba(34, 197, 94, 0.08);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #4ade80;
+        }
+        .feedback.wrong {
+            background: rgba(220, 38, 38, 0.08);
+            border-color: rgba(220, 38, 38, 0.4);
+            color: #f87171;
+        }
+        .feedback.skip {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+        .feedback.done {
+            background: var(--primary-light);
+            border-color: rgba(0, 212, 255, 0.4);
+            color: var(--primary);
+        }
+        .feedback .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .feedback .msg { flex: 1; }
+        .feedback .detail {
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.6;
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 540px) {
+            .header { padding: 0 16px; }
+            .header-logo { font-size: 17px; }
+            .header-logo i { font-size: 18px; }
+            .app { padding: 14px 12px 20px; }
+            .card { padding: 18px 16px 20px; }
+            .question { font-size: 1.5rem; }
+            .input-group textarea {
+                font-size: 14px;
+                padding: 12px 14px;
+                min-height: 70px;
+            }
+            .btn-row { flex-direction: column; }
+            .btn { font-size: 13px; padding: 11px 16px; min-width: 80px; }
+            .feedback { font-size: 13px; padding: 12px 14px; }
+            .spoiler-container { flex-direction: column; align-items: stretch; }
+            .spoiler-answer { text-align: center; }
+            .quiz-picker-menu { min-width: 200px; max-width: 88vw; }
+            .load-bar { gap: 8px; }
+            .load-btn { font-size: 11px; padding: 7px 12px; }
+        }
+        @media (max-width: 380px) {
+            .question { font-size: 1.25rem; }
+            .card { padding: 16px 12px 18px; }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- ─── HEADER ─── -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">
+                <i class="fas fa-graduation-cap"></i> Quiz<span>Master</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-icon" id="reloadBtn" type="button" title="Reload current quiz">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ─── APP ─── -->
+    <div class="app">
+        <main class="card" id="quizCard" role="main" aria-labelledby="question-heading">
+
+            <!-- Loader bar (picker) -->
+            <div class="load-bar">
+                <div class="quiz-picker" id="quizPicker">
+                    <button
+                        class="quiz-picker-btn"
+                        id="quizPickerBtn"
+                        type="button"
+                        aria-label="Choose quiz file"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        disabled
+                    >
+                        <i class="fa-solid fa-book" aria-hidden="true"></i>
+                    </button>
+                    <div class="quiz-picker-menu" id="quizPickerMenu" role="menu" aria-label="Quiz files">
+                        <div class="quiz-picker-item disabled">Loading…</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress" id="progressDisplay">
+                Question <span id="currentNum">0</span> of <span id="totalNum">0</span>
+            </div>
+
+            <h1 id="question-heading" class="question" dir="auto">Loading…</h1>
+
+            <div class="input-group">
+                <label for="answerInput">Your answer</label>
+                <textarea
+                    id="answerInput"
+                    placeholder="Type your answer here…"
+                    autocomplete="on"
+                    spellcheck="true"
+                    inputmode="text"
+                    dir="auto"
+                    rows="3"
+                    aria-describedby="feedbackArea"
+                ></textarea>
+            </div>
+
+            <!-- Spoiler -->
+            <div class="spoiler-container">
+                <button class="spoiler-toggle" id="spoilerToggle" type="button">Show answer</button>
+                <span class="spoiler-answer" id="spoilerAnswer"></span>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-submit" id="submitBtn" type="button">
+                    <span>
+                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                        Submit
+                    </span>
+                </button>
+                <button class="btn btn-skip" id="skipBtn" type="button">
+                    <span>
+                        <i class="fa-solid fa-forward-step" aria-hidden="true"></i>
+                        Skip
+                    </span>
+                </button>
+                <button class="btn btn-reset" id="resetBtn" type="button">
+                    <span>
+                        <i class="fa-solid fa-undo" aria-hidden="true"></i>
+                        Restart
+                    </span>
+                </button>
+            </div>
+
+            <div class="feedback" id="feedbackArea" role="status" aria-live="polite">
+                <i class="icon fa-solid fa-folder-open" aria-hidden="true"></i>
+                <span class="msg">Waiting for quiz files…</span>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── CONFIG ────────────────────────────────────────────
+            const MANIFEST_URL = 'json/manifest.json';
+            const JSON_DIR = 'json/';
+
+            // Languages that use Vazir (Persian / Arabic / Hebrew / Urdu / Pashto)
+            const VAZIR_LANGS = ['fa', 'ar', 'he', 'ur', 'ps'];
+
+            // Languages that use BIZ UDPMincho (Japanese)
+            const JP_LANGS = ['jp', 'ja'];
+
+            // ─── DOM REFS ──────────────────────────────────────────
+            const card           = document.getElementById('quizCard');
+            const questionEl     = document.getElementById('question-heading');
+            const progressNum    = document.getElementById('currentNum');
+            const totalNum       = document.getElementById('totalNum');
+            const inputEl        = document.getElementById('answerInput');
+            const submitBtn      = document.getElementById('submitBtn');
+            const skipBtn        = document.getElementById('skipBtn');
+            const resetBtn       = document.getElementById('resetBtn');
+            const feedbackEl     = document.getElementById('feedbackArea');
+            const spoilerToggle  = document.getElementById('spoilerToggle');
+            const spoilerAnswer  = document.getElementById('spoilerAnswer');
+            const quizPicker     = document.getElementById('quizPicker');
+            const quizPickerBtn  = document.getElementById('quizPickerBtn');
+            const quizPickerMenu = document.getElementById('quizPickerMenu');
+            const reloadBtn      = document.getElementById('reloadBtn');
+
+            // ─── STATE ─────────────────────────────────────────────
+            let ALL_QUESTIONS = [];
+            let shuffledQuestions = [];
+            let currentIndex = 0;
+            let isComplete = false;
+            let autoAdvanceTimer = null;
+            let spoilerVisible = false;
+            let currentFile = '';
+
+            // ─── HELPERS ───────────────────────────────────────────
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            function setFeedback(iconClass, message, type) {
+                feedbackEl.classList.remove('correct', 'wrong', 'skip', 'done');
+                const iconSpan = feedbackEl.querySelector('.icon');
+                if (iconSpan) iconSpan.className = 'icon fa-solid ' + iconClass;
+                const msgSpan = feedbackEl.querySelector('.msg');
+                if (msgSpan) msgSpan.innerHTML = message;
+                if (type) feedbackEl.classList.add(type);
+            }
+
+            function resetFeedback() {
+                setFeedback('fa-hourglass-half', 'Type your answer and submit.', null);
+            }
+
+            function updateProgress() {
+                progressNum.textContent = Math.min(currentIndex + 1, shuffledQuestions.length);
+                totalNum.textContent = shuffledQuestions.length;
+            }
+
+            // ─── QUIZ PICKER ───────────────────────────────────────
+            const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+            function openPicker() {
+                if (quizPickerBtn.disabled) return;
+                quizPicker.classList.add('open');
+                quizPickerBtn.setAttribute('aria-expanded', 'true');
+            }
+            function closePicker() {
+                quizPicker.classList.remove('open');
+                quizPickerBtn.setAttribute('aria-expanded', 'false');
+            }
+            function togglePicker() {
+                quizPicker.classList.contains('open') ? closePicker() : openPicker();
+            }
+
+            function populatePicker(files) {
+                quizPickerMenu.innerHTML = '';
+                files.forEach(function(fname) {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'quiz-picker-item';
+                    item.textContent = fname;
+                    item.dataset.file = fname;
+                    item.setAttribute('role', 'menuitem');
+                    item.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (fname !== currentFile) fetchJsonFile(fname);
+                        closePicker();
+                    });
+                    quizPickerMenu.appendChild(item);
+                });
+                quizPickerBtn.disabled = false;
+            }
+
+            function setActivePickerItem(filename) {
+                quizPickerMenu.querySelectorAll('.quiz-picker-item').forEach(function(el) {
+                    el.classList.toggle('active', el.dataset.file === filename);
+                });
+            }
+
+            function setPickerLoading(message) {
+                quizPickerMenu.innerHTML = '';
+                const item = document.createElement('div');
+                item.className = 'quiz-picker-item disabled';
+                item.textContent = message || 'Loading…';
+                quizPickerMenu.appendChild(item);
+                quizPickerBtn.disabled = true;
+            }
+
+            if (canHover) {
+                quizPicker.addEventListener('mouseenter', openPicker);
+                quizPicker.addEventListener('mouseleave', closePicker);
+            }
+            quizPickerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                togglePicker();
+            });
+            document.addEventListener('click', function(e) {
+                if (!quizPicker.contains(e.target)) closePicker();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closePicker();
+            });
+
+            // ─── LANGUAGE / FONT ───────────────────────────────────
+            function applyLanguageFont(language) {
+                const lang = (language || '').toLowerCase().trim();
+                const useVazir = VAZIR_LANGS.indexOf(lang) !== -1;
+                const useJP    = JP_LANGS.indexOf(lang) !== -1;
+
+                card.classList.toggle('font-vazir', useVazir);
+                card.classList.toggle('font-jp', useJP);
+            }
+
+            // ─── SPOILER ───────────────────────────────────────────
+            function updateSpoiler(answer) {
+                spoilerAnswer.textContent = answer;
+                spoilerAnswer.classList.remove('visible');
+                spoilerToggle.textContent = 'Show answer';
+                spoilerVisible = false;
+            }
+            function toggleSpoiler() {
+                if (spoilerVisible) {
+                    spoilerAnswer.classList.remove('visible');
+                    spoilerToggle.textContent = 'Show answer';
+                } else {
+                    spoilerAnswer.classList.add('visible');
+                    spoilerToggle.textContent = 'Hide answer';
+                }
+                spoilerVisible = !spoilerVisible;
+            }
+
+            // ─── EMPTY STATE ───────────────────────────────────────
+            function showEmptyState(message) {
+                questionEl.textContent = message || 'Load a quiz file to begin';
+                progressNum.textContent = '0';
+                totalNum.textContent = '0';
+                inputEl.value = '';
+                inputEl.disabled = true;
+                submitBtn.disabled = true;
+                skipBtn.disabled = true;
+                spoilerToggle.disabled = true;
+                spoilerAnswer.classList.remove('visible');
+                spoilerToggle.textContent = 'Show answer';
+                spoilerVisible = false;
+                setFeedback('fa-folder-open', 'No quiz loaded.', null);
+            }
+
+            // ─── DISPLAY QUESTION ──────────────────────────────────
+            function displayQuestion(index) {
+                if (autoAdvanceTimer) {
+                    clearTimeout(autoAdvanceTimer);
+                    autoAdvanceTimer = null;
+                }
+
+                if (index >= shuffledQuestions.length) {
+                    isComplete = true;
+                    questionEl.innerHTML = '<i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> You finished the quiz!';
+                    inputEl.disabled = true;
+                    submitBtn.disabled = true;
+                    skipBtn.disabled = true;
+                    spoilerToggle.disabled = true;
+                    setFeedback('fa-flag-checkered', 'All questions completed.<span class="detail">Click Restart to try again.</span>', 'done');
+                    progressNum.textContent = shuffledQuestions.length;
+                    spoilerAnswer.classList.remove('visible');
+                    spoilerToggle.textContent = 'Show answer';
+                    spoilerVisible = false;
+                    return;
+                }
+
+                const q = shuffledQuestions[index];
+                questionEl.textContent = q.question;
+                updateSpoiler(q.answer);
+
+                inputEl.value = '';
+                inputEl.disabled = false;
+                inputEl.style.borderColor = '';
+                inputEl.style.boxShadow = '';
+                submitBtn.disabled = false;
+                skipBtn.disabled = false;
+                spoilerToggle.disabled = false;
+                resetFeedback();
+                updateProgress();
+                inputEl.focus();
+            }
+
+            function advanceToNext() {
+                if (isComplete) return;
+                currentIndex++;
+                displayQuestion(currentIndex);
+            }
+
+            // ─── CHECK ANSWER ──────────────────────────────────────
+            function checkAnswer() {
+                if (autoAdvanceTimer) {
+                    clearTimeout(autoAdvanceTimer);
+                    autoAdvanceTimer = null;
+                }
+                if (isComplete) return;
+                if (currentIndex >= shuffledQuestions.length) return;
+
+                const trimmed = inputEl.value.trim();
+                const current = shuffledQuestions[currentIndex];
+
+                if (trimmed.length === 0) {
+                    setFeedback('fa-pencil', 'Please type an answer before submitting.', null);
+                    return;
+                }
+
+                const isCorrect = (trimmed === current.answer);
+
+                if (isCorrect) {
+                    setFeedback('fa-check-circle', 'Correct! Moving on…', 'correct');
+                    inputEl.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+                    inputEl.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.15)';
+                    inputEl.disabled = true;
+                    submitBtn.disabled = true;
+                    skipBtn.disabled = true;
+
+                    autoAdvanceTimer = setTimeout(function() {
+                        autoAdvanceTimer = null;
+                        advanceToNext();
+                    }, 600);
+                } else {
+                    let hintMsg = 'Incorrect. Please try again.';
+                    if (trimmed.toLowerCase() === current.answer.toLowerCase()) {
+                        hintMsg += ' <span style="opacity:0.7;">(Check capitalization.)</span>';
+                    }
+                    setFeedback('fa-times-circle', hintMsg, 'wrong');
+                    inputEl.style.borderColor = 'rgba(220, 38, 38, 0.5)';
+                    inputEl.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.15)';
+                    inputEl.focus();
+                    inputEl.select();
+                }
+            }
+
+            // ─── SKIP ──────────────────────────────────────────────
+            function skipQuestion() {
+                if (autoAdvanceTimer) {
+                    clearTimeout(autoAdvanceTimer);
+                    autoAdvanceTimer = null;
+                }
+                if (isComplete) return;
+                if (currentIndex >= shuffledQuestions.length) return;
+
+                setFeedback('fa-forward-step', 'Skipped! Moving on…', 'skip');
+                inputEl.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+                inputEl.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.15)';
+                inputEl.disabled = true;
+                submitBtn.disabled = true;
+                skipBtn.disabled = true;
+
+                autoAdvanceTimer = setTimeout(function() {
+                    autoAdvanceTimer = null;
+                    advanceToNext();
+                }, 600);
+            }
+
+            // ─── RESTART ───────────────────────────────────────────
+            function restartQuiz() {
+                if (autoAdvanceTimer) {
+                    clearTimeout(autoAdvanceTimer);
+                    autoAdvanceTimer = null;
+                }
+                if (ALL_QUESTIONS.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
+                currentIndex = 0;
+                isComplete = false;
+                displayQuestion(0);
+            }
+
+            // ─── LOAD QUESTIONS FROM DATA ──────────────────────────
+            function loadQuestionsFromData(data, sourceName) {
+                let arr = [];
+                let language = '';
+
+                if (Array.isArray(data)) {
+                    arr = data;
+                } else if (data && Array.isArray(data.questions)) {
+                    arr = data.questions;
+                    language = (typeof data.language === 'string') ? data.language : '';
+                } else {
+                    throw new Error('Invalid format. Expected an array or { language, questions: [...] }.');
+                }
+
+                const valid = arr.filter(q =>
+                    q && typeof q.question === 'string' &&
+                    typeof q.answer === 'string' &&
+                    q.question.trim().length > 0
+                );
+
+                if (valid.length === 0) {
+                    throw new Error('No valid questions found in this file.');
+                }
+
+                ALL_QUESTIONS = valid;
+                totalNum.textContent = ALL_QUESTIONS.length;
+                applyLanguageFont(language);
+
+                shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
+                currentIndex = 0;
+                isComplete = false;
+                displayQuestion(0);
+            }
+
+            // ─── FETCH JSON FILE ───────────────────────────────────
+            function fetchJsonFile(filename) {
+                const url = JSON_DIR + filename;
+                inputEl.disabled = true;
+                submitBtn.disabled = true;
+                skipBtn.disabled = true;
+
+                fetch(url, { cache: 'no-store' })
+                    .then(function(res) {
+                        if (!res.ok) throw new Error(`HTTP ${res.status} for ${filename}`);
+                        return res.json();
+                    })
+                    .then(function(data) {
+                        currentFile = filename;
+                        setActivePickerItem(filename);
+                        loadQuestionsFromData(data, filename);
+                    })
+                    .catch(function(err) {
+                        console.error(err);
+                        card.classList.remove('font-vazir', 'font-jp');
+                        showEmptyState('Failed to load ' + filename);
+                        setFeedback('fa-exclamation-circle', 'Could not load ' + filename + ': ' + err.message, 'wrong');
+                    });
+            }
+
+            // ─── LOAD MANIFEST ─────────────────────────────────────
+            function loadManifestAndFirstQuiz() {
+                setPickerLoading('Loading…');
+
+                fetch(MANIFEST_URL, { cache: 'no-store' })
+                    .then(function(res) {
+                        if (!res.ok) throw new Error(`HTTP ${res.status} for manifest.json`);
+                        return res.json();
+                    })
+                    .then(function(manifest) {
+                        if (!manifest || !Array.isArray(manifest.files) || manifest.files.length === 0) {
+                            throw new Error('manifest.json must contain a non-empty "files" array.');
+                        }
+                        populatePicker(manifest.files);
+                        fetchJsonFile(manifest.files[0]);
+                    })
+                    .catch(function(err) {
+                        console.error(err);
+                        setPickerLoading('— no files —');
+                        showEmptyState('Could not read json/manifest.json');
+                        setFeedback('fa-exclamation-circle', 'Manifest error: ' + err.message + '<span class="detail">Run from a server (not file://) and make sure json/manifest.json exists.</span>', 'wrong');
+                    });
+            }
+
+            // ─── EVENTS ────────────────────────────────────────────
+            submitBtn.addEventListener('click', checkAnswer);
+            skipBtn.addEventListener('click', skipQuestion);
+            resetBtn.addEventListener('click', restartQuiz);
+            spoilerToggle.addEventListener('click', toggleSpoiler);
+
+            reloadBtn.addEventListener('click', function() {
+                if (currentFile) {
+                    fetchJsonFile(currentFile);
+                } else {
+                    loadManifestAndFirstQuiz();
+                }
+            });
+
+            inputEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && (e.shiftKey || e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    if (!submitBtn.disabled) checkAnswer();
+                }
+            });
+
+            inputEl.addEventListener('input', function() {
+                if (feedbackEl.classList.contains('wrong')) {
+                    resetFeedback();
+                }
+                if (inputEl.style.borderColor &&
+                    inputEl.style.borderColor !== 'rgba(34, 197, 94, 0.5)') {
+                    inputEl.style.borderColor = '';
+                    inputEl.style.boxShadow = '';
+                }
+                if ((feedbackEl.classList.contains('correct') || feedbackEl.classList.contains('skip')) && !inputEl.disabled) {
+                    inputEl.disabled = true;
+                }
+            });
+
+            // ─── INIT ──────────────────────────────────────────────
+            card.classList.remove('font-vazir', 'font-jp');
+            showEmptyState('Loading quiz…');
+            loadManifestAndFirstQuiz();
+
+        })();
+    </script>
+
+</body>
+  </html>
