@@ -55,16 +55,16 @@ jobs:
           unzip -o "$ZIP_NAME" -d "$TMP_DIR"
           rm -f "$ZIP_NAME"
 
-          # Only take files under any "out/fonts/" directory, flattening them
-          # into fonts/. This excludes sibling trees like out/proof/fonts/.
+          # Grab only the real fonts from */fonts/ttf/ and flatten them into fonts/.
+          # This excludes the proof copies under */out/proof/fonts/.
           found=0
           while IFS= read -r -d '' f; do
             mv -f "$f" fonts/
             found=1
-          done < <(find "$TMP_DIR" -type f -path '*/out/fonts/*' -print0)
+          done < <(find "$TMP_DIR" -type f -path '*/fonts/ttf/*' -print0)
 
           if [ "$found" -eq 0 ]; then
-            echo "::error::No files found under an out/fonts/ directory in the zip."
+            echo "::error::No files found under a fonts/ttf/ directory in the zip."
             rm -rf "$TMP_DIR"
             exit 1
           fi
