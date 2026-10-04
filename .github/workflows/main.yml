@@ -55,8 +55,19 @@ jobs:
           unzip -o "$ZIP_NAME" -d "$TMP_DIR"
           rm -f "$ZIP_NAME"
 
-          # Move every file (any depth) into fonts/ flat, dropping the folder structure
-          find "$TMP_DIR" -type f -exec mv -t fonts {} +
+          # Only take files under any "out/fonts/" directory, flattening them
+          # into fonts/. This excludes sibling trees like out/proof/fonts/.
+          found=0
+          while IFS= read -r -d '' f; do
+            mv -f "$f" fonts/
+            found=1
+          done < <(find "$TMP_DIR" -type f -path '*/out/fonts/*' -print0)
+
+          if [ "$found" -eq 0 ]; then
+            echo "::error::No files found under an out/fonts/ directory in the zip."
+            rm -rf "$TMP_DIR"
+            exit 1
+          fi
 
           rm -rf "$TMP_DIR"
 
