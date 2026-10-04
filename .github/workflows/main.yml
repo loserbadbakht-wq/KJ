@@ -1,0 +1,79 @@
+name: Download and Push Zip
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      zip_url:
+        description: 'Direct ZIP URL'
+        required: true
+        type: string
+
+jobs:
+  download-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download ZIP
+        id: dl
+        env:
+          ZIP_URL: ${{ inputs.zip_url }}
+        run: |
+          set -euo pipefail
+
+          echo "=== URL ==="
+          echo "$ZIP_URL"
+
+          # Extract filename from the URL path, ignoring query string
+          ZIP_NAME=$(echo "$ZIP_URL" | sed 's/[?#].*$//' | awk -F'/' '{print $NF}')
+          if [ -z "$ZIP_NAME" ]; then
+            echo "::error::Could not determine filename from URL."
+            exit 1
+          fi
+          echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+          echo "Zip file will be: $ZIP_NAME"
+
+          curl -L --fail --retry 3 --retry-delay 5 \
+            -A 'Mozilla/5.0' \
+            -o "$ZIP_NAME" \
+            "$ZIP_URL"
+
+          ls -lh "$ZIP_NAME"
+          file "$ZIP_NAME"
+
+      - name: Unzip
+        id: unzip
+        run: |
+          set -euo pipefail
+          ZIP_NAME="${{ steps.dl.outputs.zip_name }}"
+          FOLDER_NAME="${ZIP_NAME%.zip}"
+          echo "folder_name=$FOLDER_NAME" >> "$GITHUB_OUTPUT"
+
+          mkdir -p "$FOLDER_NAME"
+          unzip -o "$ZIP_NAME" -d "$FOLDER_NAME"
+          rm -f "$ZIP_NAME"
+
+          echo "=== Extracted contents ==="
+          ls -la "$FOLDER_NAME"
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          FOLDER_NAME="${{ steps.unzip.outputs.folder_name }}"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -f "$FOLDER_NAME"
+
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+
+          git commit -m "Add ${FOLDER_NAME}"
+          git push
