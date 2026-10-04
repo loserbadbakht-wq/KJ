@@ -45,35 +45,37 @@ jobs:
           ls -lh "$ZIP_NAME"
           file "$ZIP_NAME"
 
-      - name: Unzip
-        id: unzip
+      - name: Unzip (flattened into fonts/)
         run: |
           set -euo pipefail
           ZIP_NAME="${{ steps.dl.outputs.zip_name }}"
-          FOLDER_NAME="${ZIP_NAME%.zip}"
-          echo "folder_name=$FOLDER_NAME" >> "$GITHUB_OUTPUT"
+          TMP_DIR=".tmp_extract"
 
-          mkdir -p "$FOLDER_NAME"
-          unzip -o "$ZIP_NAME" -d "$FOLDER_NAME"
+          mkdir -p "$TMP_DIR" fonts
+          unzip -o "$ZIP_NAME" -d "$TMP_DIR"
           rm -f "$ZIP_NAME"
 
-          echo "=== Extracted contents ==="
-          ls -la "$FOLDER_NAME"
+          # Move every file (any depth) into fonts/ flat, dropping the folder structure
+          find "$TMP_DIR" -type f -exec mv -t fonts {} +
+
+          rm -rf "$TMP_DIR"
+
+          echo "=== fonts/ contents ==="
+          ls -la fonts
 
       - name: Commit and push
         run: |
           set -euo pipefail
-          FOLDER_NAME="${{ steps.unzip.outputs.folder_name }}"
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -f "$FOLDER_NAME"
+          git add -f fonts
 
           if git diff --cached --quiet; then
             echo "Nothing to commit"
             exit 0
           fi
 
-          git commit -m "Add ${FOLDER_NAME}"
+          git commit -m "Add fonts"
           git push
