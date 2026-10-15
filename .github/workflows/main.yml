@@ -52,24 +52,30 @@ jobs:
           TMP_DIR=".tmp_extract"
 
           mkdir -p "$TMP_DIR" fonts
-          unzip -o "$ZIP_NAME" -d "$TMP_DIR"
+
+          # Extract as-is; if the archive has non-UTF8 filenames, -O UTF-8 helps on some systems.
+          # Fall back to plain unzip if -O isn't supported (older unzip builds).
+          unzip -o -O UTF-8 "$ZIP_NAME" -d "$TMP_DIR" 2>/dev/null \
+            || unzip -o "$ZIP_NAME" -d "$TMP_DIR"
+
           rm -f "$ZIP_NAME"
 
-          # Grab only the real fonts from */fonts/ttf/ and flatten them into fonts/.
-          # This excludes the proof copies under */out/proof/fonts/.
+          # Grab only font files, excluding anything under an out/ build tree.
           found=0
           while IFS= read -r -d '' f; do
             mv -f "$f" fonts/
             found=1
-          done < <(find "$TMP_DIR" -type f -path '*/fonts/ttf/*' -print0)
-
-          if [ "$found" -eq 0 ]; then
-            echo "::error::No files found under a fonts/ttf/ directory in the zip."
-            rm -rf "$TMP_DIR"
-            exit 1
-          fi
+          done < <(find "$TMP_DIR" -type f \
+                     -not -path '*/out/*' \
+                     \( -iname '*.ttf' -o -iname '*.otf' -o -iname '*.woff' -o -iname '*.woff2' \) \
+                     -print0)
 
           rm -rf "$TMP_DIR"
+
+          if [ "$found" -eq 0 ]; then
+            echo "::error::No font files (.ttf/.otf/.woff/.woff2) found in the zip."
+            exit 1
+          fi
 
           echo "=== fonts/ contents ==="
           ls -la fonts
