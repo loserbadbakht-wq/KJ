@@ -303,14 +303,13 @@
         }
 
         /* ═══════════════════════════════════════════════════════
-           TWO-COLUMN MENU (categories | quizzes)
+           MENU — block container, quiz panel floats to the right
            ═══════════════════════════════════════════════════════ */
         .quiz-picker-menu {
             position: absolute;
             top: calc(100% + 10px);
             left: 0;
-            display: flex;
-            flex-direction: row;
+            display: block;
             padding: 6px;
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -344,19 +343,47 @@
             background: var(--border-hover);
             border-radius: 20px;
         }
+
+        /* Floating quiz panel — positioned to the RIGHT of the active category item */
         .quiz-picker-quizzes {
-            border-left: 1px solid var(--border);
-            padding-left: 6px;
-            margin-left: 6px;
-            display: none;
+            position: absolute;
+            left: calc(100% + 6px);
+            top: 6px;
+            min-width: 210px;
+            max-width: 320px;
+            max-height: 340px;
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 6px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease, visibility 0s linear 0.15s;
+            z-index: 101;
         }
         .quiz-picker-quizzes.visible {
-            display: block;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.15s ease, visibility 0s linear 0s;
         }
+        /* Direct mode (single category): inline, no floating panel */
         .quiz-picker-quizzes.direct-mode {
-            border-left: none;
-            padding-left: 0;
-            margin-left: 0;
+            position: static;
+            left: auto;
+            top: auto;
+            min-width: 0;
+            width: 100%;
+            max-width: none;
+            max-height: 340px;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            opacity: 1;
+            visibility: visible;
+            z-index: auto;
+            transition: none;
         }
 
         /* ─── COMMON PICKER ITEM ─── */
@@ -864,7 +891,7 @@
         /* ─── RESPONSIVE ─── */
         @media (max-width: 700px) {
             .quiz-picker-menu {
-                flex-direction: column;
+                display: block;
                 max-height: 70vh;
                 overflow-y: auto;
                 max-width: 88vw;
@@ -875,18 +902,32 @@
                 min-width: 0;
                 width: 100%;
             }
+            /* Mobile: quiz panel drops below the categories instead of floating */
             .quiz-picker-quizzes {
-                border-left: none;
-                border-top: 1px solid var(--border);
-                padding-left: 0;
-                margin-left: 0;
-                padding-top: 6px;
+                position: static;
+                left: auto;
+                top: auto;
                 margin-top: 6px;
+                padding-top: 6px;
+                border-top: 1px solid var(--border);
+                border-left: none;
+                box-shadow: none;
+                min-width: 0;
+                max-width: none;
+                max-height: none;
+                overflow-y: visible;
+                display: none;
+                opacity: 1;
+                visibility: visible;
+            }
+            .quiz-picker-quizzes.visible {
+                display: block;
             }
             .quiz-picker-quizzes.direct-mode {
+                display: block;
                 border-top: none;
-                padding-top: 0;
                 margin-top: 0;
+                padding-top: 0;
             }
         }
 
@@ -1033,6 +1074,7 @@
             const spoilerContainer = document.getElementById('spoilerContainer');
             const quizPicker     = document.getElementById('quizPicker');
             const quizPickerBtn  = document.getElementById('quizPickerBtn');
+            const quizPickerMenu = document.getElementById('quizPickerMenu');
             const categoriesCol  = document.getElementById('quizPickerCategories');
             const quizzesCol     = document.getElementById('quizPickerQuizzes');
             const reloadBtn      = document.getElementById('reloadBtn');
@@ -1242,6 +1284,7 @@
             function closePicker() {
                 quizPicker.classList.remove('open');
                 quizPickerBtn.setAttribute('aria-expanded', 'false');
+                quizzesCol.classList.remove('visible');   // hide quiz panel on close
             }
             function togglePicker() {
                 quizPicker.classList.contains('open') ? closePicker() : openPicker();
@@ -1258,6 +1301,16 @@
                     clearTimeout(hoverCloseTimer);
                     hoverCloseTimer = null;
                 }
+            }
+
+            // Align the floating quiz panel vertically with the hovered category item
+            function positionQuizColumn(catBtn) {
+                if (!catBtn) return;
+                const catRect  = catBtn.getBoundingClientRect();
+                const menuRect = quizPickerMenu.getBoundingClientRect();
+                let offsetTop = catRect.top - menuRect.top;
+                if (offsetTop < 6) offsetTop = 6;
+                quizzesCol.style.top = offsetTop + 'px';
             }
 
             // ─── PICKER RENDERING ──────────────────────────────────
@@ -1283,17 +1336,11 @@
                     quizzesCol.classList.add('visible', 'direct-mode');
                     renderQuizzesHTML(categories[0] ? QUIZ_TREE[categories[0]] : []);
                 } else {
+                    // Show categories only — the quiz panel stays hidden until the user hovers/clicks one
                     categoriesCol.style.display = '';
-                    quizzesCol.classList.add('visible');
-                    quizzesCol.classList.remove('direct-mode');
-
-                    const previewCat = (currentCategory && QUIZ_TREE[currentCategory])
-                        ? currentCategory
-                        : categories[0];
-                    activeCategoryPreview = previewCat;
-
-                    renderCategoriesHTML(previewCat);
-                    renderQuizzesHTML(QUIZ_TREE[previewCat] || []);
+                    quizzesCol.classList.remove('visible', 'direct-mode');
+                    activeCategoryPreview = '';
+                    renderCategoriesHTML('');
                 }
 
                 quizPickerBtn.disabled = false;
@@ -1348,13 +1395,15 @@
                 if (!catBtn) return;
                 e.stopPropagation();
                 const cat = catBtn.dataset.category;
-                if (cat === activeCategoryPreview) return;
+                if (cat === activeCategoryPreview && quizzesCol.classList.contains('visible')) return;
                 activeCategoryPreview = cat;
 
                 categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
                     el.classList.toggle('active', el.dataset.category === cat);
                 });
                 renderQuizzesHTML(QUIZ_TREE[cat] || []);
+                positionQuizColumn(catBtn);
+                quizzesCol.classList.add('visible');
             });
 
             if (canHover) {
@@ -1362,15 +1411,23 @@
                     const catBtn = e.target.closest('.quiz-picker-cat');
                     if (!catBtn) return;
                     const cat = catBtn.dataset.category;
-                    if (cat === activeCategoryPreview) return;
+                    if (cat === activeCategoryPreview && quizzesCol.classList.contains('visible')) return;
                     activeCategoryPreview = cat;
 
                     categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
                         el.classList.toggle('active', el.dataset.category === cat);
                     });
                     renderQuizzesHTML(QUIZ_TREE[cat] || []);
+                    positionQuizColumn(catBtn);
+                    quizzesCol.classList.add('visible');
                 });
             }
+
+            // Keep the quiz panel aligned when the category list scrolls
+            categoriesCol.addEventListener('scroll', function() {
+                const activeCat = categoriesCol.querySelector('.quiz-picker-cat.active');
+                if (activeCat) positionQuizColumn(activeCat);
+            });
 
             quizzesCol.addEventListener('click', function(e) {
                 const quizBtn = e.target.closest('.quiz-picker-quiz');
