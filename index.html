@@ -15,7 +15,7 @@
             font-display: swap;
         }
 
-        /* ====== LOCAL VAZIR (Persian / Arabic) ====== */
+        /* ====== LOCAL VAZIR ====== */
         @font-face {
             font-family: 'Vazir';
             src: url('fonts/Vazir.ttf') format('truetype');
@@ -31,7 +31,7 @@
             font-display: swap;
         }
 
-        /* ====== LOCAL BIZ UDPMINCHO (Japanese) ====== */
+        /* ====== LOCAL BIZ UDPMINCHO ====== */
         @font-face {
             font-family: 'BIZ UDPMincho';
             src: url('fonts/BIZUDPMincho-Regular.ttf') format('truetype');
@@ -47,7 +47,7 @@
             font-display: swap;
         }
 
-        /* ====== FONT AWESOME – LOCAL TTF ====== */
+        /* ====== FONT AWESOME ====== */
         @font-face {
             font-family: 'Font Awesome 6 Free';
             font-style: normal;
@@ -76,24 +76,22 @@
         .fa-sync-alt::before      { content: "\f2f1"; }
         .fa-undo::before          { content: "\f0e2"; }
         .fa-check::before         { content: "\f00c"; }
-        .fa-forward-step::before  { content: "\f051"; }
+        .fa-times::before         { content: "\f00d"; }
         .fa-folder-open::before   { content: "\f07c"; }
         .fa-hourglass-half::before{ content: "\f252"; }
         .fa-check-circle::before  { content: "\f058"; }
         .fa-times-circle::before  { content: "\f057"; }
         .fa-flag-checkered::before{ content: "\f11e"; }
-        .fa-pencil::before        { content: "\f303"; }
         .fa-exclamation-circle::before { content: "\f06a"; }
-        .fa-star::before          { content: "\f005"; }
+        .fa-list-ul::before       { content: "\f0ca"; }
+        .fa-trophy::before        { content: "\f091"; }
 
-        /* ─── ROOT (FMHY-inspired) ─── */
+        /* ─── ROOT ─── */
         :root {
             --bg: #0c0c0c;
             --bg-card: #161616;
-            --bg-sidebar: #121212;
             --bg-input: #1e1e1e;
             --bg-hover: #242424;
-            --bg-active: #0d1f2a;
             --text: #e6e6e6;
             --text-secondary: #9a9a9a;
             --text-muted: #5a5a5a;
@@ -102,6 +100,9 @@
             --primary: #00d4ff;
             --primary-hover: #40e0ff;
             --primary-light: #0a2833;
+            --danger: #ef4444;
+            --danger-light: rgba(239, 68, 68, 0.1);
+            --success: #22c55e;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             --radius: 10px;
             --radius-sm: 6px;
@@ -134,7 +135,6 @@
             background-attachment: fixed;
         }
 
-        /* ─── SCROLLBAR ─── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb {
@@ -157,7 +157,6 @@
             z-index: 50;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            transition: background var(--transition), border var(--transition);
             flex-shrink: 0;
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
@@ -236,10 +235,7 @@
             border-bottom: 1px solid var(--border);
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           CIRCULAR QUIZ PICKER
-           ⚠️  ANIMATION UNCHANGED (scale + icon rotate + shadow)
-           ═══════════════════════════════════════════════════════════ */
+        /* ─── CIRCULAR QUIZ PICKER (animation unchanged) ─── */
         .quiz-picker {
             position: relative;
             display: inline-flex;
@@ -325,8 +321,6 @@
             background: var(--border-hover);
             border-radius: 20px;
         }
-
-        /* ─── PICKER ITEM: [CATEGORY] · filename ─── */
         .quiz-picker-item {
             display: flex;
             align-items: center;
@@ -356,7 +350,6 @@
             padding: 3px 7px;
             border-radius: 4px;
             flex-shrink: 0;
-            transition: background var(--transition), color var(--transition);
             white-space: nowrap;
         }
         .quiz-picker-item .quiz-sep {
@@ -404,35 +397,6 @@
             color: var(--text-muted);
         }
 
-        /* ─── RELOAD BUTTON ─── */
-        .load-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .load-btn:hover {
-            background: var(--bg-hover);
-            border-color: var(--border-hover);
-            color: var(--text);
-        }
-        .load-btn:active { transform: scale(0.98); }
-        .load-btn .fa-solid {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .load-btn:hover .fa-solid { transform: rotate(180deg); }
-
         /* ─── PROGRESS ─── */
         .progress {
             color: var(--text-muted);
@@ -448,10 +412,7 @@
             font-weight: 700;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           QUESTION TEXT – ANIMATED GRADIENT
-           ⚠️  COLOR & ANIMATION UNCHANGED (#a78bfa → #34d399)
-           ═══════════════════════════════════════════════════════════ */
+        /* ─── QUESTION (animated gradient – unchanged) ─── */
         .question {
             font-family: var(--font);
             font-size: 2rem;
@@ -469,7 +430,6 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: gradShift 5s ease-in-out infinite alternate;
-            transition: filter 0.3s ease;
 
             dir: auto;
         }
@@ -491,58 +451,11 @@
             opacity: 0.4;
         }
 
-        /* ─── INPUT ─── */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .input-group label {
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            padding-left: 2px;
-        }
-        .input-group textarea {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 15px;
-            font-weight: 400;
-            font-family: var(--font);
-            color: var(--text);
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            outline: none;
-            transition: border var(--transition), box-shadow var(--transition),
-                background var(--transition);
-            caret-color: var(--primary);
-            resize: vertical;
-            min-height: 84px;
-            line-height: 1.55;
-            dir: auto;
-        }
-        .input-group textarea::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-        .input-group textarea:focus {
-            border-color: var(--primary);
-            background: var(--bg-hover);
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
-        }
-        .input-group textarea:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
-        }
-
         /* ─── SPOILER ─── */
         .spoiler-container {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 12px;
             margin-bottom: 18px;
             padding: 4px 0;
@@ -593,29 +506,23 @@
             pointer-events: auto;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           FONT SWITCHING BY LANGUAGE
-           ═══════════════════════════════════════════════════════════ */
-
-        /* --- VAZIR (Persian / Arabic) --- */
-        .card.font-vazir .question {
+        /* ─── FONT SWITCHING BY LANGUAGE ─── */
+        .card.font-vazir .question,
+        .card.font-vazir .spoiler-answer,
+        .card.font-vazir .failure-item .failure-q,
+        .card.font-vazir .failure-item .failure-a {
             font-family: 'Vazir Bold', var(--font);
         }
-        .card.font-vazir .input-group textarea {
-            font-family: 'Vazir', var(--font);
-        }
-        .card.font-vazir .spoiler-answer {
+        .card.font-vazir .failure-item .failure-a {
             font-family: 'Vazir', var(--font);
         }
 
-        /* --- BIZ UDPMINCHO (Japanese) --- */
-        .card.font-jp .question {
+        .card.font-jp .question,
+        .card.font-jp .spoiler-answer,
+        .card.font-jp .failure-item .failure-q {
             font-family: 'BIZ UDPMincho Bold', var(--font);
         }
-        .card.font-jp .input-group textarea {
-            font-family: 'BIZ UDPMincho', var(--font);
-        }
-        .card.font-jp .spoiler-answer {
+        .card.font-jp .failure-item .failure-a {
             font-family: 'BIZ UDPMincho', var(--font);
         }
 
@@ -628,9 +535,9 @@
         .btn {
             flex: 1;
             min-width: 100px;
-            padding: 12px 18px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
             font-family: inherit;
             color: var(--text);
             background: var(--bg-input);
@@ -642,15 +549,11 @@
             overflow: hidden;
             text-align: center;
         }
-        .btn:hover:not(:disabled) {
-            background: var(--bg-hover);
-            border-color: var(--border-hover);
-        }
         .btn:active:not(:disabled) {
             transform: scale(0.98);
         }
         .btn:disabled {
-            opacity: 0.4;
+            opacity: 0.35;
             cursor: not-allowed;
             transform: none !important;
         }
@@ -667,35 +570,48 @@
             transition: transform 0.25s ease;
         }
 
-        .btn-submit {
-            background: var(--primary);
-            color: #0c0c0c;
+        /* میدونم – outlined blue */
+        .btn-know {
+            color: var(--primary);
+            border-color: rgba(0, 212, 255, 0.45);
+            background: transparent;
+        }
+        .btn-know:hover:not(:disabled) {
+            background: var(--primary-light);
             border-color: var(--primary);
+            color: var(--primary-hover);
         }
-        .btn-submit:hover:not(:disabled) {
-            background: var(--primary-hover);
-            border-color: var(--primary-hover);
-            color: #0c0c0c;
-        }
-        .btn-submit:hover:not(:disabled) .fa-check {
+        .btn-know:hover:not(:disabled) .fa-check {
             transform: scale(1.25);
         }
 
-        .btn-skip {
-            color: #f59e0b;
-            border-color: rgba(245, 158, 11, 0.4);
+        /* نمیدونم – outlined red */
+        .btn-dontknow {
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.45);
+            background: transparent;
         }
-        .btn-skip:hover:not(:disabled) {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: #f59e0b;
-            color: #f59e0b;
+        .btn-dontknow:hover:not(:disabled) {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: #fca5a5;
         }
-        .btn-skip:hover:not(:disabled) .fa-forward-step {
-            transform: translateX(4px);
+        .btn-dontknow:hover:not(:disabled) .fa-times {
+            transform: rotate(90deg);
         }
 
+        /* Restart */
         .btn-reset {
             color: var(--text-secondary);
+            flex: 0 0 auto;
+            min-width: 60px;
+            padding: 14px 20px;
+            font-size: 15px;
+        }
+        .btn-reset:hover:not(:disabled) {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            color: var(--text);
         }
         .btn-reset:hover:not(:disabled) .fa-undo {
             transform: rotate(-180deg);
@@ -709,7 +625,7 @@
             font-size: 14px;
             font-weight: 500;
             line-height: 1.5;
-            min-height: 3.6rem;
+            min-height: 3.4rem;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -729,11 +645,6 @@
             border-color: rgba(220, 38, 38, 0.4);
             color: #f87171;
         }
-        .feedback.skip {
-            background: rgba(245, 158, 11, 0.08);
-            border-color: rgba(245, 158, 11, 0.4);
-            color: #fbbf24;
-        }
         .feedback.done {
             background: var(--primary-light);
             border-color: rgba(0, 212, 255, 0.4);
@@ -745,12 +656,111 @@
             line-height: 1;
         }
         .feedback .msg { flex: 1; }
-        .feedback .detail {
-            font-size: 0.8rem;
-            font-weight: 400;
-            opacity: 0.6;
-            margin-top: 3px;
-            display: block;
+
+        /* ─── SUMMARY PANEL ─── */
+        .summary {
+            margin-top: 18px;
+            padding: 20px 22px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .summary-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+        .summary-title .fa-solid { font-size: 1rem; }
+
+        .summary-stats {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.6;
+        }
+        .summary-stats strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .summary-stats .stat-know {
+            color: #4ade80;
+            font-weight: 700;
+        }
+        .summary-stats .stat-miss {
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        .summary-failures-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .summary-failures-title .fa-solid { font-size: 0.85em; }
+
+        .failure-item {
+            padding: 11px 14px;
+            background: rgba(220, 38, 38, 0.06);
+            border-left: 3px solid var(--danger);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+        }
+        .failure-item:last-child {
+            margin-bottom: 0;
+        }
+        .failure-item .failure-q {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 6px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            dir: auto;
+        }
+        .failure-item .failure-a {
+            font-size: 12.5px;
+            color: #fca5a5;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            dir: auto;
+        }
+        .failure-item .failure-a .a-label {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 10px;
+            margin-right: 4px;
+        }
+        .failure-item .failure-a strong {
+            color: #fecaca;
+            font-weight: 600;
+        }
+
+        .summary-all-good {
+            padding: 14px 16px;
+            background: rgba(34, 197, 94, 0.08);
+            border-left: 3px solid var(--success);
+            border-radius: var(--radius-sm);
+            color: #4ade80;
+            font-size: 13.5px;
+            font-weight: 500;
         }
 
         /* ─── RESPONSIVE ─── */
@@ -761,19 +771,15 @@
             .app { padding: 14px 12px 20px; }
             .card { padding: 18px 16px 20px; }
             .question { font-size: 1.5rem; }
-            .input-group textarea {
-                font-size: 14px;
-                padding: 12px 14px;
-                min-height: 70px;
-            }
             .btn-row { flex-direction: column; }
-            .btn { font-size: 13px; padding: 11px 16px; min-width: 80px; }
+            .btn { font-size: 14px; padding: 13px 16px; }
+            .btn-reset { min-width: 100%; }
             .feedback { font-size: 13px; padding: 12px 14px; }
             .spoiler-container { flex-direction: column; align-items: stretch; }
             .spoiler-answer { text-align: center; }
             .quiz-picker-menu { min-width: 220px; max-width: 88vw; }
-            .load-bar { gap: 8px; }
-            .load-btn { font-size: 11px; padding: 7px 12px; }
+            .summary { padding: 16px 14px; }
+            .summary-title { font-size: 15px; }
         }
         @media (max-width: 380px) {
             .question { font-size: 1.25rem; }
@@ -785,7 +791,6 @@
 </head>
 <body>
 
-    <!-- ─── HEADER ─── -->
     <header class="header">
         <div class="header-left">
             <div class="header-logo">
@@ -799,11 +804,9 @@
         </div>
     </header>
 
-    <!-- ─── APP ─── -->
     <div class="app">
         <main class="card" id="quizCard" role="main" aria-labelledby="question-heading">
 
-            <!-- Loader bar (picker) -->
             <div class="load-bar">
                 <div class="quiz-picker" id="quizPicker">
                     <button
@@ -829,40 +832,26 @@
 
             <h1 id="question-heading" class="question" dir="auto">Loading…</h1>
 
-            <div class="input-group">
-                <label for="answerInput">Your answer</label>
-                <textarea
-                    id="answerInput"
-                    placeholder="Type your answer here…"
-                    autocomplete="on"
-                    spellcheck="true"
-                    inputmode="text"
-                    dir="auto"
-                    rows="3"
-                    aria-describedby="feedbackArea"
-                ></textarea>
-            </div>
-
             <!-- Spoiler -->
-            <div class="spoiler-container">
+            <div class="spoiler-container" id="spoilerContainer">
                 <button class="spoiler-toggle" id="spoilerToggle" type="button">Show answer</button>
                 <span class="spoiler-answer" id="spoilerAnswer"></span>
             </div>
 
             <div class="btn-row">
-                <button class="btn btn-submit" id="submitBtn" type="button">
+                <button class="btn btn-know" id="knowBtn" type="button" disabled>
                     <span>
                         <i class="fa-solid fa-check" aria-hidden="true"></i>
-                        Submit
+                        میدونم
                     </span>
                 </button>
-                <button class="btn btn-skip" id="skipBtn" type="button">
+                <button class="btn btn-dontknow" id="dontKnowBtn" type="button" disabled>
                     <span>
-                        <i class="fa-solid fa-forward-step" aria-hidden="true"></i>
-                        Skip
+                        <i class="fa-solid fa-times" aria-hidden="true"></i>
+                        نمیدونم
                     </span>
                 </button>
-                <button class="btn btn-reset" id="resetBtn" type="button">
+                <button class="btn btn-reset" id="resetBtn" type="button" title="Restart quiz">
                     <span>
                         <i class="fa-solid fa-undo" aria-hidden="true"></i>
                         Restart
@@ -874,6 +863,16 @@
                 <i class="icon fa-solid fa-folder-open" aria-hidden="true"></i>
                 <span class="msg">Waiting for quiz files…</span>
             </div>
+
+            <!-- End-of-quiz summary -->
+            <section class="summary" id="summaryPanel" hidden aria-live="polite">
+                <h2 class="summary-title">
+                    <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>
+                    Results
+                </h2>
+                <div class="summary-stats" id="summaryStats"></div>
+                <div id="summaryFailuresContainer"></div>
+            </section>
 
         </main>
     </div>
@@ -893,17 +892,20 @@
             const questionEl     = document.getElementById('question-heading');
             const progressNum    = document.getElementById('currentNum');
             const totalNum       = document.getElementById('totalNum');
-            const inputEl        = document.getElementById('answerInput');
-            const submitBtn      = document.getElementById('submitBtn');
-            const skipBtn        = document.getElementById('skipBtn');
+            const knowBtn        = document.getElementById('knowBtn');
+            const dontKnowBtn    = document.getElementById('dontKnowBtn');
             const resetBtn       = document.getElementById('resetBtn');
             const feedbackEl     = document.getElementById('feedbackArea');
             const spoilerToggle  = document.getElementById('spoilerToggle');
             const spoilerAnswer  = document.getElementById('spoilerAnswer');
+            const spoilerContainer = document.getElementById('spoilerContainer');
             const quizPicker     = document.getElementById('quizPicker');
             const quizPickerBtn  = document.getElementById('quizPickerBtn');
             const quizPickerMenu = document.getElementById('quizPickerMenu');
             const reloadBtn      = document.getElementById('reloadBtn');
+            const summaryPanel   = document.getElementById('summaryPanel');
+            const summaryStats   = document.getElementById('summaryStats');
+            const summaryFailuresContainer = document.getElementById('summaryFailuresContainer');
 
             // ─── STATE ─────────────────────────────────────────────
             let ALL_QUESTIONS = [];
@@ -913,6 +915,7 @@
             let autoAdvanceTimer = null;
             let spoilerVisible = false;
             let currentFile = '';
+            let failures = [];   // { question, answer }
 
             // ─── HELPERS ───────────────────────────────────────────
             function shuffleArray(arr) {
@@ -923,8 +926,17 @@
                 return arr;
             }
 
+            function escapeHtml(str) {
+                return String(str == null ? '' : str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
             function setFeedback(iconClass, message, type) {
-                feedbackEl.classList.remove('correct', 'wrong', 'skip', 'done');
+                feedbackEl.classList.remove('correct', 'wrong', 'done');
                 const iconSpan = feedbackEl.querySelector('.icon');
                 if (iconSpan) iconSpan.className = 'icon fa-solid ' + iconClass;
                 const msgSpan = feedbackEl.querySelector('.msg');
@@ -933,7 +945,7 @@
             }
 
             function resetFeedback() {
-                setFeedback('fa-hourglass-half', 'Type your answer and submit.', null);
+                setFeedback('fa-hourglass-half', 'Choose میدونم or نمیدونم.', null);
             }
 
             function updateProgress() {
@@ -942,11 +954,6 @@
             }
 
             // ─── MANIFEST NORMALIZATION ────────────────────────────
-            // Accepts:
-            //   1) { "files": ["a.json", ...] }
-            //   2) { "files": [{ "file": "a.json", "category": "X" }, ...] }
-            //   3) { "categories": { "X": ["a.json"], "Y": ["b.json"] } }
-            // Always returns: [{ file: "a.json", category: "X" }, ...]
             function normalizeManifest(manifest) {
                 const out = [];
 
@@ -995,7 +1002,6 @@
                 quizPicker.classList.contains('open') ? closePicker() : openPicker();
             }
 
-            // entries: [{ file, category }, ...]
             function populatePicker(entries) {
                 quizPickerMenu.innerHTML = '';
 
@@ -1098,19 +1104,57 @@
                 spoilerVisible = !spoilerVisible;
             }
 
+            // ─── SUMMARY ───────────────────────────────────────────
+            function showSummary() {
+                const total = shuffledQuestions.length;
+                const failCount = failures.length;
+                const knowCount = total - failCount;
+                const pct = total > 0 ? Math.round((knowCount / total) * 100) : 0;
+
+                summaryStats.innerHTML =
+                    `You knew <span class="stat-know">${knowCount}</span> of <strong>${total}</strong> ` +
+                    `(${pct}%) &nbsp;·&nbsp; missed <span class="stat-miss">${failCount}</span>`;
+
+                if (failCount === 0) {
+                    summaryFailuresContainer.innerHTML =
+                        '<div class="summary-all-good"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Perfect! You knew every question.</div>';
+                } else {
+                    let html = '<div class="summary-failures-title">' +
+                               '<i class="fa-solid fa-list-ul" aria-hidden="true"></i>' +
+                               ' Questions you missed</div>';
+                    failures.forEach(function(f) {
+                        html +=
+                            '<div class="failure-item">' +
+                                '<div class="failure-q">' + escapeHtml(f.question) + '</div>' +
+                                '<div class="failure-a"><span class="a-label">Answer:</span>' +
+                                    '<strong>' + escapeHtml(f.answer) + '</strong></div>' +
+                            '</div>';
+                    });
+                    summaryFailuresContainer.innerHTML = html;
+                }
+
+                summaryPanel.hidden = false;
+            }
+
+            function hideSummary() {
+                summaryPanel.hidden = true;
+                summaryStats.innerHTML = '';
+                summaryFailuresContainer.innerHTML = '';
+            }
+
             // ─── EMPTY STATE ───────────────────────────────────────
             function showEmptyState(message) {
                 questionEl.textContent = message || 'Load a quiz file to begin';
                 progressNum.textContent = '0';
                 totalNum.textContent = '0';
-                inputEl.value = '';
-                inputEl.disabled = true;
-                submitBtn.disabled = true;
-                skipBtn.disabled = true;
+                knowBtn.disabled = true;
+                dontKnowBtn.disabled = true;
                 spoilerToggle.disabled = true;
                 spoilerAnswer.classList.remove('visible');
                 spoilerToggle.textContent = 'Show answer';
                 spoilerVisible = false;
+                spoilerContainer.style.display = '';
+                hideSummary();
                 setFeedback('fa-folder-open', 'No quiz loaded.', null);
             }
 
@@ -1122,34 +1166,34 @@
                 }
 
                 if (index >= shuffledQuestions.length) {
+                    // End of quiz
                     isComplete = true;
                     questionEl.innerHTML = '<i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> You finished the quiz!';
-                    inputEl.disabled = true;
-                    submitBtn.disabled = true;
-                    skipBtn.disabled = true;
+                    knowBtn.disabled = true;
+                    dontKnowBtn.disabled = true;
                     spoilerToggle.disabled = true;
-                    setFeedback('fa-flag-checkered', 'All questions completed.<span class="detail">Click Restart to try again.</span>', 'done');
-                    progressNum.textContent = shuffledQuestions.length;
                     spoilerAnswer.classList.remove('visible');
                     spoilerToggle.textContent = 'Show answer';
                     spoilerVisible = false;
+                    spoilerContainer.style.display = 'none';
+                    setFeedback('fa-flag-checkered', 'All questions completed. See results below.', 'done');
+                    progressNum.textContent = shuffledQuestions.length;
+                    showSummary();
                     return;
                 }
 
+                // Regular question
+                hideSummary();
+                spoilerContainer.style.display = '';
                 const q = shuffledQuestions[index];
                 questionEl.textContent = q.question;
                 updateSpoiler(q.answer);
 
-                inputEl.value = '';
-                inputEl.disabled = false;
-                inputEl.style.borderColor = '';
-                inputEl.style.boxShadow = '';
-                submitBtn.disabled = false;
-                skipBtn.disabled = false;
+                knowBtn.disabled = false;
+                dontKnowBtn.disabled = false;
                 spoilerToggle.disabled = false;
                 resetFeedback();
                 updateProgress();
-                inputEl.focus();
             }
 
             function advanceToNext() {
@@ -1158,8 +1202,8 @@
                 displayQuestion(currentIndex);
             }
 
-            // ─── CHECK ANSWER ──────────────────────────────────────
-            function checkAnswer() {
+            // ─── ANSWER ACTIONS ────────────────────────────────────
+            function markKnown() {
                 if (autoAdvanceTimer) {
                     clearTimeout(autoAdvanceTimer);
                     autoAdvanceTimer = null;
@@ -1167,61 +1211,38 @@
                 if (isComplete) return;
                 if (currentIndex >= shuffledQuestions.length) return;
 
-                const trimmed = inputEl.value.trim();
-                const current = shuffledQuestions[currentIndex];
-
-                if (trimmed.length === 0) {
-                    setFeedback('fa-pencil', 'Please type an answer before submitting.', null);
-                    return;
-                }
-
-                const isCorrect = (trimmed === current.answer);
-
-                if (isCorrect) {
-                    setFeedback('fa-check-circle', 'Correct! Moving on…', 'correct');
-                    inputEl.style.borderColor = 'rgba(34, 197, 94, 0.5)';
-                    inputEl.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.15)';
-                    inputEl.disabled = true;
-                    submitBtn.disabled = true;
-                    skipBtn.disabled = true;
-
-                    autoAdvanceTimer = setTimeout(function() {
-                        autoAdvanceTimer = null;
-                        advanceToNext();
-                    }, 600);
-                } else {
-                    let hintMsg = 'Incorrect. Please try again.';
-                    if (trimmed.toLowerCase() === current.answer.toLowerCase()) {
-                        hintMsg += ' <span style="opacity:0.7;">(Check capitalization.)</span>';
-                    }
-                    setFeedback('fa-times-circle', hintMsg, 'wrong');
-                    inputEl.style.borderColor = 'rgba(220, 38, 38, 0.5)';
-                    inputEl.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.15)';
-                    inputEl.focus();
-                    inputEl.select();
-                }
-            }
-
-            // ─── SKIP ──────────────────────────────────────────────
-            function skipQuestion() {
-                if (autoAdvanceTimer) {
-                    clearTimeout(autoAdvanceTimer);
-                    autoAdvanceTimer = null;
-                }
-                if (isComplete) return;
-                if (currentIndex >= shuffledQuestions.length) return;
-
-                setFeedback('fa-forward-step', 'Skipped! Moving on…', 'skip');
-                inputEl.style.borderColor = 'rgba(245, 158, 11, 0.5)';
-                inputEl.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.15)';
-                inputEl.disabled = true;
-                submitBtn.disabled = true;
-                skipBtn.disabled = true;
+                setFeedback('fa-check-circle', 'Marked as known. Moving on…', 'correct');
+                knowBtn.disabled = true;
+                dontKnowBtn.disabled = true;
 
                 autoAdvanceTimer = setTimeout(function() {
                     autoAdvanceTimer = null;
                     advanceToNext();
-                }, 600);
+                }, 400);
+            }
+
+            function markUnknown() {
+                if (autoAdvanceTimer) {
+                    clearTimeout(autoAdvanceTimer);
+                    autoAdvanceTimer = null;
+                }
+                if (isComplete) return;
+                if (currentIndex >= shuffledQuestions.length) return;
+
+                const current = shuffledQuestions[currentIndex];
+                failures.push({
+                    question: current.question,
+                    answer: current.answer
+                });
+
+                setFeedback('fa-times-circle', 'Recorded as not known. Moving on…', 'wrong');
+                knowBtn.disabled = true;
+                dontKnowBtn.disabled = true;
+
+                autoAdvanceTimer = setTimeout(function() {
+                    autoAdvanceTimer = null;
+                    advanceToNext();
+                }, 400);
             }
 
             // ─── RESTART ───────────────────────────────────────────
@@ -1234,6 +1255,9 @@
                     showEmptyState();
                     return;
                 }
+                failures = [];
+                hideSummary();
+                spoilerContainer.style.display = '';
                 shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
                 currentIndex = 0;
                 isComplete = false;
@@ -1265,6 +1289,9 @@
                 }
 
                 ALL_QUESTIONS = valid;
+                failures = [];
+                hideSummary();
+                spoilerContainer.style.display = '';
                 totalNum.textContent = ALL_QUESTIONS.length;
                 applyLanguageFont(language);
 
@@ -1277,9 +1304,8 @@
             // ─── FETCH JSON FILE ───────────────────────────────────
             function fetchJsonFile(filename) {
                 const url = JSON_DIR + filename;
-                inputEl.disabled = true;
-                submitBtn.disabled = true;
-                skipBtn.disabled = true;
+                knowBtn.disabled = true;
+                dontKnowBtn.disabled = true;
 
                 fetch(url, { cache: 'no-store' })
                     .then(function(res) {
@@ -1325,8 +1351,8 @@
             }
 
             // ─── EVENTS ────────────────────────────────────────────
-            submitBtn.addEventListener('click', checkAnswer);
-            skipBtn.addEventListener('click', skipQuestion);
+            knowBtn.addEventListener('click', markKnown);
+            dontKnowBtn.addEventListener('click', markUnknown);
             resetBtn.addEventListener('click', restartQuiz);
             spoilerToggle.addEventListener('click', toggleSpoiler);
 
@@ -1335,27 +1361,6 @@
                     fetchJsonFile(currentFile);
                 } else {
                     loadManifestAndFirstQuiz();
-                }
-            });
-
-            inputEl.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && (e.shiftKey || e.ctrlKey || e.metaKey)) {
-                    e.preventDefault();
-                    if (!submitBtn.disabled) checkAnswer();
-                }
-            });
-
-            inputEl.addEventListener('input', function() {
-                if (feedbackEl.classList.contains('wrong')) {
-                    resetFeedback();
-                }
-                if (inputEl.style.borderColor &&
-                    inputEl.style.borderColor !== 'rgba(34, 197, 94, 0.5)') {
-                    inputEl.style.borderColor = '';
-                    inputEl.style.boxShadow = '';
-                }
-                if ((feedbackEl.classList.contains('correct') || feedbackEl.classList.contains('skip')) && !inputEl.disabled) {
-                    inputEl.disabled = true;
                 }
             });
 
