@@ -1,0 +1,9 @@
+{
+  "language": "jp",
+  "title": "Japanese Vocabulary",
+  "questions": [
+    { "question": "こんにちは", "answer": "Hello" },
+    { "question": "ありがとう", "answer": "Thank you" },
+    { "question": "さようなら", "answer": "Goodbye" }
+  ]
+}
