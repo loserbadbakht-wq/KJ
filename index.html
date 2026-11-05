@@ -826,12 +826,13 @@
             dir: auto;
         }
         .failure-item .failure-a .a-label {
+            display: block;          /* ← new: puts "Answer:" on its own line */
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
             font-size: 10px;
-            margin-right: 4px;
+            margin-bottom: 4px;      /* ← was margin-right; now applies below the label */
         }
         .failure-item .failure-a strong {
             color: #fecaca;
