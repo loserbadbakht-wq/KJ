@@ -295,9 +295,9 @@
             position: absolute;
             top: calc(100% + 10px);
             left: 0;
-            min-width: 220px;
-            max-width: 340px;
-            max-height: 320px;
+            min-width: 240px;
+            max-width: 360px;
+            max-height: 340px;
             overflow-y: auto;
             padding: 6px;
             background: var(--bg-card);
@@ -325,10 +325,14 @@
             background: var(--border-hover);
             border-radius: 20px;
         }
+
+        /* ─── PICKER ITEM: [CATEGORY] · filename ─── */
         .quiz-picker-item {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             width: 100%;
-            padding: 9px 12px;
+            padding: 8px 10px;
             font-family: inherit;
             font-size: 13px;
             font-weight: 500;
@@ -339,19 +343,51 @@
             cursor: pointer;
             text-align: left;
             transition: background var(--transition), color var(--transition);
+            direction: ltr;
+            overflow: hidden;
+        }
+        .quiz-picker-item .quiz-cat {
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 7px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            transition: background var(--transition), color var(--transition);
             white-space: nowrap;
+        }
+        .quiz-picker-item .quiz-sep {
+            color: var(--text-muted);
+            opacity: 0.5;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .quiz-picker-item .quiz-name {
+            flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
-            direction: ltr;
+            white-space: nowrap;
+            min-width: 0;
         }
         .quiz-picker-item:hover {
             background: var(--bg-hover);
             color: var(--text);
         }
+        .quiz-picker-item:hover .quiz-cat {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text-secondary);
+        }
         .quiz-picker-item.active {
             background: var(--primary-light);
             color: var(--primary);
             font-weight: 600;
+        }
+        .quiz-picker-item.active .quiz-cat {
+            background: rgba(0, 212, 255, 0.16);
+            color: var(--primary);
         }
         .quiz-picker-item.active:hover {
             background: var(--primary-light);
@@ -361,6 +397,7 @@
             color: var(--text-muted);
             cursor: default;
             font-style: italic;
+            justify-content: center;
         }
         .quiz-picker-item.disabled:hover {
             background: transparent;
@@ -734,7 +771,7 @@
             .feedback { font-size: 13px; padding: 12px 14px; }
             .spoiler-container { flex-direction: column; align-items: stretch; }
             .spoiler-answer { text-align: center; }
-            .quiz-picker-menu { min-width: 200px; max-width: 88vw; }
+            .quiz-picker-menu { min-width: 220px; max-width: 88vw; }
             .load-bar { gap: 8px; }
             .load-btn { font-size: 11px; padding: 7px 12px; }
         }
@@ -848,11 +885,7 @@
             // ─── CONFIG ────────────────────────────────────────────
             const MANIFEST_URL = 'json/manifest.json';
             const JSON_DIR = 'json/';
-
-            // Languages that use Vazir (Persian / Arabic / Hebrew / Urdu / Pashto)
             const VAZIR_LANGS = ['fa', 'ar', 'he', 'ur', 'ps'];
-
-            // Languages that use BIZ UDPMincho (Japanese)
             const JP_LANGS = ['jp', 'ja'];
 
             // ─── DOM REFS ──────────────────────────────────────────
@@ -908,6 +941,44 @@
                 totalNum.textContent = shuffledQuestions.length;
             }
 
+            // ─── MANIFEST NORMALIZATION ────────────────────────────
+            // Accepts:
+            //   1) { "files": ["a.json", ...] }
+            //   2) { "files": [{ "file": "a.json", "category": "X" }, ...] }
+            //   3) { "categories": { "X": ["a.json"], "Y": ["b.json"] } }
+            // Always returns: [{ file: "a.json", category: "X" }, ...]
+            function normalizeManifest(manifest) {
+                const out = [];
+
+                if (manifest && manifest.categories && typeof manifest.categories === 'object') {
+                    Object.keys(manifest.categories).forEach(function(cat) {
+                        const list = manifest.categories[cat];
+                        if (!Array.isArray(list)) return;
+                        list.forEach(function(fname) {
+                            if (typeof fname === 'string' && fname.trim()) {
+                                out.push({ file: fname.trim(), category: cat });
+                            }
+                        });
+                    });
+                    return out;
+                }
+
+                if (manifest && Array.isArray(manifest.files)) {
+                    manifest.files.forEach(function(entry) {
+                        if (typeof entry === 'string') {
+                            if (entry.trim()) out.push({ file: entry.trim(), category: '' });
+                        } else if (entry && typeof entry.file === 'string' && entry.file.trim()) {
+                            out.push({
+                                file: entry.file.trim(),
+                                category: (typeof entry.category === 'string') ? entry.category.trim() : ''
+                            });
+                        }
+                    });
+                }
+
+                return out;
+            }
+
             // ─── QUIZ PICKER ───────────────────────────────────────
             const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
@@ -924,23 +995,50 @@
                 quizPicker.classList.contains('open') ? closePicker() : openPicker();
             }
 
-            function populatePicker(files) {
+            // entries: [{ file, category }, ...]
+            function populatePicker(entries) {
                 quizPickerMenu.innerHTML = '';
-                files.forEach(function(fname) {
+
+                entries.forEach(function(entry) {
+                    const filename = entry.file;
+                    const category = entry.category || '';
+                    const displayName = filename.replace(/\.json$/i, '');
+
                     const item = document.createElement('button');
                     item.type = 'button';
                     item.className = 'quiz-picker-item';
-                    item.textContent = fname;
-                    item.dataset.file = fname;
+                    item.dataset.file = filename;
                     item.setAttribute('role', 'menuitem');
+                    item.setAttribute('title', filename);
+
+                    if (category) {
+                        const catEl = document.createElement('span');
+                        catEl.className = 'quiz-cat';
+                        catEl.textContent = category;
+                        item.appendChild(catEl);
+
+                        const sepEl = document.createElement('span');
+                        sepEl.className = 'quiz-sep';
+                        sepEl.setAttribute('aria-hidden', 'true');
+                        sepEl.textContent = '·';
+                        item.appendChild(sepEl);
+                    }
+
+                    const nameEl = document.createElement('span');
+                    nameEl.className = 'quiz-name';
+                    nameEl.textContent = displayName;
+                    item.appendChild(nameEl);
+
                     item.addEventListener('click', function(e) {
                         e.stopPropagation();
-                        if (fname !== currentFile) fetchJsonFile(fname);
+                        if (filename !== currentFile) fetchJsonFile(filename);
                         closePicker();
                     });
+
                     quizPickerMenu.appendChild(item);
                 });
-                quizPickerBtn.disabled = false;
+
+                quizPickerBtn.disabled = entries.length === 0;
             }
 
             function setActivePickerItem(filename) {
@@ -978,7 +1076,6 @@
                 const lang = (language || '').toLowerCase().trim();
                 const useVazir = VAZIR_LANGS.indexOf(lang) !== -1;
                 const useJP    = JP_LANGS.indexOf(lang) !== -1;
-
                 card.classList.toggle('font-vazir', useVazir);
                 card.classList.toggle('font-jp', useJP);
             }
@@ -1212,11 +1309,12 @@
                         return res.json();
                     })
                     .then(function(manifest) {
-                        if (!manifest || !Array.isArray(manifest.files) || manifest.files.length === 0) {
-                            throw new Error('manifest.json must contain a non-empty "files" array.');
+                        const entries = normalizeManifest(manifest);
+                        if (entries.length === 0) {
+                            throw new Error('manifest.json must contain a non-empty "files" array (or a "categories" object).');
                         }
-                        populatePicker(manifest.files);
-                        fetchJsonFile(manifest.files[0]);
+                        populatePicker(entries);
+                        fetchJsonFile(entries[0].file);
                     })
                     .catch(function(err) {
                         console.error(err);
@@ -1270,4 +1368,4 @@
     </script>
 
 </body>
-  </html>
+    </html>
