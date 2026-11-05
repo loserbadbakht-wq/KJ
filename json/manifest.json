@@ -1,5 +1,6 @@
 {
   "files": [
-    "questions.json"
+    { "file": "questions.json", "category": "Arabic" },
+    { "file": "japanese.json",  "category": "Japanese" }
   ]
 }
