@@ -86,7 +86,6 @@
         .fa-list-ul::before       { content: "\f0ca"; }
         .fa-trophy::before        { content: "\f091"; }
         .fa-chevron-right::before { content: "\f054"; }
-        .fa-arrow-left::before    { content: "\f060"; }
 
         /* ─── ROOT ─── */
         :root {
@@ -226,9 +225,7 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           END-OF-QUIZ MODE: hide everything except the results panel
-           ═══════════════════════════════════════════════════════════ */
+        /* ─── END-OF-QUIZ: only the results panel visible ─── */
         .card.quiz-finished #progressDisplay,
         .card.quiz-finished #question-heading,
         .card.quiz-finished #spoilerContainer,
@@ -248,7 +245,7 @@
             border-bottom: 1px solid var(--border);
         }
 
-        /* ─── CIRCULAR QUIZ PICKER (animation unchanged) ─── */
+        /* ─── CIRCULAR QUIZ PICKER (button animation unchanged) ─── */
         .quiz-picker {
             position: relative;
             display: inline-flex;
@@ -299,20 +296,21 @@
             box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
         }
 
-        /* ─── DROPDOWN MENU ─── */
+        /* ═══════════════════════════════════════════════════════
+           TWO-COLUMN MENU (categories | quizzes)
+           ═══════════════════════════════════════════════════════ */
         .quiz-picker-menu {
             position: absolute;
             top: calc(100% + 10px);
             left: 0;
-            min-width: 260px;
-            max-width: 380px;
-            max-height: 360px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: row;
             padding: 6px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow);
+            max-width: calc(100vw - 40px);
             opacity: 0;
             visibility: hidden;
             transform: translateY(-6px) scale(0.97);
@@ -328,11 +326,37 @@
             transition: opacity 0.18s ease, transform 0.18s ease,
                         visibility 0s linear 0s;
         }
-        .quiz-picker-menu::-webkit-scrollbar { width: 4px; }
-        .quiz-picker-menu::-webkit-scrollbar-track { background: transparent; }
-        .quiz-picker-menu::-webkit-scrollbar-thumb {
+
+        /* Individual columns */
+        .quiz-picker-col {
+            overflow-y: auto;
+            max-height: 340px;
+            min-width: 210px;
+        }
+        .quiz-picker-col::-webkit-scrollbar { width: 4px; }
+        .quiz-picker-col::-webkit-scrollbar-track { background: transparent; }
+        .quiz-picker-col::-webkit-scrollbar-thumb {
             background: var(--border-hover);
             border-radius: 20px;
+        }
+        .quiz-picker-categories {
+            /* left column */
+        }
+        .quiz-picker-quizzes {
+            /* right column – hidden until we have a category preview */
+            border-left: 1px solid var(--border);
+            padding-left: 6px;
+            margin-left: 6px;
+            display: none;
+        }
+        .quiz-picker-quizzes.visible {
+            display: block;
+        }
+        /* When only quizzes are shown (no category UI) */
+        .quiz-picker-quizzes.direct-mode {
+            border-left: none;
+            padding-left: 0;
+            margin-left: 0;
         }
 
         /* ─── COMMON PICKER ITEM ─── */
@@ -367,6 +391,7 @@
             padding: 4px 10px;
             border-radius: 5px;
             flex-shrink: 0;
+            white-space: nowrap;
         }
         .quiz-picker-cat .quiz-cat-count {
             font-size: 10px;
@@ -404,36 +429,12 @@
             background: rgba(0, 212, 255, 0.16);
             color: var(--primary);
         }
-
-        /* Back button */
-        .quiz-picker-back {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            padding: 6px 10px;
-            margin-bottom: 4px;
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid var(--border);
-            border-radius: 0;
-            cursor: pointer;
-            text-align: left;
-            transition: color var(--transition), background var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-        .quiz-picker-back:hover {
+        .quiz-picker-cat.active .quiz-cat-count {
             color: var(--primary);
-            background: var(--bg-hover);
+            background: rgba(0, 212, 255, 0.1);
         }
-        .quiz-picker-back .fa-solid {
-            font-size: 0.9em;
-            width: auto;
+        .quiz-picker-cat.active .quiz-cat-arrow {
+            color: var(--primary);
         }
 
         /* Quiz item */
@@ -847,7 +848,6 @@
             font-weight: 500;
         }
 
-        /* Restart button inside summary */
         .summary-actions {
             display: flex;
             gap: 10px;
@@ -862,6 +862,35 @@
         }
 
         /* ─── RESPONSIVE ─── */
+        @media (max-width: 700px) {
+            /* Stack the two columns vertically on narrow screens */
+            .quiz-picker-menu {
+                flex-direction: column;
+                max-height: 70vh;
+                overflow-y: auto;
+                max-width: 88vw;
+            }
+            .quiz-picker-col {
+                max-height: none;
+                overflow-y: visible;
+                min-width: 0;
+                width: 100%;
+            }
+            .quiz-picker-quizzes {
+                border-left: none;
+                border-top: 1px solid var(--border);
+                padding-left: 0;
+                margin-left: 0;
+                padding-top: 6px;
+                margin-top: 6px;
+            }
+            .quiz-picker-quizzes.direct-mode {
+                border-top: none;
+                padding-top: 0;
+                margin-top: 0;
+            }
+        }
+
         @media (max-width: 540px) {
             .header { padding: 0 16px; }
             .header-logo { font-size: 17px; }
@@ -873,7 +902,6 @@
             .btn { font-size: 14px; padding: 13px 16px; }
             .btn-reset { min-width: 100%; }
             .feedback { font-size: 13px; padding: 12px 14px; }
-            .quiz-picker-menu { min-width: 240px; max-width: 90vw; }
             .summary { padding: 16px 14px; }
             .summary-title { font-size: 15px; }
             .summary-actions { flex-direction: column; }
@@ -919,7 +947,8 @@
                         <i class="fa-solid fa-book" aria-hidden="true"></i>
                     </button>
                     <div class="quiz-picker-menu" id="quizPickerMenu" role="menu" aria-label="Quizzes">
-                        <div class="quiz-picker-item disabled">Loading…</div>
+                        <div class="quiz-picker-col quiz-picker-categories" id="quizPickerCategories" role="group" aria-label="Categories"></div>
+                        <div class="quiz-picker-col quiz-picker-quizzes" id="quizPickerQuizzes" role="group" aria-label="Quizzes"></div>
                     </div>
                 </div>
             </div>
@@ -961,7 +990,6 @@
                 <span class="msg">Waiting for quiz files…</span>
             </div>
 
-            <!-- End-of-quiz summary (only thing visible when quiz-finished) -->
             <section class="summary" id="summaryPanel" hidden aria-live="polite">
                 <h2 class="summary-title">
                     <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>
@@ -1006,7 +1034,8 @@
             const spoilerContainer = document.getElementById('spoilerContainer');
             const quizPicker     = document.getElementById('quizPicker');
             const quizPickerBtn  = document.getElementById('quizPickerBtn');
-            const quizPickerMenu = document.getElementById('quizPickerMenu');
+            const categoriesCol  = document.getElementById('quizPickerCategories');
+            const quizzesCol     = document.getElementById('quizPickerQuizzes');
             const reloadBtn      = document.getElementById('reloadBtn');
             const summaryPanel   = document.getElementById('summaryPanel');
             const summaryStats   = document.getElementById('summaryStats');
@@ -1029,6 +1058,7 @@
             let HAS_CATEGORIES = false;
 
             let hoverCloseTimer = null;
+            let activeCategoryPreview = '';
 
             // ─── HELPERS ───────────────────────────────────────────
             function normalizeAnswer(answer) {
@@ -1179,28 +1209,46 @@
 
             // ─── PICKER RENDERING ──────────────────────────────────
             function renderPickerLoading(message) {
-                quizPickerMenu.innerHTML = '';
-                const item = document.createElement('div');
-                item.className = 'quiz-picker-item disabled';
-                item.textContent = message || 'Loading…';
-                quizPickerMenu.appendChild(item);
+                categoriesCol.innerHTML = '<div class="quiz-picker-item disabled">' + (message || 'Loading…') + '</div>';
+                quizzesCol.innerHTML = '';
+                quizzesCol.classList.remove('visible', 'direct-mode');
                 quizPickerBtn.disabled = true;
             }
 
             function renderPickerInitial() {
-                const categories = Object.keys(QUIZ_TREE);
+                const categories = Object.keys(QUIZ_TREE).sort(function(a, b) {
+                    return a.localeCompare(b);
+                });
+
                 if (categories.length === 0) {
                     renderPickerLoading('No quizzes');
                     return;
                 }
+
                 if (!HAS_CATEGORIES || categories.length === 1) {
-                    renderPickerQuizzes(categories[0]);
+                    // Single category → just show quizzes, no category column
+                    categoriesCol.style.display = 'none';
+                    quizzesCol.classList.add('visible', 'direct-mode');
+                    renderQuizzesHTML(categories[0] ? QUIZ_TREE[categories[0]] : []);
                 } else {
-                    renderPickerCategories();
+                    // Multiple categories → two columns side by side
+                    categoriesCol.style.display = '';
+                    quizzesCol.classList.add('visible');
+                    quizzesCol.classList.remove('direct-mode');
+
+                    const previewCat = (currentCategory && QUIZ_TREE[currentCategory])
+                        ? currentCategory
+                        : categories[0];
+                    activeCategoryPreview = previewCat;
+
+                    renderCategoriesHTML(previewCat);
+                    renderQuizzesHTML(QUIZ_TREE[previewCat] || []);
                 }
+
+                quizPickerBtn.disabled = false;
             }
 
-            function renderPickerCategories() {
+            function renderCategoriesHTML(activeCat) {
                 const categories = Object.keys(QUIZ_TREE).sort(function(a, b) {
                     return a.localeCompare(b);
                 });
@@ -1208,92 +1256,87 @@
                 let html = '';
                 categories.forEach(function(cat) {
                     const quizzes = QUIZ_TREE[cat];
-                    const isActive = currentFile && quizzes.some(function(q) {
-                        return q.file === currentFile;
-                    });
+                    const isActive = cat === activeCat;
                     html +=
                         '<button type="button" class="quiz-picker-item quiz-picker-cat' +
-                            (isActive ? ' active' : '') + '" data-category="' + escapeHtml(cat) + '">' +
+                            (isActive ? ' active' : '') + '" ' +
+                            'data-category="' + escapeHtml(cat) + '">' +
                             '<span class="quiz-cat">' + escapeHtml(cat) + '</span>' +
                             '<span class="quiz-cat-count">' + quizzes.length + '</span>' +
                             '<i class="fa-solid fa-chevron-right quiz-cat-arrow" aria-hidden="true"></i>' +
                         '</button>';
                 });
 
-                quizPickerMenu.innerHTML = html;
-                quizPickerBtn.disabled = false;
+                categoriesCol.innerHTML = html;
             }
 
-            function renderPickerQuizzes(category) {
-                let quizzes = [];
-                let showBack = false;
-
-                if (category && QUIZ_TREE[category]) {
-                    quizzes = QUIZ_TREE[category];
-                    showBack = HAS_CATEGORIES && Object.keys(QUIZ_TREE).length > 1;
-                } else {
-                    Object.keys(QUIZ_TREE).forEach(function(cat) {
-                        quizzes = quizzes.concat(QUIZ_TREE[cat]);
-                    });
+            function renderQuizzesHTML(quizzes) {
+                if (!quizzes || quizzes.length === 0) {
+                    quizzesCol.innerHTML = '<div class="quiz-picker-item disabled">No quizzes</div>';
+                    return;
                 }
-
                 let html = '';
-                if (showBack) {
+                quizzes.forEach(function(q) {
+                    const isActive = q.file === currentFile;
+                    const hasError = !!q.error;
                     html +=
-                        '<button type="button" class="quiz-picker-back" data-action="back">' +
-                            '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All categories' +
+                        '<button type="button" class="quiz-picker-item quiz-picker-quiz' +
+                            (isActive ? ' active' : '') +
+                            (hasError ? ' has-error' : '') + '" ' +
+                            'data-file="' + escapeHtml(q.file) + '" ' +
+                            'title="' + escapeHtml(q.file) + '">' +
+                            '<span class="quiz-title">' + escapeHtml(q.title) + '</span>' +
                         '</button>';
-                }
-
-                if (quizzes.length === 0) {
-                    html += '<div class="quiz-picker-item disabled">No quizzes</div>';
-                } else {
-                    quizzes.forEach(function(q) {
-                        const isActive = q.file === currentFile;
-                        const hasError = !!q.error;
-                        html +=
-                            '<button type="button" class="quiz-picker-item quiz-picker-quiz' +
-                                (isActive ? ' active' : '') +
-                                (hasError ? ' has-error' : '') + '" ' +
-                                'data-file="' + escapeHtml(q.file) + '" ' +
-                                'title="' + escapeHtml(q.file) + '">' +
-                                '<span class="quiz-title">' + escapeHtml(q.title) + '</span>' +
-                            '</button>';
-                    });
-                }
-
-                quizPickerMenu.innerHTML = html;
-                quizPickerBtn.disabled = false;
+                });
+                quizzesCol.innerHTML = html;
             }
 
             // ─── PICKER EVENTS ─────────────────────────────────────
-            quizPickerMenu.addEventListener('click', function(e) {
-                const backBtn = e.target.closest('.quiz-picker-back');
-                if (backBtn) {
-                    e.stopPropagation();
-                    renderPickerCategories();
-                    return;
-                }
-
+            // Click a category → preview its quizzes in the right column
+            categoriesCol.addEventListener('click', function(e) {
                 const catBtn = e.target.closest('.quiz-picker-cat');
-                if (catBtn) {
-                    e.stopPropagation();
-                    renderPickerQuizzes(catBtn.dataset.category);
-                    return;
-                }
+                if (!catBtn) return;
+                e.stopPropagation();
+                const cat = catBtn.dataset.category;
+                if (cat === activeCategoryPreview) return;
+                activeCategoryPreview = cat;
 
+                // Update active highlight without re-rendering the whole column
+                categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
+                    el.classList.toggle('active', el.dataset.category === cat);
+                });
+                renderQuizzesHTML(QUIZ_TREE[cat] || []);
+            });
+
+            // Hover a category → same preview (desktop only)
+            if (canHover) {
+                categoriesCol.addEventListener('mouseover', function(e) {
+                    const catBtn = e.target.closest('.quiz-picker-cat');
+                    if (!catBtn) return;
+                    const cat = catBtn.dataset.category;
+                    if (cat === activeCategoryPreview) return;
+                    activeCategoryPreview = cat;
+
+                    categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
+                        el.classList.toggle('active', el.dataset.category === cat);
+                    });
+                    renderQuizzesHTML(QUIZ_TREE[cat] || []);
+                });
+            }
+
+            // Click a quiz → load it and close picker
+            quizzesCol.addEventListener('click', function(e) {
                 const quizBtn = e.target.closest('.quiz-picker-quiz');
-                if (quizBtn) {
-                    e.stopPropagation();
-                    const filename = quizBtn.dataset.file;
-                    closePicker();
-                    if (filename !== currentFile) {
-                        loadQuiz(filename);
-                    }
-                    return;
+                if (!quizBtn) return;
+                e.stopPropagation();
+                const filename = quizBtn.dataset.file;
+                closePicker();
+                if (filename !== currentFile) {
+                    loadQuiz(filename);
                 }
             });
 
+            // Hover on the picker button area → open; leaving → schedule close
             if (canHover) {
                 quizPicker.addEventListener('mouseenter', function() {
                     cancelClose();
@@ -1304,11 +1347,13 @@
                 });
             }
 
+            // Click toggle
             quizPickerBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 togglePicker();
             });
 
+            // Click outside closes
             document.addEventListener('click', function(e) {
                 if (!quizPicker.contains(e.target)) {
                     cancelClose();
@@ -1316,6 +1361,7 @@
                 }
             });
 
+            // Escape closes
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     cancelClose();
@@ -1426,11 +1472,8 @@
                 }
 
                 if (index >= shuffledQuestions.length) {
-                    // ── END OF QUIZ ──
-                    // Hide everything except the results panel
                     isComplete = true;
                     card.classList.add('quiz-finished');
-                    questionEl.innerHTML = '<i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> You finished the quiz!';
                     knowBtn.disabled = true;
                     dontKnowBtn.disabled = true;
                     spoilerToggle.disabled = true;
@@ -1442,7 +1485,6 @@
                     return;
                 }
 
-                // ── REGULAR QUESTION ──
                 card.classList.remove('quiz-finished');
                 hideSummary();
                 spoilerContainer.style.display = '';
@@ -1628,6 +1670,7 @@
                 HAS_CATEGORIES = false;
                 currentFile = '';
                 currentCategory = '';
+                activeCategoryPreview = '';
                 renderPickerLoading('Loading manifest…');
 
                 try {
