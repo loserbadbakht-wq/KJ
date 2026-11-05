@@ -85,6 +85,8 @@
         .fa-exclamation-circle::before { content: "\f06a"; }
         .fa-list-ul::before       { content: "\f0ca"; }
         .fa-trophy::before        { content: "\f091"; }
+        .fa-chevron-right::before { content: "\f054"; }
+        .fa-arrow-left::before    { content: "\f060"; }
 
         /* ─── ROOT ─── */
         :root {
@@ -224,6 +226,17 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
+        /* ═══════════════════════════════════════════════════════════
+           END-OF-QUIZ MODE: hide everything except the results panel
+           ═══════════════════════════════════════════════════════════ */
+        .card.quiz-finished #progressDisplay,
+        .card.quiz-finished #question-heading,
+        .card.quiz-finished #spoilerContainer,
+        .card.quiz-finished #answerBtnRow,
+        .card.quiz-finished #feedbackArea {
+            display: none !important;
+        }
+
         /* ─── LOAD BAR ─── */
         .load-bar {
             display: flex;
@@ -257,7 +270,7 @@
             font-size: 0.95rem;
             line-height: 1;
             transition: background 0.2s ease, border-color 0.2s ease,
-                color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+                        color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
         }
         .quiz-picker-btn .fa-solid {
             transition: transform 0.25s ease;
@@ -291,9 +304,9 @@
             position: absolute;
             top: calc(100% + 10px);
             left: 0;
-            min-width: 240px;
-            max-width: 360px;
-            max-height: 340px;
+            min-width: 260px;
+            max-width: 380px;
+            max-height: 360px;
             overflow-y: auto;
             padding: 6px;
             background: var(--bg-card);
@@ -305,7 +318,7 @@
             transform: translateY(-6px) scale(0.97);
             transform-origin: top left;
             transition: opacity 0.18s ease, transform 0.18s ease,
-                visibility 0s linear 0.18s;
+                        visibility 0s linear 0.18s;
             z-index: 100;
         }
         .quiz-picker.open .quiz-picker-menu {
@@ -313,7 +326,7 @@
             visibility: visible;
             transform: translateY(0) scale(1);
             transition: opacity 0.18s ease, transform 0.18s ease,
-                visibility 0s linear 0s;
+                        visibility 0s linear 0s;
         }
         .quiz-picker-menu::-webkit-scrollbar { width: 4px; }
         .quiz-picker-menu::-webkit-scrollbar-track { background: transparent; }
@@ -321,6 +334,8 @@
             background: var(--border-hover);
             border-radius: 20px;
         }
+
+        /* ─── COMMON PICKER ITEM ─── */
         .quiz-picker-item {
             display: flex;
             align-items: center;
@@ -340,52 +355,116 @@
             direction: ltr;
             overflow: hidden;
         }
-        .quiz-picker-item .quiz-cat {
-            font-size: 9.5px;
+
+        /* Category item */
+        .quiz-picker-cat .quiz-cat {
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             background: rgba(255, 255, 255, 0.05);
-            padding: 3px 7px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 5px;
             flex-shrink: 0;
-            white-space: nowrap;
         }
-        .quiz-picker-item .quiz-sep {
+        .quiz-picker-cat .quiz-cat-count {
+            font-size: 10px;
+            font-weight: 600;
             color: var(--text-muted);
-            opacity: 0.5;
-            font-size: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
             flex-shrink: 0;
         }
-        .quiz-picker-item .quiz-name {
+        .quiz-picker-cat .quiz-cat-arrow {
+            font-size: 9px;
+            color: var(--text-muted);
+            transition: transform 0.2s ease, color 0.2s ease;
+            width: auto;
+            flex-shrink: 0;
+        }
+        .quiz-picker-cat:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+        .quiz-picker-cat:hover .quiz-cat {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+        }
+        .quiz-picker-cat:hover .quiz-cat-arrow {
+            color: var(--primary);
+            transform: translateX(2px);
+        }
+        .quiz-picker-cat.active {
+            background: var(--primary-light);
+        }
+        .quiz-picker-cat.active .quiz-cat {
+            background: rgba(0, 212, 255, 0.16);
+            color: var(--primary);
+        }
+
+        /* Back button */
+        .quiz-picker-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            border-radius: 0;
+            cursor: pointer;
+            text-align: left;
+            transition: color var(--transition), background var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .quiz-picker-back:hover {
+            color: var(--primary);
+            background: var(--bg-hover);
+        }
+        .quiz-picker-back .fa-solid {
+            font-size: 0.9em;
+            width: auto;
+        }
+
+        /* Quiz item */
+        .quiz-picker-quiz .quiz-title {
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             min-width: 0;
+            direction: auto;
+            text-align: left;
         }
-        .quiz-picker-item:hover {
+        .quiz-picker-quiz:hover {
             background: var(--bg-hover);
             color: var(--text);
         }
-        .quiz-picker-item:hover .quiz-cat {
-            background: rgba(255, 255, 255, 0.09);
-            color: var(--text-secondary);
-        }
-        .quiz-picker-item.active {
+        .quiz-picker-quiz.active {
             background: var(--primary-light);
             color: var(--primary);
             font-weight: 600;
         }
-        .quiz-picker-item.active .quiz-cat {
-            background: rgba(0, 212, 255, 0.16);
-            color: var(--primary);
-        }
-        .quiz-picker-item.active:hover {
+        .quiz-picker-quiz.active:hover {
             background: var(--primary-light);
             color: var(--primary-hover);
         }
+        .quiz-picker-quiz.has-error .quiz-title {
+            color: var(--danger);
+            opacity: 0.8;
+        }
+
+        /* Disabled / loading */
         .quiz-picker-item.disabled {
             color: var(--text-muted);
             cursor: default;
@@ -419,9 +498,9 @@
             font-weight: 700;
             line-height: 1.55;
             letter-spacing: -0.02em;
-            margin-bottom: 30px;          /* extra room for the button to lift */
+            margin-bottom: 30px;
             text-align: center;
-            white-space: pre-wrap;        /* multi-line questions supported */
+            white-space: pre-wrap;
             min-height: 3.2rem;
 
             background: linear-gradient(135deg, #a78bfa, #34d399);
@@ -451,12 +530,7 @@
             opacity: 0.4;
         }
 
-        /* ═══════════════════════════════════════════════════════
-           SPOILER
-           – gap removed
-           – button lifts by a dynamic amount based on line count
-           – answer expands smoothly to its natural height
-           ═══════════════════════════════════════════════════════ */
+        /* ─── SPOILER ─── */
         .spoiler-container {
             display: flex;
             flex-direction: column;
@@ -492,8 +566,6 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
-
-        /* Dynamic lift — value comes from --spoiler-lift (set by JS) */
         .spoiler-container.revealed .spoiler-toggle {
             transform: translateY(var(--spoiler-lift, -6px));
         }
@@ -507,14 +579,12 @@
             padding: 8px 16px;
             border-radius: var(--radius-sm);
             border: 1px solid rgba(0, 212, 255, 0.25);
-            white-space: pre-wrap;         /* ← multi-line answers render as multiple lines */
+            white-space: pre-wrap;
             line-height: 1.55;
             max-width: 100%;
             word-break: break-word;
             dir: auto;
             text-align: center;
-
-            /* Collapsed state */
             max-height: 0;
             opacity: 0;
             overflow: hidden;
@@ -529,7 +599,6 @@
                         border-width 0.35s ease;
         }
         .spoiler-container.revealed .spoiler-answer {
-            /* --answer-max-height is measured from scrollHeight by JS */
             max-height: var(--answer-max-height, 800px);
             opacity: 1;
             margin-top: 6px;
@@ -580,9 +649,7 @@
             overflow: hidden;
             text-align: center;
         }
-        .btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
+        .btn:active:not(:disabled) { transform: scale(0.98); }
         .btn:disabled {
             opacity: 0.35;
             cursor: not-allowed;
@@ -661,7 +728,7 @@
             border: 1px solid var(--border);
             color: var(--text-secondary);
             transition: border var(--transition), background var(--transition),
-                color var(--transition);
+                        color var(--transition);
         }
         .feedback.correct {
             background: rgba(34, 197, 94, 0.08);
@@ -687,7 +754,7 @@
 
         /* ─── SUMMARY PANEL ─── */
         .summary {
-            margin-top: 18px;
+            margin-top: 0;
             padding: 20px 22px;
             background: var(--bg-input);
             border: 1px solid var(--border);
@@ -745,7 +812,7 @@
             color: var(--text);
             margin-bottom: 6px;
             line-height: 1.5;
-            white-space: pre-wrap;       /* multi-line questions */
+            white-space: pre-wrap;
             word-break: break-word;
             dir: auto;
         }
@@ -753,7 +820,7 @@
             font-size: 12.5px;
             color: #fca5a5;
             line-height: 1.5;
-            white-space: pre-wrap;       /* multi-line answers */
+            white-space: pre-wrap;
             word-break: break-word;
             dir: auto;
         }
@@ -780,6 +847,20 @@
             font-weight: 500;
         }
 
+        /* Restart button inside summary */
+        .summary-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .summary-actions .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 540px) {
             .header { padding: 0 16px; }
@@ -792,9 +873,11 @@
             .btn { font-size: 14px; padding: 13px 16px; }
             .btn-reset { min-width: 100%; }
             .feedback { font-size: 13px; padding: 12px 14px; }
-            .quiz-picker-menu { min-width: 220px; max-width: 88vw; }
+            .quiz-picker-menu { min-width: 240px; max-width: 90vw; }
             .summary { padding: 16px 14px; }
             .summary-title { font-size: 15px; }
+            .summary-actions { flex-direction: column; }
+            .summary-actions .btn { min-width: 100%; }
         }
         @media (max-width: 380px) {
             .question { font-size: 1.25rem; }
@@ -835,7 +918,7 @@
                     >
                         <i class="fa-solid fa-book" aria-hidden="true"></i>
                     </button>
-                    <div class="quiz-picker-menu" id="quizPickerMenu" role="menu" aria-label="Quiz files">
+                    <div class="quiz-picker-menu" id="quizPickerMenu" role="menu" aria-label="Quizzes">
                         <div class="quiz-picker-item disabled">Loading…</div>
                     </div>
                 </div>
@@ -847,13 +930,12 @@
 
             <h1 id="question-heading" class="question" dir="auto">Loading…</h1>
 
-            <!-- Spoiler (answer is a block element so multi-line answers are proper) -->
             <div class="spoiler-container" id="spoilerContainer">
                 <button class="spoiler-toggle" id="spoilerToggle" type="button">Show answer</button>
                 <div class="spoiler-answer" id="spoilerAnswer"></div>
             </div>
 
-            <div class="btn-row">
+            <div class="btn-row" id="answerBtnRow">
                 <button class="btn btn-know" id="knowBtn" type="button" disabled>
                     <span>
                         <i class="fa-solid fa-check" aria-hidden="true"></i>
@@ -879,7 +961,7 @@
                 <span class="msg">Waiting for quiz files…</span>
             </div>
 
-            <!-- End-of-quiz summary -->
+            <!-- End-of-quiz summary (only thing visible when quiz-finished) -->
             <section class="summary" id="summaryPanel" hidden aria-live="polite">
                 <h2 class="summary-title">
                     <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>
@@ -887,6 +969,14 @@
                 </h2>
                 <div class="summary-stats" id="summaryStats"></div>
                 <div id="summaryFailuresContainer"></div>
+                <div class="summary-actions">
+                    <button class="btn btn-know" id="summaryRestartBtn" type="button">
+                        <span>
+                            <i class="fa-solid fa-undo" aria-hidden="true"></i>
+                            Restart Quiz
+                        </span>
+                    </button>
+                </div>
             </section>
 
         </main>
@@ -921,6 +1011,7 @@
             const summaryPanel   = document.getElementById('summaryPanel');
             const summaryStats   = document.getElementById('summaryStats');
             const summaryFailuresContainer = document.getElementById('summaryFailuresContainer');
+            const summaryRestartBtn = document.getElementById('summaryRestartBtn');
 
             // ─── STATE ─────────────────────────────────────────────
             let ALL_QUESTIONS = [];
@@ -930,22 +1021,20 @@
             let autoAdvanceTimer = null;
             let spoilerVisible = false;
             let currentFile = '';
+            let currentCategory = '';
             let failures = [];
 
-            // ─── HELPERS ───────────────────────────────────────────
+            let QUIZ_CACHE = {};
+            let QUIZ_TREE  = {};
+            let HAS_CATEGORIES = false;
 
-            // Turns any of these into a real multi-line string:
-            //   "line1\nline2"      (JSON \n escapes → real newlines)
-            //   "line1<br>line2"    (HTML br → newline)
-            //   ["line1", "line2"]  (array → joined with newlines)
+            let hoverCloseTimer = null;
+
+            // ─── HELPERS ───────────────────────────────────────────
             function normalizeAnswer(answer) {
-                if (Array.isArray(answer)) {
-                    return answer.map(String).join('\n');
-                }
+                if (Array.isArray(answer)) return answer.map(String).join('\n');
                 if (answer == null) return '';
-                let text = String(answer);
-                text = text.replace(/<br\s*\/?>/gi, '\n');
-                return text;
+                return String(answer).replace(/<br\s*\/?>/gi, '\n');
             }
 
             function shuffleArray(arr) {
@@ -1016,11 +1105,54 @@
                 return out;
             }
 
+            // ─── PRELOAD & TREE BUILD ──────────────────────────────
+            async function preloadAllQuizzes(entries) {
+                await Promise.all(entries.map(async function(entry) {
+                    const filename = entry.file;
+                    try {
+                        const res = await fetch(JSON_DIR + filename, { cache: 'no-store' });
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        const data = await res.json();
+                        const title = (data && typeof data.title === 'string' && data.title.trim())
+                            ? data.title.trim()
+                            : filename.replace(/\.json$/i, '');
+                        QUIZ_CACHE[filename] = { data: data, title: title, error: null };
+                    } catch (err) {
+                        console.warn('Preload failed:', filename, err);
+                        QUIZ_CACHE[filename] = {
+                            data: null,
+                            title: filename.replace(/\.json$/i, ''),
+                            error: err.message || 'Failed to load'
+                        };
+                    }
+                }));
+            }
+
+            function buildQuizTree(entries) {
+                QUIZ_TREE = {};
+                HAS_CATEGORIES = false;
+
+                entries.forEach(function(entry) {
+                    const info = QUIZ_CACHE[entry.file] || {};
+                    const title = info.title || entry.file.replace(/\.json$/i, '');
+                    const cat = (entry.category || '').trim() || 'Uncategorized';
+                    if (entry.category && entry.category.trim()) HAS_CATEGORIES = true;
+                    if (!QUIZ_TREE[cat]) QUIZ_TREE[cat] = [];
+                    QUIZ_TREE[cat].push({
+                        file: entry.file,
+                        title: title,
+                        error: info.error || null
+                    });
+                });
+            }
+
             // ─── QUIZ PICKER ───────────────────────────────────────
             const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
             function openPicker() {
                 if (quizPickerBtn.disabled) return;
+                cancelClose();
+                renderPickerInitial();
                 quizPicker.classList.add('open');
                 quizPickerBtn.setAttribute('aria-expanded', 'true');
             }
@@ -1031,59 +1163,22 @@
             function togglePicker() {
                 quizPicker.classList.contains('open') ? closePicker() : openPicker();
             }
-
-            function populatePicker(entries) {
-                quizPickerMenu.innerHTML = '';
-
-                entries.forEach(function(entry) {
-                    const filename = entry.file;
-                    const category = entry.category || '';
-                    const displayName = filename.replace(/\.json$/i, '');
-
-                    const item = document.createElement('button');
-                    item.type = 'button';
-                    item.className = 'quiz-picker-item';
-                    item.dataset.file = filename;
-                    item.setAttribute('role', 'menuitem');
-                    item.setAttribute('title', filename);
-
-                    if (category) {
-                        const catEl = document.createElement('span');
-                        catEl.className = 'quiz-cat';
-                        catEl.textContent = category;
-                        item.appendChild(catEl);
-
-                        const sepEl = document.createElement('span');
-                        sepEl.className = 'quiz-sep';
-                        sepEl.setAttribute('aria-hidden', 'true');
-                        sepEl.textContent = '·';
-                        item.appendChild(sepEl);
-                    }
-
-                    const nameEl = document.createElement('span');
-                    nameEl.className = 'quiz-name';
-                    nameEl.textContent = displayName;
-                    item.appendChild(nameEl);
-
-                    item.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        if (filename !== currentFile) fetchJsonFile(filename);
-                        closePicker();
-                    });
-
-                    quizPickerMenu.appendChild(item);
-                });
-
-                quizPickerBtn.disabled = entries.length === 0;
+            function scheduleClose() {
+                cancelClose();
+                hoverCloseTimer = setTimeout(function() {
+                    hoverCloseTimer = null;
+                    closePicker();
+                }, 220);
+            }
+            function cancelClose() {
+                if (hoverCloseTimer) {
+                    clearTimeout(hoverCloseTimer);
+                    hoverCloseTimer = null;
+                }
             }
 
-            function setActivePickerItem(filename) {
-                quizPickerMenu.querySelectorAll('.quiz-picker-item').forEach(function(el) {
-                    el.classList.toggle('active', el.dataset.file === filename);
-                });
-            }
-
-            function setPickerLoading(message) {
+            // ─── PICKER RENDERING ──────────────────────────────────
+            function renderPickerLoading(message) {
                 quizPickerMenu.innerHTML = '';
                 const item = document.createElement('div');
                 item.className = 'quiz-picker-item disabled';
@@ -1092,19 +1187,140 @@
                 quizPickerBtn.disabled = true;
             }
 
-            if (canHover) {
-                quizPicker.addEventListener('mouseenter', openPicker);
-                quizPicker.addEventListener('mouseleave', closePicker);
+            function renderPickerInitial() {
+                const categories = Object.keys(QUIZ_TREE);
+                if (categories.length === 0) {
+                    renderPickerLoading('No quizzes');
+                    return;
+                }
+                if (!HAS_CATEGORIES || categories.length === 1) {
+                    renderPickerQuizzes(categories[0]);
+                } else {
+                    renderPickerCategories();
+                }
             }
+
+            function renderPickerCategories() {
+                const categories = Object.keys(QUIZ_TREE).sort(function(a, b) {
+                    return a.localeCompare(b);
+                });
+
+                let html = '';
+                categories.forEach(function(cat) {
+                    const quizzes = QUIZ_TREE[cat];
+                    const isActive = currentFile && quizzes.some(function(q) {
+                        return q.file === currentFile;
+                    });
+                    html +=
+                        '<button type="button" class="quiz-picker-item quiz-picker-cat' +
+                            (isActive ? ' active' : '') + '" data-category="' + escapeHtml(cat) + '">' +
+                            '<span class="quiz-cat">' + escapeHtml(cat) + '</span>' +
+                            '<span class="quiz-cat-count">' + quizzes.length + '</span>' +
+                            '<i class="fa-solid fa-chevron-right quiz-cat-arrow" aria-hidden="true"></i>' +
+                        '</button>';
+                });
+
+                quizPickerMenu.innerHTML = html;
+                quizPickerBtn.disabled = false;
+            }
+
+            function renderPickerQuizzes(category) {
+                let quizzes = [];
+                let showBack = false;
+
+                if (category && QUIZ_TREE[category]) {
+                    quizzes = QUIZ_TREE[category];
+                    showBack = HAS_CATEGORIES && Object.keys(QUIZ_TREE).length > 1;
+                } else {
+                    Object.keys(QUIZ_TREE).forEach(function(cat) {
+                        quizzes = quizzes.concat(QUIZ_TREE[cat]);
+                    });
+                }
+
+                let html = '';
+                if (showBack) {
+                    html +=
+                        '<button type="button" class="quiz-picker-back" data-action="back">' +
+                            '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All categories' +
+                        '</button>';
+                }
+
+                if (quizzes.length === 0) {
+                    html += '<div class="quiz-picker-item disabled">No quizzes</div>';
+                } else {
+                    quizzes.forEach(function(q) {
+                        const isActive = q.file === currentFile;
+                        const hasError = !!q.error;
+                        html +=
+                            '<button type="button" class="quiz-picker-item quiz-picker-quiz' +
+                                (isActive ? ' active' : '') +
+                                (hasError ? ' has-error' : '') + '" ' +
+                                'data-file="' + escapeHtml(q.file) + '" ' +
+                                'title="' + escapeHtml(q.file) + '">' +
+                                '<span class="quiz-title">' + escapeHtml(q.title) + '</span>' +
+                            '</button>';
+                    });
+                }
+
+                quizPickerMenu.innerHTML = html;
+                quizPickerBtn.disabled = false;
+            }
+
+            // ─── PICKER EVENTS ─────────────────────────────────────
+            quizPickerMenu.addEventListener('click', function(e) {
+                const backBtn = e.target.closest('.quiz-picker-back');
+                if (backBtn) {
+                    e.stopPropagation();
+                    renderPickerCategories();
+                    return;
+                }
+
+                const catBtn = e.target.closest('.quiz-picker-cat');
+                if (catBtn) {
+                    e.stopPropagation();
+                    renderPickerQuizzes(catBtn.dataset.category);
+                    return;
+                }
+
+                const quizBtn = e.target.closest('.quiz-picker-quiz');
+                if (quizBtn) {
+                    e.stopPropagation();
+                    const filename = quizBtn.dataset.file;
+                    closePicker();
+                    if (filename !== currentFile) {
+                        loadQuiz(filename);
+                    }
+                    return;
+                }
+            });
+
+            if (canHover) {
+                quizPicker.addEventListener('mouseenter', function() {
+                    cancelClose();
+                    openPicker();
+                });
+                quizPicker.addEventListener('mouseleave', function() {
+                    scheduleClose();
+                });
+            }
+
             quizPickerBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 togglePicker();
             });
+
             document.addEventListener('click', function(e) {
-                if (!quizPicker.contains(e.target)) closePicker();
+                if (!quizPicker.contains(e.target)) {
+                    cancelClose();
+                    closePicker();
+                }
             });
+
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closePicker();
+                if (e.key === 'Escape') {
+                    cancelClose();
+                    closePicker();
+                }
             });
 
             // ─── LANGUAGE / FONT ───────────────────────────────────
@@ -1121,20 +1337,16 @@
                 const normalized = normalizeAnswer(answer);
                 spoilerAnswer.textContent = normalized;
 
-                // Reset the reveal state
                 spoilerContainer.classList.remove('revealed');
                 spoilerToggle.textContent = 'Show answer';
                 spoilerVisible = false;
 
-                // Count lines → compute lift amount
                 const lines = Math.max(1, normalized.split('\n').length);
-                const lift = -(6 + Math.min((lines - 1) * 5, 24));   // 1 line → -6px, 6+ lines → -30px
+                const lift = -(6 + Math.min((lines - 1) * 5, 24));
                 spoilerContainer.style.setProperty('--spoiler-lift', lift + 'px');
 
-                // Measure the natural height after layout has settled
                 requestAnimationFrame(function() {
                     const h = spoilerAnswer.scrollHeight;
-                    // Small safety margin; minimum 200px in case layout isn't ready yet
                     const maxH = Math.max(h + 40, 200);
                     spoilerContainer.style.setProperty('--answer-max-height', maxH + 'px');
                 });
@@ -1159,8 +1371,8 @@
                 const pct = total > 0 ? Math.round((knowCount / total) * 100) : 0;
 
                 summaryStats.innerHTML =
-                    `You knew <span class="stat-know">${knowCount}</span> of <strong>${total}</strong> ` +
-                    `(${pct}%) &nbsp;·&nbsp; missed <span class="stat-miss">${failCount}</span>`;
+                    'You knew <span class="stat-know">' + knowCount + '</span> of <strong>' + total + '</strong> ' +
+                    '(' + pct + '%) &nbsp;·&nbsp; missed <span class="stat-miss">' + failCount + '</span>';
 
                 if (failCount === 0) {
                     summaryFailuresContainer.innerHTML =
@@ -1191,6 +1403,7 @@
 
             // ─── EMPTY STATE ───────────────────────────────────────
             function showEmptyState(message) {
+                card.classList.remove('quiz-finished');
                 questionEl.textContent = message || 'Load a quiz file to begin';
                 progressNum.textContent = '0';
                 totalNum.textContent = '0';
@@ -1213,7 +1426,10 @@
                 }
 
                 if (index >= shuffledQuestions.length) {
+                    // ── END OF QUIZ ──
+                    // Hide everything except the results panel
                     isComplete = true;
+                    card.classList.add('quiz-finished');
                     questionEl.innerHTML = '<i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> You finished the quiz!';
                     knowBtn.disabled = true;
                     dontKnowBtn.disabled = true;
@@ -1221,13 +1437,13 @@
                     spoilerContainer.classList.remove('revealed');
                     spoilerToggle.textContent = 'Show answer';
                     spoilerVisible = false;
-                    spoilerContainer.style.display = 'none';
-                    setFeedback('fa-flag-checkered', 'All questions completed. See results below.', 'done');
                     progressNum.textContent = shuffledQuestions.length;
                     showSummary();
                     return;
                 }
 
+                // ── REGULAR QUESTION ──
+                card.classList.remove('quiz-finished');
                 hideSummary();
                 spoilerContainer.style.display = '';
                 const q = shuffledQuestions[index];
@@ -1301,6 +1517,7 @@
                     return;
                 }
                 failures = [];
+                card.classList.remove('quiz-finished');
                 hideSummary();
                 spoilerContainer.style.display = '';
                 shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
@@ -1323,11 +1540,12 @@
                     throw new Error('Invalid format. Expected an array or { language, questions: [...] }.');
                 }
 
-                const valid = arr.filter(q =>
-                    q && typeof q.question === 'string' &&
-                    (typeof q.answer === 'string' || Array.isArray(q.answer)) &&
-                    q.question.trim().length > 0
-                );
+                const valid = arr.filter(function(q) {
+                    return q &&
+                        typeof q.question === 'string' &&
+                        (typeof q.answer === 'string' || Array.isArray(q.answer)) &&
+                        q.question.trim().length > 0;
+                });
 
                 if (valid.length === 0) {
                     throw new Error('No valid questions found in this file.');
@@ -1335,6 +1553,7 @@
 
                 ALL_QUESTIONS = valid;
                 failures = [];
+                card.classList.remove('quiz-finished');
                 hideSummary();
                 spoilerContainer.style.display = '';
                 totalNum.textContent = ALL_QUESTIONS.length;
@@ -1346,20 +1565,52 @@
                 displayQuestion(0);
             }
 
-            // ─── FETCH JSON FILE ───────────────────────────────────
+            // ─── LOAD A QUIZ (from cache or fresh fetch) ───────────
+            function loadQuiz(filename) {
+                for (const cat in QUIZ_TREE) {
+                    if (QUIZ_TREE[cat].some(function(q) { return q.file === filename; })) {
+                        currentCategory = cat;
+                        break;
+                    }
+                }
+                currentFile = filename;
+
+                if (QUIZ_CACHE[filename] && QUIZ_CACHE[filename].data) {
+                    loadQuestionsFromData(QUIZ_CACHE[filename].data, filename);
+                } else {
+                    fetchJsonFile(filename);
+                }
+            }
+
+            // ─── FETCH JSON FILE (fresh, bypass cache) ─────────────
             function fetchJsonFile(filename) {
-                const url = JSON_DIR + filename;
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
 
-                fetch(url, { cache: 'no-store' })
+                fetch(JSON_DIR + filename, { cache: 'no-store' })
                     .then(function(res) {
-                        if (!res.ok) throw new Error(`HTTP ${res.status} for ${filename}`);
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
                         return res.json();
                     })
                     .then(function(data) {
+                        const title = (data && typeof data.title === 'string' && data.title.trim())
+                            ? data.title.trim()
+                            : filename.replace(/\.json$/i, '');
+
+                        QUIZ_CACHE[filename] = { data: data, title: title, error: null };
+
+                        for (const cat in QUIZ_TREE) {
+                            const entry = QUIZ_TREE[cat].find(function(q) {
+                                return q.file === filename;
+                            });
+                            if (entry) {
+                                entry.title = title;
+                                entry.error = null;
+                                break;
+                            }
+                        }
+
                         currentFile = filename;
-                        setActivePickerItem(filename);
                         loadQuestionsFromData(data, filename);
                     })
                     .catch(function(err) {
@@ -1370,38 +1621,65 @@
                     });
             }
 
-            // ─── LOAD MANIFEST ─────────────────────────────────────
-            function loadManifestAndFirstQuiz() {
-                setPickerLoading('Loading…');
+            // ─── LOAD MANIFEST + PRELOAD + FIRST QUIZ ──────────────
+            async function loadManifestAndFirstQuiz() {
+                QUIZ_CACHE = {};
+                QUIZ_TREE = {};
+                HAS_CATEGORIES = false;
+                currentFile = '';
+                currentCategory = '';
+                renderPickerLoading('Loading manifest…');
 
-                fetch(MANIFEST_URL, { cache: 'no-store' })
-                    .then(function(res) {
-                        if (!res.ok) throw new Error(`HTTP ${res.status} for manifest.json`);
-                        return res.json();
-                    })
-                    .then(function(manifest) {
-                        const entries = normalizeManifest(manifest);
-                        if (entries.length === 0) {
-                            throw new Error('manifest.json must contain a non-empty "files" array (or a "categories" object).');
-                        }
-                        populatePicker(entries);
-                        fetchJsonFile(entries[0].file);
-                    })
-                    .catch(function(err) {
-                        console.error(err);
-                        setPickerLoading('— no files —');
-                        showEmptyState('Could not read json/manifest.json');
-                        setFeedback('fa-exclamation-circle', 'Manifest error: ' + err.message + '<span class="detail">Run from a server (not file://) and make sure json/manifest.json exists.</span>', 'wrong');
+                try {
+                    const res = await fetch(MANIFEST_URL, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status + ' for manifest.json');
+                    const manifest = await res.json();
+
+                    const entries = normalizeManifest(manifest);
+                    if (entries.length === 0) {
+                        throw new Error('manifest.json must contain a non-empty "files" array.');
+                    }
+
+                    renderPickerLoading('Loading quizzes…');
+                    await preloadAllQuizzes(entries);
+
+                    buildQuizTree(entries);
+                    renderPickerInitial();
+
+                    const firstGood = entries.find(function(e) {
+                        return QUIZ_CACHE[e.file] && QUIZ_CACHE[e.file].data;
                     });
+
+                    if (firstGood) {
+                        currentFile = firstGood.file;
+                        loadQuestionsFromData(QUIZ_CACHE[firstGood.file].data, firstGood.file);
+                    } else {
+                        showEmptyState('No quizzes could be loaded');
+                        setFeedback('fa-exclamation-circle', 'All quiz files failed to load.', 'wrong');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    renderPickerLoading('— error —');
+                    showEmptyState('Could not read json/manifest.json');
+                    setFeedback(
+                        'fa-exclamation-circle',
+                        'Manifest error: ' + err.message +
+                        '<span class="detail">Run from a server (not file://) and make sure json/manifest.json exists.</span>',
+                        'wrong'
+                    );
+                }
             }
 
             // ─── EVENTS ────────────────────────────────────────────
             knowBtn.addEventListener('click', markKnown);
             dontKnowBtn.addEventListener('click', markUnknown);
             resetBtn.addEventListener('click', restartQuiz);
+            summaryRestartBtn.addEventListener('click', restartQuiz);
             spoilerToggle.addEventListener('click', toggleSpoiler);
 
             reloadBtn.addEventListener('click', function() {
+                cancelClose();
+                closePicker();
                 if (currentFile) {
                     fetchJsonFile(currentFile);
                 } else {
@@ -1410,7 +1688,7 @@
             });
 
             // ─── INIT ──────────────────────────────────────────────
-            card.classList.remove('font-vazir', 'font-jp');
+            card.classList.remove('font-vazir', 'font-jp', 'quiz-finished');
             showEmptyState('Loading quiz…');
             loadManifestAndFirstQuiz();
 
