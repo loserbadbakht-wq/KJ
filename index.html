@@ -208,7 +208,7 @@
             padding: 24px 24px 32px;
         }
 
-        /* ─── MAIN CARD ─── */
+        /* ─── MAIN CARD (hidden until fonts ready) ─── */
         .card {
             max-width: 720px;
             width: 100%;
@@ -218,6 +218,12 @@
             padding: 22px 26px 26px;
             box-shadow: var(--shadow);
             height: fit-content;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .card.fonts-ready {
+            opacity: 1;
+            pointer-events: auto;
             animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
         @keyframes fadeUp {
@@ -327,7 +333,6 @@
                         visibility 0s linear 0s;
         }
 
-        /* Individual columns */
         .quiz-picker-col {
             overflow-y: auto;
             max-height: 340px;
@@ -339,11 +344,7 @@
             background: var(--border-hover);
             border-radius: 20px;
         }
-        .quiz-picker-categories {
-            /* left column */
-        }
         .quiz-picker-quizzes {
-            /* right column – hidden until we have a category preview */
             border-left: 1px solid var(--border);
             padding-left: 6px;
             margin-left: 6px;
@@ -352,7 +353,6 @@
         .quiz-picker-quizzes.visible {
             display: block;
         }
-        /* When only quizzes are shown (no category UI) */
         .quiz-picker-quizzes.direct-mode {
             border-left: none;
             padding-left: 0;
@@ -802,7 +802,7 @@
         .failure-item {
             padding: 11px 14px;
             background: rgba(220, 38, 38, 0.06);
-            border-left: 3px solid var(--danger);
+            border-inline-start: 3px solid var(--danger);
             border-radius: var(--radius-sm);
             margin-bottom: 8px;
         }
@@ -815,7 +815,6 @@
             line-height: 1.5;
             white-space: pre-wrap;
             word-break: break-word;
-            dir: auto;
         }
         .failure-item .failure-a {
             font-size: 12.5px;
@@ -823,16 +822,16 @@
             line-height: 1.5;
             white-space: pre-wrap;
             word-break: break-word;
-            dir: auto;
         }
         .failure-item .failure-a .a-label {
-            display: block;          /* ← new: puts "Answer:" on its own line */
+            display: block;
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
             font-size: 10px;
-            margin-bottom: 4px;      /* ← was margin-right; now applies below the label */
+            margin-bottom: 4px;
+            text-align: inherit;
         }
         .failure-item .failure-a strong {
             color: #fecaca;
@@ -842,7 +841,7 @@
         .summary-all-good {
             padding: 14px 16px;
             background: rgba(34, 197, 94, 0.08);
-            border-left: 3px solid var(--success);
+            border-inline-start: 3px solid var(--success);
             border-radius: var(--radius-sm);
             color: #4ade80;
             font-size: 13.5px;
@@ -864,7 +863,6 @@
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 700px) {
-            /* Stack the two columns vertically on narrow screens */
             .quiz-picker-menu {
                 flex-direction: column;
                 max-height: 70vh;
@@ -1052,6 +1050,7 @@
             let spoilerVisible = false;
             let currentFile = '';
             let currentCategory = '';
+            let currentLanguage = '';
             let failures = [];
 
             let QUIZ_CACHE = {};
@@ -1101,6 +1100,59 @@
             function updateProgress() {
                 progressNum.textContent = Math.min(currentIndex + 1, shuffledQuestions.length);
                 totalNum.textContent = shuffledQuestions.length;
+            }
+
+            // ─── FONT LOADING ──────────────────────────────────────
+            function getFontSpecs(language) {
+                const lang = (language || '').toLowerCase().trim();
+                const specs = [
+                    '400 16px Inter',
+                    '700 16px Inter',
+                    '900 16px "Font Awesome 6 Free"'
+                ];
+                if (VAZIR_LANGS.indexOf(lang) !== -1) {
+                    specs.push('400 16px Vazir');
+                    specs.push('700 16px "Vazir Bold"');
+                }
+                if (JP_LANGS.indexOf(lang) !== -1) {
+                    specs.push('400 16px "BIZ UDPMincho"');
+                    specs.push('700 16px "BIZ UDPMincho Bold"');
+                }
+                return specs;
+            }
+
+            function fontsAlreadyLoaded(language) {
+                return getFontSpecs(language).every(function(spec) {
+                    return document.fonts.check(spec);
+                });
+            }
+
+            async function waitForFonts(language) {
+                const specs = getFontSpecs(language);
+                const timeout = new Promise(function(resolve) {
+                    setTimeout(resolve, 3000);
+                });
+                try {
+                    await Promise.race([
+                        Promise.all(specs.map(function(spec) {
+                            return document.fonts.load(spec).catch(function() {});
+                        })),
+                        timeout
+                    ]);
+                } catch (err) {
+                    console.warn('Font loading error:', err);
+                }
+            }
+
+            function ensureFontsAndReveal(language) {
+                if (fontsAlreadyLoaded(language)) {
+                    card.classList.add('fonts-ready');
+                    return;
+                }
+                card.classList.remove('fonts-ready');
+                waitForFonts(language).then(function() {
+                    card.classList.add('fonts-ready');
+                });
             }
 
             // ─── MANIFEST NORMALIZATION ────────────────────────────
@@ -1227,12 +1279,10 @@
                 }
 
                 if (!HAS_CATEGORIES || categories.length === 1) {
-                    // Single category → just show quizzes, no category column
                     categoriesCol.style.display = 'none';
                     quizzesCol.classList.add('visible', 'direct-mode');
                     renderQuizzesHTML(categories[0] ? QUIZ_TREE[categories[0]] : []);
                 } else {
-                    // Multiple categories → two columns side by side
                     categoriesCol.style.display = '';
                     quizzesCol.classList.add('visible');
                     quizzesCol.classList.remove('direct-mode');
@@ -1293,7 +1343,6 @@
             }
 
             // ─── PICKER EVENTS ─────────────────────────────────────
-            // Click a category → preview its quizzes in the right column
             categoriesCol.addEventListener('click', function(e) {
                 const catBtn = e.target.closest('.quiz-picker-cat');
                 if (!catBtn) return;
@@ -1302,14 +1351,12 @@
                 if (cat === activeCategoryPreview) return;
                 activeCategoryPreview = cat;
 
-                // Update active highlight without re-rendering the whole column
                 categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
                     el.classList.toggle('active', el.dataset.category === cat);
                 });
                 renderQuizzesHTML(QUIZ_TREE[cat] || []);
             });
 
-            // Hover a category → same preview (desktop only)
             if (canHover) {
                 categoriesCol.addEventListener('mouseover', function(e) {
                     const catBtn = e.target.closest('.quiz-picker-cat');
@@ -1325,7 +1372,6 @@
                 });
             }
 
-            // Click a quiz → load it and close picker
             quizzesCol.addEventListener('click', function(e) {
                 const quizBtn = e.target.closest('.quiz-picker-quiz');
                 if (!quizBtn) return;
@@ -1337,7 +1383,6 @@
                 }
             });
 
-            // Hover on the picker button area → open; leaving → schedule close
             if (canHover) {
                 quizPicker.addEventListener('mouseenter', function() {
                     cancelClose();
@@ -1348,13 +1393,11 @@
                 });
             }
 
-            // Click toggle
             quizPickerBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 togglePicker();
             });
 
-            // Click outside closes
             document.addEventListener('click', function(e) {
                 if (!quizPicker.contains(e.target)) {
                     cancelClose();
@@ -1362,7 +1405,6 @@
                 }
             });
 
-            // Escape closes
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     cancelClose();
@@ -1417,6 +1459,10 @@
                 const knowCount = total - failCount;
                 const pct = total > 0 ? Math.round((knowCount / total) * 100) : 0;
 
+                const lang = (currentLanguage || '').toLowerCase().trim();
+                const isRTL = VAZIR_LANGS.indexOf(lang) !== -1;
+                summaryFailuresContainer.dir = isRTL ? 'rtl' : 'ltr';
+
                 summaryStats.innerHTML =
                     'You knew <span class="stat-know">' + knowCount + '</span> of <strong>' + total + '</strong> ' +
                     '(' + pct + '%) &nbsp;·&nbsp; missed <span class="stat-miss">' + failCount + '</span>';
@@ -1432,7 +1478,7 @@
                         html +=
                             '<div class="failure-item">' +
                                 '<div class="failure-q">' + escapeHtml(f.question) + '</div>' +
-                                '<div class="failure-a"><span class="a-label">Answer:</span>' +
+                                '<div class="failure-a"><span class="a-label"><bdi>Answer:</bdi></span>' +
                                     '<strong>' + escapeHtml(f.answer) + '</strong></div>' +
                             '</div>';
                     });
@@ -1449,8 +1495,14 @@
             }
 
             // ─── EMPTY STATE ───────────────────────────────────────
-            function showEmptyState(message) {
+            function showEmptyState(message, reveal) {
                 card.classList.remove('quiz-finished');
+                if (reveal === true) {
+                    card.classList.add('fonts-ready');
+                } else {
+                    card.classList.remove('fonts-ready');
+                }
+                currentLanguage = '';
                 questionEl.textContent = message || 'Load a quiz file to begin';
                 progressNum.textContent = '0';
                 totalNum.textContent = '0';
@@ -1595,6 +1647,7 @@
                 }
 
                 ALL_QUESTIONS = valid;
+                currentLanguage = language;
                 failures = [];
                 card.classList.remove('quiz-finished');
                 hideSummary();
@@ -1606,6 +1659,8 @@
                 currentIndex = 0;
                 isComplete = false;
                 displayQuestion(0);
+
+                ensureFontsAndReveal(language);
             }
 
             // ─── LOAD A QUIZ (from cache or fresh fetch) ───────────
@@ -1659,7 +1714,7 @@
                     .catch(function(err) {
                         console.error(err);
                         card.classList.remove('font-vazir', 'font-jp');
-                        showEmptyState('Failed to load ' + filename);
+                        showEmptyState('Failed to load ' + filename, true);
                         setFeedback('fa-exclamation-circle', 'Could not load ' + filename + ': ' + err.message, 'wrong');
                     });
             }
@@ -1671,6 +1726,7 @@
                 HAS_CATEGORIES = false;
                 currentFile = '';
                 currentCategory = '';
+                currentLanguage = '';
                 activeCategoryPreview = '';
                 renderPickerLoading('Loading manifest…');
 
@@ -1698,13 +1754,13 @@
                         currentFile = firstGood.file;
                         loadQuestionsFromData(QUIZ_CACHE[firstGood.file].data, firstGood.file);
                     } else {
-                        showEmptyState('No quizzes could be loaded');
+                        showEmptyState('No quizzes could be loaded', true);
                         setFeedback('fa-exclamation-circle', 'All quiz files failed to load.', 'wrong');
                     }
                 } catch (err) {
                     console.error(err);
                     renderPickerLoading('— error —');
-                    showEmptyState('Could not read json/manifest.json');
+                    showEmptyState('Could not read json/manifest.json', true);
                     setFeedback(
                         'fa-exclamation-circle',
                         'Manifest error: ' + err.message +
@@ -1732,7 +1788,7 @@
             });
 
             // ─── INIT ──────────────────────────────────────────────
-            card.classList.remove('font-vazir', 'font-jp', 'quiz-finished');
+            card.classList.remove('font-vazir', 'font-jp', 'quiz-finished', 'fonts-ready');
             showEmptyState('Loading quiz…');
             loadManifestAndFirstQuiz();
 
