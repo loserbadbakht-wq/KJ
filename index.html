@@ -419,9 +419,9 @@
             font-weight: 700;
             line-height: 1.55;
             letter-spacing: -0.02em;
-            margin-bottom: 22px;
+            margin-bottom: 30px;          /* extra room for the button to lift */
             text-align: center;
-            white-space: pre-wrap;
+            white-space: pre-wrap;        /* multi-line questions supported */
             min-height: 3.2rem;
 
             background: linear-gradient(135deg, #a78bfa, #34d399);
@@ -451,16 +451,22 @@
             opacity: 0.4;
         }
 
-        /* ─── SPOILER ─── */
+        /* ═══════════════════════════════════════════════════════
+           SPOILER
+           – gap removed
+           – button lifts by a dynamic amount based on line count
+           – answer expands smoothly to its natural height
+           ═══════════════════════════════════════════════════════ */
         .spoiler-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 18px;
-            padding: 4px 0;
-            flex-wrap: wrap;
+            gap: 0;
+            margin: 0 0 4px 0;
+            padding: 0;
         }
+
         .spoiler-toggle {
             background: transparent;
             border: 1px solid var(--border);
@@ -470,9 +476,12 @@
             font-size: 12px;
             font-weight: 500;
             cursor: pointer;
-            transition: all var(--transition);
             font-family: inherit;
             white-space: nowrap;
+            transition: background 0.2s ease, border-color 0.2s ease,
+                        color 0.2s ease,
+                        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform;
         }
         .spoiler-toggle:hover:not(:disabled) {
             border-color: var(--primary);
@@ -483,6 +492,12 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
+
+        /* Dynamic lift — value comes from --spoiler-lift (set by JS) */
+        .spoiler-container.revealed .spoiler-toggle {
+            transform: translateY(var(--spoiler-lift, -6px));
+        }
+
         .spoiler-answer {
             font-family: var(--font);
             font-size: 14px;
@@ -492,36 +507,51 @@
             padding: 8px 16px;
             border-radius: var(--radius-sm);
             border: 1px solid rgba(0, 212, 255, 0.25);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            white-space: pre-wrap;
+            white-space: pre-wrap;         /* ← multi-line answers render as multiple lines */
             line-height: 1.55;
             max-width: 100%;
             word-break: break-word;
             dir: auto;
+            text-align: center;
+
+            /* Collapsed state */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-width: 0;
+            transition: max-height 0.4s ease,
+                        opacity 0.35s ease,
+                        margin-top 0.35s ease,
+                        padding 0.35s ease,
+                        border-width 0.35s ease;
         }
-        .spoiler-answer.visible {
+        .spoiler-container.revealed .spoiler-answer {
+            /* --answer-max-height is measured from scrollHeight by JS */
+            max-height: var(--answer-max-height, 800px);
             opacity: 1;
-            pointer-events: auto;
+            margin-top: 6px;
+            padding: 8px 16px;
+            border-width: 1px;
         }
 
         /* ─── FONT SWITCHING BY LANGUAGE ─── */
         .card.font-vazir .question,
-        .card.font-vazir .spoiler-answer,
-        .card.font-vazir .failure-item .failure-q,
-        .card.font-vazir .failure-item .failure-a {
+        .card.font-vazir .failure-item .failure-q {
             font-family: 'Vazir Bold', var(--font);
         }
+        .card.font-vazir .spoiler-answer,
         .card.font-vazir .failure-item .failure-a {
             font-family: 'Vazir', var(--font);
         }
 
         .card.font-jp .question,
-        .card.font-jp .spoiler-answer,
         .card.font-jp .failure-item .failure-q {
             font-family: 'BIZ UDPMincho Bold', var(--font);
         }
+        .card.font-jp .spoiler-answer,
         .card.font-jp .failure-item .failure-a {
             font-family: 'BIZ UDPMincho', var(--font);
         }
@@ -531,6 +561,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            margin-top: 8px;
         }
         .btn {
             flex: 1;
@@ -570,7 +601,6 @@
             transition: transform 0.25s ease;
         }
 
-        /* میدونم – outlined blue */
         .btn-know {
             color: var(--primary);
             border-color: rgba(0, 212, 255, 0.45);
@@ -585,7 +615,6 @@
             transform: scale(1.25);
         }
 
-        /* نمیدونم – outlined red */
         .btn-dontknow {
             color: var(--danger);
             border-color: rgba(239, 68, 68, 0.45);
@@ -600,7 +629,6 @@
             transform: rotate(90deg);
         }
 
-        /* Restart */
         .btn-reset {
             color: var(--text-secondary);
             flex: 0 0 auto;
@@ -686,18 +714,9 @@
             border-bottom: 1px solid var(--border);
             line-height: 1.6;
         }
-        .summary-stats strong {
-            color: var(--text);
-            font-weight: 600;
-        }
-        .summary-stats .stat-know {
-            color: #4ade80;
-            font-weight: 700;
-        }
-        .summary-stats .stat-miss {
-            color: #f87171;
-            font-weight: 700;
-        }
+        .summary-stats strong { color: var(--text); font-weight: 600; }
+        .summary-stats .stat-know { color: #4ade80; font-weight: 700; }
+        .summary-stats .stat-miss { color: #f87171; font-weight: 700; }
 
         .summary-failures-title {
             font-size: 11px;
@@ -719,16 +738,14 @@
             border-radius: var(--radius-sm);
             margin-bottom: 8px;
         }
-        .failure-item:last-child {
-            margin-bottom: 0;
-        }
+        .failure-item:last-child { margin-bottom: 0; }
         .failure-item .failure-q {
             font-size: 13.5px;
             font-weight: 500;
             color: var(--text);
             margin-bottom: 6px;
             line-height: 1.5;
-            white-space: pre-wrap;
+            white-space: pre-wrap;       /* multi-line questions */
             word-break: break-word;
             dir: auto;
         }
@@ -736,7 +753,7 @@
             font-size: 12.5px;
             color: #fca5a5;
             line-height: 1.5;
-            white-space: pre-wrap;
+            white-space: pre-wrap;       /* multi-line answers */
             word-break: break-word;
             dir: auto;
         }
@@ -770,13 +787,11 @@
             .header-logo i { font-size: 18px; }
             .app { padding: 14px 12px 20px; }
             .card { padding: 18px 16px 20px; }
-            .question { font-size: 1.5rem; }
+            .question { font-size: 1.5rem; margin-bottom: 26px; }
             .btn-row { flex-direction: column; }
             .btn { font-size: 14px; padding: 13px 16px; }
             .btn-reset { min-width: 100%; }
             .feedback { font-size: 13px; padding: 12px 14px; }
-            .spoiler-container { flex-direction: column; align-items: stretch; }
-            .spoiler-answer { text-align: center; }
             .quiz-picker-menu { min-width: 220px; max-width: 88vw; }
             .summary { padding: 16px 14px; }
             .summary-title { font-size: 15px; }
@@ -832,10 +847,10 @@
 
             <h1 id="question-heading" class="question" dir="auto">Loading…</h1>
 
-            <!-- Spoiler -->
+            <!-- Spoiler (answer is a block element so multi-line answers are proper) -->
             <div class="spoiler-container" id="spoilerContainer">
                 <button class="spoiler-toggle" id="spoilerToggle" type="button">Show answer</button>
-                <span class="spoiler-answer" id="spoilerAnswer"></span>
+                <div class="spoiler-answer" id="spoilerAnswer"></div>
             </div>
 
             <div class="btn-row">
@@ -915,9 +930,24 @@
             let autoAdvanceTimer = null;
             let spoilerVisible = false;
             let currentFile = '';
-            let failures = [];   // { question, answer }
+            let failures = [];
 
             // ─── HELPERS ───────────────────────────────────────────
+
+            // Turns any of these into a real multi-line string:
+            //   "line1\nline2"      (JSON \n escapes → real newlines)
+            //   "line1<br>line2"    (HTML br → newline)
+            //   ["line1", "line2"]  (array → joined with newlines)
+            function normalizeAnswer(answer) {
+                if (Array.isArray(answer)) {
+                    return answer.map(String).join('\n');
+                }
+                if (answer == null) return '';
+                let text = String(answer);
+                text = text.replace(/<br\s*\/?>/gi, '\n');
+                return text;
+            }
+
             function shuffleArray(arr) {
                 for (let i = arr.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1088,17 +1118,34 @@
 
             // ─── SPOILER ───────────────────────────────────────────
             function updateSpoiler(answer) {
-                spoilerAnswer.textContent = answer;
-                spoilerAnswer.classList.remove('visible');
+                const normalized = normalizeAnswer(answer);
+                spoilerAnswer.textContent = normalized;
+
+                // Reset the reveal state
+                spoilerContainer.classList.remove('revealed');
                 spoilerToggle.textContent = 'Show answer';
                 spoilerVisible = false;
+
+                // Count lines → compute lift amount
+                const lines = Math.max(1, normalized.split('\n').length);
+                const lift = -(6 + Math.min((lines - 1) * 5, 24));   // 1 line → -6px, 6+ lines → -30px
+                spoilerContainer.style.setProperty('--spoiler-lift', lift + 'px');
+
+                // Measure the natural height after layout has settled
+                requestAnimationFrame(function() {
+                    const h = spoilerAnswer.scrollHeight;
+                    // Small safety margin; minimum 200px in case layout isn't ready yet
+                    const maxH = Math.max(h + 40, 200);
+                    spoilerContainer.style.setProperty('--answer-max-height', maxH + 'px');
+                });
             }
+
             function toggleSpoiler() {
                 if (spoilerVisible) {
-                    spoilerAnswer.classList.remove('visible');
+                    spoilerContainer.classList.remove('revealed');
                     spoilerToggle.textContent = 'Show answer';
                 } else {
-                    spoilerAnswer.classList.add('visible');
+                    spoilerContainer.classList.add('revealed');
                     spoilerToggle.textContent = 'Hide answer';
                 }
                 spoilerVisible = !spoilerVisible;
@@ -1150,7 +1197,7 @@
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
                 spoilerToggle.disabled = true;
-                spoilerAnswer.classList.remove('visible');
+                spoilerContainer.classList.remove('revealed');
                 spoilerToggle.textContent = 'Show answer';
                 spoilerVisible = false;
                 spoilerContainer.style.display = '';
@@ -1166,13 +1213,12 @@
                 }
 
                 if (index >= shuffledQuestions.length) {
-                    // End of quiz
                     isComplete = true;
                     questionEl.innerHTML = '<i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> You finished the quiz!';
                     knowBtn.disabled = true;
                     dontKnowBtn.disabled = true;
                     spoilerToggle.disabled = true;
-                    spoilerAnswer.classList.remove('visible');
+                    spoilerContainer.classList.remove('revealed');
                     spoilerToggle.textContent = 'Show answer';
                     spoilerVisible = false;
                     spoilerContainer.style.display = 'none';
@@ -1182,11 +1228,10 @@
                     return;
                 }
 
-                // Regular question
                 hideSummary();
                 spoilerContainer.style.display = '';
                 const q = shuffledQuestions[index];
-                questionEl.textContent = q.question;
+                questionEl.textContent = normalizeAnswer(q.question);
                 updateSpoiler(q.answer);
 
                 knowBtn.disabled = false;
@@ -1231,8 +1276,8 @@
 
                 const current = shuffledQuestions[currentIndex];
                 failures.push({
-                    question: current.question,
-                    answer: current.answer
+                    question: normalizeAnswer(current.question),
+                    answer:   normalizeAnswer(current.answer)
                 });
 
                 setFeedback('fa-times-circle', 'Recorded as not known. Moving on…', 'wrong');
@@ -1280,7 +1325,7 @@
 
                 const valid = arr.filter(q =>
                     q && typeof q.question === 'string' &&
-                    typeof q.answer === 'string' &&
+                    (typeof q.answer === 'string' || Array.isArray(q.answer)) &&
                     q.question.trim().length > 0
                 );
 
