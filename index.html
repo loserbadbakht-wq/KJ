@@ -86,6 +86,9 @@
         .fa-list-ul::before       { content: "\f0ca"; }
         .fa-trophy::before        { content: "\f091"; }
         .fa-chevron-right::before { content: "\f054"; }
+        .fa-dumbbell::before      { content: "\f44b"; }
+        .fa-circle::before        { content: "\f111"; }
+        .fa-arrow-left::before    { content: "\f060"; }
 
         /* ─── ROOT ─── */
         :root {
@@ -194,10 +197,14 @@
             justify-content: center;
             transition: all var(--transition);
         }
-        .header-actions .btn-icon:hover {
+        .header-actions .btn-icon:hover:not(:disabled) {
             background: var(--bg-hover);
             border-color: var(--border-hover);
             color: var(--text);
+        }
+        .header-actions .btn-icon:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
         }
 
         /* ─── APP LAYOUT ─── */
@@ -206,6 +213,13 @@
             display: flex;
             justify-content: center;
             padding: 24px 24px 32px;
+        }
+        .app.view-enter {
+            animation: viewFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes viewFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         /* ─── MAIN CARD (hidden until fonts ready) ─── */
@@ -251,7 +265,7 @@
             border-bottom: 1px solid var(--border);
         }
 
-        /* ─── CIRCULAR QUIZ PICKER (button animation unchanged) ─── */
+        /* ─── CIRCULAR QUIZ PICKER ─── */
         .quiz-picker {
             position: relative;
             display: inline-flex;
@@ -275,9 +289,7 @@
             transition: background 0.2s ease, border-color 0.2s ease,
                         color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
         }
-        .quiz-picker-btn .fa-solid {
-            transition: transform 0.25s ease;
-        }
+        .quiz-picker-btn .fa-solid { transition: transform 0.25s ease; }
         .quiz-picker-btn:hover:not(:disabled) {
             background: var(--bg-hover);
             border-color: var(--primary);
@@ -288,9 +300,7 @@
         .quiz-picker-btn:hover:not(:disabled) .fa-solid {
             transform: rotate(-12deg);
         }
-        .quiz-picker-btn:active:not(:disabled) {
-            transform: scale(0.97);
-        }
+        .quiz-picker-btn:active:not(:disabled) { transform: scale(0.97); }
         .quiz-picker-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
@@ -302,9 +312,7 @@
             box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
         }
 
-        /* ═══════════════════════════════════════════════════════
-           MENU — block container, quiz panel floats to the right
-           ═══════════════════════════════════════════════════════ */
+        /* ─── MENU (quiz picker) ─── */
         .quiz-picker-menu {
             position: absolute;
             top: calc(100% + 10px);
@@ -344,7 +352,6 @@
             border-radius: 20px;
         }
 
-        /* Floating quiz panel — positioned to the RIGHT of the active category item */
         .quiz-picker-quizzes {
             position: absolute;
             left: calc(100% + 6px);
@@ -368,7 +375,6 @@
             visibility: visible;
             transition: opacity 0.15s ease, visibility 0s linear 0s;
         }
-        /* Direct mode (single category): inline, no floating panel */
         .quiz-picker-quizzes.direct-mode {
             position: static;
             left: auto;
@@ -386,7 +392,7 @@
             transition: none;
         }
 
-        /* ─── COMMON PICKER ITEM ─── */
+        /* ─── PICKER ITEM ─── */
         .quiz-picker-item {
             display: flex;
             align-items: center;
@@ -406,8 +412,6 @@
             direction: ltr;
             overflow: hidden;
         }
-
-        /* Category item */
         .quiz-picker-cat .quiz-cat {
             font-size: 11px;
             font-weight: 700;
@@ -463,8 +467,6 @@
         .quiz-picker-cat.active .quiz-cat-arrow {
             color: var(--primary);
         }
-
-        /* Quiz item */
         .quiz-picker-quiz .quiz-title {
             flex: 1;
             overflow: hidden;
@@ -491,8 +493,6 @@
             color: var(--danger);
             opacity: 0.8;
         }
-
-        /* Disabled / loading */
         .quiz-picker-item.disabled {
             color: var(--text-muted);
             cursor: default;
@@ -519,7 +519,7 @@
             font-weight: 700;
         }
 
-        /* ─── QUESTION (animated gradient – unchanged) ─── */
+        /* ─── QUESTION (animated gradient) ─── */
         .question {
             font-family: var(--font);
             font-size: 2rem;
@@ -530,14 +530,12 @@
             text-align: center;
             white-space: pre-wrap;
             min-height: 3.2rem;
-
             background: linear-gradient(135deg, #a78bfa, #34d399);
             background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: gradShift 5s ease-in-out infinite alternate;
-
             dir: auto;
         }
         @keyframes gradShift {
@@ -568,7 +566,6 @@
             margin: 0 0 4px 0;
             padding: 0;
         }
-
         .spoiler-toggle {
             background: transparent;
             border: 1px solid var(--border);
@@ -597,7 +594,6 @@
         .spoiler-container.revealed .spoiler-toggle {
             transform: translateY(var(--spoiler-lift, -6px));
         }
-
         .spoiler-answer {
             font-family: var(--font);
             font-size: 14px;
@@ -636,20 +632,23 @@
 
         /* ─── FONT SWITCHING BY LANGUAGE ─── */
         .card.font-vazir .question,
-        .card.font-vazir .failure-item .failure-q {
+        .card.font-vazir .failure-item .failure-q,
+        .card.font-vazir .stats-item .stats-q {
             font-family: 'Vazir Bold', var(--font);
         }
         .card.font-vazir .spoiler-answer,
-        .card.font-vazir .failure-item .failure-a {
+        .card.font-vazir .failure-item .failure-a,
+        .card.font-vazir .stats-item .stats-a {
             font-family: 'Vazir', var(--font);
         }
-
         .card.font-jp .question,
-        .card.font-jp .failure-item .failure-q {
+        .card.font-jp .failure-item .failure-q,
+        .card.font-jp .stats-item .stats-q {
             font-family: 'BIZ UDPMincho Bold', var(--font);
         }
         .card.font-jp .spoiler-answer,
-        .card.font-jp .failure-item .failure-a {
+        .card.font-jp .failure-item .failure-a,
+        .card.font-jp .stats-item .stats-a {
             font-family: 'BIZ UDPMincho', var(--font);
         }
 
@@ -695,7 +694,6 @@
             font-size: 0.9em;
             transition: transform 0.25s ease;
         }
-
         .btn-know {
             color: var(--primary);
             border-color: rgba(0, 212, 255, 0.45);
@@ -706,10 +704,7 @@
             border-color: var(--primary);
             color: var(--primary-hover);
         }
-        .btn-know:hover:not(:disabled) .fa-check {
-            transform: scale(1.25);
-        }
-
+        .btn-know:hover:not(:disabled) .fa-check { transform: scale(1.25); }
         .btn-dontknow {
             color: var(--danger);
             border-color: rgba(239, 68, 68, 0.45);
@@ -720,10 +715,7 @@
             border-color: var(--danger);
             color: #fca5a5;
         }
-        .btn-dontknow:hover:not(:disabled) .fa-times {
-            transform: rotate(90deg);
-        }
-
+        .btn-dontknow:hover:not(:disabled) .fa-times { transform: rotate(90deg); }
         .btn-reset {
             color: var(--text-secondary);
             flex: 0 0 auto;
@@ -736,9 +728,7 @@
             border-color: var(--border-hover);
             color: var(--text);
         }
-        .btn-reset:hover:not(:disabled) .fa-undo {
-            transform: rotate(-180deg);
-        }
+        .btn-reset:hover:not(:disabled) .fa-undo { transform: rotate(-180deg); }
 
         /* ─── FEEDBACK ─── */
         .feedback {
@@ -800,7 +790,6 @@
             letter-spacing: -0.01em;
         }
         .summary-title .fa-solid { font-size: 1rem; }
-
         .summary-stats {
             font-size: 13px;
             color: var(--text-secondary);
@@ -812,7 +801,6 @@
         .summary-stats strong { color: var(--text); font-weight: 600; }
         .summary-stats .stat-know { color: #4ade80; font-weight: 700; }
         .summary-stats .stat-miss { color: #f87171; font-weight: 700; }
-
         .summary-failures-title {
             font-size: 11px;
             font-weight: 700;
@@ -825,7 +813,6 @@
             gap: 8px;
         }
         .summary-failures-title .fa-solid { font-size: 0.85em; }
-
         .failure-item {
             padding: 11px 14px;
             background: rgba(220, 38, 38, 0.06);
@@ -864,7 +851,6 @@
             color: #fecaca;
             font-weight: 600;
         }
-
         .summary-all-good {
             padding: 14px 16px;
             background: rgba(34, 197, 94, 0.08);
@@ -874,7 +860,6 @@
             font-size: 13.5px;
             font-weight: 500;
         }
-
         .summary-actions {
             display: flex;
             gap: 10px;
@@ -886,6 +871,164 @@
         .summary-actions .btn {
             flex: 1;
             min-width: 120px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           STATS VIEW
+           ═══════════════════════════════════════════════════════ */
+        .stats-card {
+            padding: 22px 26px 26px;
+        }
+        .stats-top-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .btn-back:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+        .btn-back:hover .fa-arrow-left {
+            transform: translateX(-2px);
+        }
+        .btn-back .fa-solid {
+            transition: transform 0.2s ease;
+        }
+
+        .quiz-picker-readonly .quiz-picker-btn {
+            opacity: 0.75;
+            cursor: default;
+        }
+        .quiz-picker-readonly .quiz-picker-btn:hover {
+            transform: none;
+            box-shadow: none;
+            background: var(--bg-input);
+            border-color: var(--border);
+            color: var(--primary);
+        }
+
+        .stats-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+        .stats-title .fa-solid { font-size: 1rem; }
+
+        .stats-overview {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.6;
+        }
+        .stats-overview .ov-correct { color: #4ade80; font-weight: 700; }
+        .stats-overview .ov-wrong   { color: #f87171; font-weight: 700; }
+        .stats-overview .ov-neutral { color: var(--text-muted); font-weight: 700; }
+
+        .stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stats-item {
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            border-inline-start: 3px solid var(--border);
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+        .stats-item .stats-status-badge {
+            position: absolute;
+            top: 12px;
+            inset-inline-end: 14px;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+        .stats-item .stats-q {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 6px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding-right: 24px;
+        }
+        .stats-item .stats-a {
+            font-size: 12.5px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .stats-item .stats-a .a-label {
+            display: block;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 10px;
+            margin-bottom: 4px;
+            text-align: inherit;
+        }
+
+        .stats-item.correct {
+            background: rgba(34, 197, 94, 0.06);
+            border-inline-start-color: var(--success);
+        }
+        .stats-item.correct .stats-a { color: #4ade80; }
+        .stats-item.correct .stats-a strong { color: #6ee7b7; }
+        .stats-item.correct .stats-status-badge { color: var(--success); }
+
+        .stats-item.wrong {
+            background: rgba(220, 38, 38, 0.06);
+            border-inline-start-color: var(--danger);
+        }
+        .stats-item.wrong .stats-a { color: #fca5a5; }
+        .stats-item.wrong .stats-a strong { color: #fecaca; }
+        .stats-item.wrong .stats-status-badge { color: var(--danger); }
+
+        .stats-item.unanswered {
+            background: rgba(255, 255, 255, 0.02);
+            border-inline-start-color: var(--border-hover);
+        }
+        .stats-item.unanswered .stats-a { color: var(--text-secondary); }
+        .stats-item.unanswered .stats-a strong { color: var(--text-secondary); }
+        .stats-item.unanswered .stats-status-badge { color: var(--text-muted); }
+
+        .stats-empty {
+            padding: 24px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13.5px;
+            line-height: 1.6;
         }
 
         /* ─── RESPONSIVE ─── */
@@ -902,7 +1045,6 @@
                 min-width: 0;
                 width: 100%;
             }
-            /* Mobile: quiz panel drops below the categories instead of floating */
             .quiz-picker-quizzes {
                 position: static;
                 left: auto;
@@ -920,9 +1062,7 @@
                 opacity: 1;
                 visibility: visible;
             }
-            .quiz-picker-quizzes.visible {
-                display: block;
-            }
+            .quiz-picker-quizzes.visible { display: block; }
             .quiz-picker-quizzes.direct-mode {
                 display: block;
                 border-top: none;
@@ -937,6 +1077,7 @@
             .header-logo i { font-size: 18px; }
             .app { padding: 14px 12px 20px; }
             .card { padding: 18px 16px 20px; }
+            .stats-card { padding: 18px 16px 20px; }
             .question { font-size: 1.5rem; margin-bottom: 26px; }
             .btn-row { flex-direction: column; }
             .btn { font-size: 14px; padding: 13px 16px; }
@@ -946,6 +1087,7 @@
             .summary-title { font-size: 15px; }
             .summary-actions { flex-direction: column; }
             .summary-actions .btn { min-width: 100%; }
+            .stats-title { font-size: 16px; }
         }
         @media (max-width: 380px) {
             .question { font-size: 1.25rem; }
@@ -964,13 +1106,19 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="btn-icon" id="statsBtn" type="button" title="View stats" disabled>
+                <i class="fa-solid fa-dumbbell"></i>
+            </button>
             <button class="btn-icon" id="reloadBtn" type="button" title="Reload current quiz">
                 <i class="fas fa-sync-alt"></i>
             </button>
         </div>
     </header>
 
-    <div class="app">
+    <!-- ══════════════════════════════════════════ -->
+    <!-- QUIZ VIEW                                -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="app" id="quizApp">
         <main class="card" id="quizCard" role="main" aria-labelledby="question-heading">
 
             <div class="load-bar">
@@ -1050,6 +1198,42 @@
         </main>
     </div>
 
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STATS VIEW                               -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="app hidden" id="statsApp">
+        <main class="card stats-card" role="main" aria-labelledby="stats-heading">
+
+            <div class="stats-top-bar">
+                <button class="btn-back" id="statsBackBtn" type="button">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    Back to Quiz
+                </button>
+                <div class="quiz-picker quiz-picker-readonly" id="statsQuizPicker">
+                    <button
+                        class="quiz-picker-btn"
+                        id="statsQuizPickerBtn"
+                        type="button"
+                        aria-label="Current quiz"
+                        disabled
+                    >
+                        <i class="fa-solid fa-book" aria-hidden="true"></i>
+                    </button>
+                    <div class="quiz-picker-menu" id="statsQuizPickerMenu" role="menu" aria-label="Current quiz"></div>
+                </div>
+            </div>
+
+            <h2 class="stats-title" id="stats-heading">
+                <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
+                Your Progress
+            </h2>
+
+            <div class="stats-overview" id="statsOverview"></div>
+            <div class="stats-list" id="statsList"></div>
+
+        </main>
+    </div>
+
     <script>
         (function() {
             'use strict';
@@ -1059,6 +1243,8 @@
             const JSON_DIR = 'json/';
             const VAZIR_LANGS = ['fa', 'ar', 'he', 'ur', 'ps'];
             const JP_LANGS = ['jp', 'ja'];
+            const STATS_COOKIE_PREFIX = 'qstats_';
+            const STATS_COOKIE_DAYS = 365;
 
             // ─── DOM REFS ──────────────────────────────────────────
             const card           = document.getElementById('quizCard');
@@ -1082,6 +1268,15 @@
             const summaryStats   = document.getElementById('summaryStats');
             const summaryFailuresContainer = document.getElementById('summaryFailuresContainer');
             const summaryRestartBtn = document.getElementById('summaryRestartBtn');
+            const statsBtn       = document.getElementById('statsBtn');
+            const quizApp        = document.getElementById('quizApp');
+            const statsApp       = document.getElementById('statsApp');
+            const statsBackBtn   = document.getElementById('statsBackBtn');
+            const statsQuizPicker= document.getElementById('statsQuizPicker');
+            const statsQuizPickerBtn = document.getElementById('statsQuizPickerBtn');
+            const statsQuizPickerMenu = document.getElementById('statsQuizPickerMenu');
+            const statsOverview  = document.getElementById('statsOverview');
+            const statsList      = document.getElementById('statsList');
 
             // ─── STATE ─────────────────────────────────────────────
             let ALL_QUESTIONS = [];
@@ -1093,7 +1288,9 @@
             let currentFile = '';
             let currentCategory = '';
             let currentLanguage = '';
+            let currentQuizTitle = '';
             let failures = [];
+            let currentStats = {};   // { hash: 'c' | 'w' }
 
             let QUIZ_CACHE = {};
             let QUIZ_TREE  = {};
@@ -1142,6 +1339,77 @@
             function updateProgress() {
                 progressNum.textContent = Math.min(currentIndex + 1, shuffledQuestions.length);
                 totalNum.textContent = shuffledQuestions.length;
+            }
+
+            // ─── HASH / COOKIES ────────────────────────────────────
+            function hashString(str) {
+                let hash = 5381;
+                const s = String(str || '');
+                for (let i = 0; i < s.length; i++) {
+                    hash = ((hash << 5) + hash) + s.charCodeAt(i);
+                    hash = hash & hash;
+                }
+                return (hash >>> 0).toString(36);
+            }
+
+            function statsCookieKey(filename) {
+                return STATS_COOKIE_PREFIX + hashString(filename);
+            }
+
+            function readCookie(name) {
+                const eq = name + '=';
+                const parts = document.cookie.split(';');
+                for (let i = 0; i < parts.length; i++) {
+                    let c = parts[i].trim();
+                    if (c.indexOf(eq) === 0) {
+                        return decodeURIComponent(c.substring(eq.length));
+                    }
+                }
+                return null;
+            }
+
+            function writeCookie(name, value) {
+                const expires = new Date();
+                expires.setDate(expires.getDate() + STATS_COOKIE_DAYS);
+                document.cookie = name + '=' + encodeURIComponent(value) +
+                    '; expires=' + expires.toUTCString() +
+                    '; path=/; SameSite=Lax';
+            }
+
+            function loadStats(filename) {
+                const key = statsCookieKey(filename);
+                const raw = readCookie(key);
+                if (!raw) return {};
+                try {
+                    const parsed = JSON.parse(raw);
+                    return (parsed && typeof parsed === 'object') ? parsed : {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function saveStats(filename, stats) {
+                const key = statsCookieKey(filename);
+                try {
+                    writeCookie(key, JSON.stringify(stats));
+                } catch (e) {
+                    console.warn('Could not save stats cookie:', e);
+                }
+            }
+
+            function recordStat(questionText, status) {
+                if (!currentFile) return;
+                const h = hashString(questionText);
+                currentStats[h] = status;   // 'c' or 'w' — overwrites previous value
+                saveStats(currentFile, currentStats);
+            }
+
+            function getQuestionStatus(questionText) {
+                const h = hashString(questionText);
+                const s = currentStats[h];
+                if (s === 'c') return 'correct';
+                if (s === 'w') return 'wrong';
+                return 'unanswered';
             }
 
             // ─── FONT LOADING ──────────────────────────────────────
@@ -1271,7 +1539,7 @@
                 });
             }
 
-            // ─── QUIZ PICKER ───────────────────────────────────────
+            // ─── QUIZ PICKER (quiz view) ───────────────────────────
             const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
             function openPicker() {
@@ -1284,7 +1552,7 @@
             function closePicker() {
                 quizPicker.classList.remove('open');
                 quizPickerBtn.setAttribute('aria-expanded', 'false');
-                quizzesCol.classList.remove('visible');   // hide quiz panel on close
+                quizzesCol.classList.remove('visible');
             }
             function togglePicker() {
                 quizPicker.classList.contains('open') ? closePicker() : openPicker();
@@ -1302,8 +1570,6 @@
                     hoverCloseTimer = null;
                 }
             }
-
-            // Align the floating quiz panel vertically with the hovered category item
             function positionQuizColumn(catBtn) {
                 if (!catBtn) return;
                 const catRect  = catBtn.getBoundingClientRect();
@@ -1313,7 +1579,6 @@
                 quizzesCol.style.top = offsetTop + 'px';
             }
 
-            // ─── PICKER RENDERING ──────────────────────────────────
             function renderPickerLoading(message) {
                 categoriesCol.innerHTML = '<div class="quiz-picker-item disabled">' + (message || 'Loading…') + '</div>';
                 quizzesCol.innerHTML = '';
@@ -1336,7 +1601,6 @@
                     quizzesCol.classList.add('visible', 'direct-mode');
                     renderQuizzesHTML(categories[0] ? QUIZ_TREE[categories[0]] : []);
                 } else {
-                    // Show categories only — the quiz panel stays hidden until the user hovers/clicks one
                     categoriesCol.style.display = '';
                     quizzesCol.classList.remove('visible', 'direct-mode');
                     activeCategoryPreview = '';
@@ -1350,7 +1614,6 @@
                 const categories = Object.keys(QUIZ_TREE).sort(function(a, b) {
                     return a.localeCompare(b);
                 });
-
                 let html = '';
                 categories.forEach(function(cat) {
                     const quizzes = QUIZ_TREE[cat];
@@ -1364,7 +1627,6 @@
                             '<i class="fa-solid fa-chevron-right quiz-cat-arrow" aria-hidden="true"></i>' +
                         '</button>';
                 });
-
                 categoriesCol.innerHTML = html;
             }
 
@@ -1389,7 +1651,6 @@
                 quizzesCol.innerHTML = html;
             }
 
-            // ─── PICKER EVENTS ─────────────────────────────────────
             categoriesCol.addEventListener('click', function(e) {
                 const catBtn = e.target.closest('.quiz-picker-cat');
                 if (!catBtn) return;
@@ -1423,7 +1684,6 @@
                 });
             }
 
-            // Keep the quiz panel aligned when the category list scrolls
             categoriesCol.addEventListener('scroll', function() {
                 const activeCat = categoriesCol.querySelector('.quiz-picker-cat.active');
                 if (activeCat) positionQuizColumn(activeCat);
@@ -1460,14 +1720,58 @@
                     cancelClose();
                     closePicker();
                 }
+                if (!statsQuizPicker.contains(e.target)) {
+                    statsQuizPicker.classList.remove('open');
+                }
             });
 
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     cancelClose();
                     closePicker();
+                    statsQuizPicker.classList.remove('open');
                 }
             });
+
+            // ─── STATS VIEW PICKER (read-only) ─────────────────────
+            statsQuizPickerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!currentFile) return;
+                statsQuizPicker.classList.toggle('open');
+            });
+
+            statsQuizPickerMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+                statsQuizPicker.classList.remove('open');
+            });
+
+            function renderStatsPicker() {
+                if (!currentFile) {
+                    statsQuizPickerBtn.disabled = true;
+                    statsQuizPickerMenu.innerHTML = '';
+                    return;
+                }
+                statsQuizPickerBtn.disabled = false;
+
+                const title = currentQuizTitle || currentFile.replace(/\.json$/i, '');
+                const cat = currentCategory || '';
+
+                let html = '';
+                if (cat) {
+                    html +=
+                        '<button type="button" class="quiz-picker-item quiz-picker-cat active" ' +
+                        'data-category="' + escapeHtml(cat) + '" disabled style="cursor:default;opacity:0.9;">' +
+                            '<span class="quiz-cat">' + escapeHtml(cat) + '</span>' +
+                        '</button>';
+                }
+                html +=
+                    '<button type="button" class="quiz-picker-item quiz-picker-quiz active" ' +
+                    'data-file="' + escapeHtml(currentFile) + '" ' +
+                    'title="' + escapeHtml(currentFile) + '" disabled style="cursor:default;opacity:1;">' +
+                        '<span class="quiz-title">' + escapeHtml(title) + '</span>' +
+                    '</button>';
+                statsQuizPickerMenu.innerHTML = html;
+            }
 
             // ─── LANGUAGE / FONT ───────────────────────────────────
             function applyLanguageFont(language) {
@@ -1476,13 +1780,17 @@
                 const useJP    = JP_LANGS.indexOf(lang) !== -1;
                 card.classList.toggle('font-vazir', useVazir);
                 card.classList.toggle('font-jp', useJP);
+                const statsCard = statsApp.querySelector('.stats-card');
+                if (statsCard) {
+                    statsCard.classList.toggle('font-vazir', useVazir);
+                    statsCard.classList.toggle('font-jp', useJP);
+                }
             }
 
             // ─── SPOILER ───────────────────────────────────────────
             function updateSpoiler(answer) {
                 const normalized = normalizeAnswer(answer);
                 spoilerAnswer.textContent = normalized;
-
                 spoilerContainer.classList.remove('revealed');
                 spoilerToggle.textContent = 'Show answer';
                 spoilerVisible = false;
@@ -1509,7 +1817,7 @@
                 spoilerVisible = !spoilerVisible;
             }
 
-            // ─── SUMMARY ───────────────────────────────────────────
+            // ─── SUMMARY (end of quiz) ─────────────────────────────
             function showSummary() {
                 const total = shuffledQuestions.length;
                 const failCount = failures.length;
@@ -1551,6 +1859,93 @@
                 summaryFailuresContainer.innerHTML = '';
             }
 
+            // ─── STATS VIEW ────────────────────────────────────────
+            function renderStatsView() {
+                if (!ALL_QUESTIONS.length) {
+                    statsOverview.innerHTML = '';
+                    statsList.innerHTML = '<div class="stats-empty">No quiz loaded. Return to the quiz to load one.</div>';
+                    return;
+                }
+
+                const lang = (currentLanguage || '').toLowerCase().trim();
+                const isRTL = VAZIR_LANGS.indexOf(lang) !== -1;
+                statsList.dir = isRTL ? 'rtl' : 'ltr';
+
+                let correctCount = 0;
+                let wrongCount = 0;
+                let unansweredCount = 0;
+
+                const items = ALL_QUESTIONS.map(function(q) {
+                    const status = getQuestionStatus(q.question);
+                    if (status === 'correct') correctCount++;
+                    else if (status === 'wrong') wrongCount++;
+                    else unansweredCount++;
+                    return {
+                        question: normalizeAnswer(q.question),
+                        answer: normalizeAnswer(q.answer),
+                        status: status
+                    };
+                });
+
+                const total = items.length;
+                const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+                statsOverview.innerHTML =
+                    '<span class="ov-correct">' + correctCount + '</span> correct &nbsp;·&nbsp; ' +
+                    '<span class="ov-wrong">' + wrongCount + '</span> wrong &nbsp;·&nbsp; ' +
+                    '<span class="ov-neutral">' + unansweredCount + '</span> not answered' +
+                    ' &nbsp;·&nbsp; ' + pct + '% correct';
+
+                if (items.length === 0) {
+                    statsList.innerHTML = '<div class="stats-empty">No questions in this quiz.</div>';
+                    return;
+                }
+
+                let html = '';
+                items.forEach(function(item) {
+                    let badgeIcon = 'fa-circle';
+                    let badgeTitle = 'Not answered';
+                    if (item.status === 'correct') {
+                        badgeIcon = 'fa-check-circle';
+                        badgeTitle = 'Correct';
+                    } else if (item.status === 'wrong') {
+                        badgeIcon = 'fa-times-circle';
+                        badgeTitle = 'Wrong';
+                    }
+
+                    html +=
+                        '<div class="stats-item ' + item.status + '">' +
+                            '<i class="stats-status-badge fa-solid ' + badgeIcon + '" title="' + badgeTitle + '" aria-label="' + badgeTitle + '"></i>' +
+                            '<div class="stats-q">' + escapeHtml(item.question) + '</div>' +
+                            '<div class="stats-a"><span class="a-label"><bdi>Answer:</bdi></span>' +
+                                '<strong>' + escapeHtml(item.answer) + '</strong></div>' +
+                        '</div>';
+                });
+                statsList.innerHTML = html;
+            }
+
+            function openStatsView() {
+                if (!currentFile) return;
+                quizApp.classList.add('hidden');
+                statsApp.classList.remove('hidden');
+                statsApp.classList.add('view-enter');
+                setTimeout(function() {
+                    statsApp.classList.remove('view-enter');
+                }, 350);
+                renderStatsPicker();
+                renderStatsView();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function closeStatsView() {
+                statsApp.classList.add('hidden');
+                quizApp.classList.remove('hidden');
+                quizApp.classList.add('view-enter');
+                setTimeout(function() {
+                    quizApp.classList.remove('view-enter');
+                }, 350);
+            }
+
             // ─── EMPTY STATE ───────────────────────────────────────
             function showEmptyState(message, reveal) {
                 card.classList.remove('quiz-finished');
@@ -1572,6 +1967,7 @@
                 spoilerContainer.style.display = '';
                 hideSummary();
                 setFeedback('fa-folder-open', 'No quiz loaded.', null);
+                statsBtn.disabled = true;
             }
 
             // ─── DISPLAY QUESTION ──────────────────────────────────
@@ -1624,6 +2020,9 @@
                 if (isComplete) return;
                 if (currentIndex >= shuffledQuestions.length) return;
 
+                const current = shuffledQuestions[currentIndex];
+                recordStat(current.question, 'c');   // live cookie update
+
                 setFeedback('fa-check-circle', 'Marked as known. Moving on…', 'correct');
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
@@ -1643,6 +2042,8 @@
                 if (currentIndex >= shuffledQuestions.length) return;
 
                 const current = shuffledQuestions[currentIndex];
+                recordStat(current.question, 'w');   // live cookie update
+
                 failures.push({
                     question: normalizeAnswer(current.question),
                     answer:   normalizeAnswer(current.answer)
@@ -1658,7 +2059,7 @@
                 }, 400);
             }
 
-            // ─── RESTART ───────────────────────────────────────────
+            // ─── RESTART (cookie preserved) ────────────────────────
             function restartQuiz() {
                 if (autoAdvanceTimer) {
                     clearTimeout(autoAdvanceTimer);
@@ -1668,6 +2069,16 @@
                     showEmptyState();
                     return;
                 }
+
+                // NOTE: cookie is intentionally NOT cleared here.
+                // Stats persist across restarts — only the in-session
+                // "failures" summary is reset.
+
+                // Reload stats from cookie to guarantee memory ↔ cookie consistency
+                if (currentFile) {
+                    currentStats = loadStats(currentFile);
+                }
+
                 failures = [];
                 card.classList.remove('quiz-finished');
                 hideSummary();
@@ -1678,7 +2089,7 @@
                 displayQuestion(0);
             }
 
-            // ─── LOAD QUESTIONS FROM DATA ──────────────────────────
+            // ─── LOAD QUESTIONS ────────────────────────────────────
             function loadQuestionsFromData(data, sourceName) {
                 let arr = [];
                 let language = '';
@@ -1712,15 +2123,20 @@
                 totalNum.textContent = ALL_QUESTIONS.length;
                 applyLanguageFont(language);
 
+                // Load stats for this file (per-quiz cookie key)
+                currentStats = loadStats(sourceName);
+
                 shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
                 currentIndex = 0;
                 isComplete = false;
                 displayQuestion(0);
 
                 ensureFontsAndReveal(language);
+
+                statsBtn.disabled = false;
             }
 
-            // ─── LOAD A QUIZ (from cache or fresh fetch) ───────────
+            // ─── LOAD A QUIZ ───────────────────────────────────────
             function loadQuiz(filename) {
                 for (const cat in QUIZ_TREE) {
                     if (QUIZ_TREE[cat].some(function(q) { return q.file === filename; })) {
@@ -1731,16 +2147,18 @@
                 currentFile = filename;
 
                 if (QUIZ_CACHE[filename] && QUIZ_CACHE[filename].data) {
+                    currentQuizTitle = QUIZ_CACHE[filename].title || filename.replace(/\.json$/i, '');
                     loadQuestionsFromData(QUIZ_CACHE[filename].data, filename);
                 } else {
                     fetchJsonFile(filename);
                 }
             }
 
-            // ─── FETCH JSON FILE (fresh, bypass cache) ─────────────
+            // ─── FETCH JSON FILE (fresh) ───────────────────────────
             function fetchJsonFile(filename) {
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
+                statsBtn.disabled = true;
 
                 fetch(JSON_DIR + filename, { cache: 'no-store' })
                     .then(function(res) {
@@ -1751,6 +2169,7 @@
                         const title = (data && typeof data.title === 'string' && data.title.trim())
                             ? data.title.trim()
                             : filename.replace(/\.json$/i, '');
+                        currentQuizTitle = title;
 
                         QUIZ_CACHE[filename] = { data: data, title: title, error: null };
 
@@ -1784,6 +2203,8 @@
                 currentFile = '';
                 currentCategory = '';
                 currentLanguage = '';
+                currentQuizTitle = '';
+                currentStats = {};
                 activeCategoryPreview = '';
                 renderPickerLoading('Loading manifest…');
 
@@ -1809,6 +2230,7 @@
 
                     if (firstGood) {
                         currentFile = firstGood.file;
+                        currentQuizTitle = QUIZ_CACHE[firstGood.file].title || firstGood.file.replace(/\.json$/i, '');
                         loadQuestionsFromData(QUIZ_CACHE[firstGood.file].data, firstGood.file);
                     } else {
                         showEmptyState('No quizzes could be loaded', true);
@@ -1834,6 +2256,9 @@
             summaryRestartBtn.addEventListener('click', restartQuiz);
             spoilerToggle.addEventListener('click', toggleSpoiler);
 
+            statsBtn.addEventListener('click', openStatsView);
+            statsBackBtn.addEventListener('click', closeStatsView);
+
             reloadBtn.addEventListener('click', function() {
                 cancelClose();
                 closePicker();
@@ -1846,6 +2271,7 @@
 
             // ─── INIT ──────────────────────────────────────────────
             card.classList.remove('font-vazir', 'font-jp', 'quiz-finished', 'fonts-ready');
+            statsBtn.disabled = true;
             showEmptyState('Loading quiz…');
             loadManifestAndFirstQuiz();
 
