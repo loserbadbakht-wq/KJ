@@ -241,6 +241,13 @@
             pointer-events: auto;
             animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
+
+        /* ✅ FIX: Stats card bypasses the font-loading gate so it's always visible. */
+        .card.stats-card {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         @keyframes fadeUp {
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -1785,8 +1792,6 @@
 
             // ─── STATS VIEW ────────────────────────────────────────
             function renderStatsView() {
-                // Always render items from ALL_QUESTIONS. If currentStats is
-                // empty (fresh localStorage), every item renders as "unanswered".
                 if (!ALL_QUESTIONS.length) {
                     statsOverview.innerHTML = '';
                     statsList.innerHTML = '<div class="stats-empty">No quiz loaded. Return to the quiz to load one.</div>';
@@ -1848,10 +1853,7 @@
             function openStatsView() {
                 if (!currentFile) return;
 
-                // Move the picker into the stats top bar
                 statsPickerSlot.appendChild(quizPicker);
-
-                // Hide the now-empty quiz load bar
                 quizLoadBar.classList.add('hidden-bar');
 
                 quizApp.classList.add('hidden');
@@ -1861,7 +1863,6 @@
                     statsApp.classList.remove('view-enter');
                 }, 350);
 
-                // Swap header icon to home
                 statsBtn.querySelector('i').className = 'fa-solid fa-home';
                 statsBtn.title = 'Back to quiz';
                 statsBtn.disabled = false;
@@ -1874,7 +1875,6 @@
                 cancelClose();
                 closePicker();
 
-                // Move the picker back into the quiz load bar
                 quizLoadBar.appendChild(quizPicker);
                 quizLoadBar.classList.remove('hidden-bar');
 
@@ -1885,7 +1885,6 @@
                     quizApp.classList.remove('view-enter');
                 }, 350);
 
-                // Swap header icon back to dumbbell
                 statsBtn.querySelector('i').className = 'fa-solid fa-dumbbell';
                 statsBtn.title = 'View stats';
             }
@@ -1965,7 +1964,7 @@
                 if (currentIndex >= shuffledQuestions.length) return;
 
                 const current = shuffledQuestions[currentIndex];
-                recordStat(current.question, 'c');   // live localStorage update
+                recordStat(current.question, 'c');
 
                 setFeedback('fa-check-circle', 'Marked as known. Moving on…', 'correct');
                 knowBtn.disabled = true;
@@ -1986,7 +1985,7 @@
                 if (currentIndex >= shuffledQuestions.length) return;
 
                 const current = shuffledQuestions[currentIndex];
-                recordStat(current.question, 'w');   // live localStorage update
+                recordStat(current.question, 'w');
 
                 failures.push({
                     question: normalizeAnswer(current.question),
@@ -2013,10 +2012,6 @@
                     showEmptyState();
                     return;
                 }
-
-                // localStorage is intentionally NOT cleared here.
-                // Stats persist across restarts — only the in-session
-                // "failures" summary is reset.
 
                 if (currentFile) {
                     currentStats = loadStats(currentFile);
@@ -2066,7 +2061,6 @@
                 totalNum.textContent = ALL_QUESTIONS.length;
                 applyLanguageFont(language);
 
-                // Load per-quiz stats from localStorage
                 currentStats = loadStats(sourceName);
 
                 shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
@@ -2078,7 +2072,6 @@
 
                 statsBtn.disabled = false;
 
-                // If the user is on the stats view, re-render for the new quiz
                 if (!statsApp.classList.contains('hidden')) {
                     renderStatsView();
                 }
