@@ -87,6 +87,7 @@
         .fa-trophy::before        { content: "\f091"; }
         .fa-chevron-right::before { content: "\f054"; }
         .fa-dumbbell::before      { content: "\f44b"; }
+        .fa-home::before          { content: "\f015"; }
         .fa-circle::before        { content: "\f111"; }
         .fa-arrow-left::before    { content: "\f060"; }
 
@@ -254,7 +255,7 @@
             display: none !important;
         }
 
-        /* ─── LOAD BAR ─── */
+        /* ─── LOAD BAR (picker slot) ─── */
         .load-bar {
             display: flex;
             align-items: center;
@@ -263,6 +264,10 @@
             padding-bottom: 14px;
             margin-bottom: 16px;
             border-bottom: 1px solid var(--border);
+            min-height: 0;
+        }
+        .load-bar.hidden-bar {
+            display: none;
         }
 
         /* ─── CIRCULAR QUIZ PICKER ─── */
@@ -312,7 +317,7 @@
             box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
         }
 
-        /* ─── MENU (quiz picker) ─── */
+        /* ─── MENU ─── */
         .quiz-picker-menu {
             position: absolute;
             top: calc(100% + 10px);
@@ -916,16 +921,10 @@
             transition: transform 0.2s ease;
         }
 
-        .quiz-picker-readonly .quiz-picker-btn {
-            opacity: 0.75;
-            cursor: default;
-        }
-        .quiz-picker-readonly .quiz-picker-btn:hover {
-            transform: none;
-            box-shadow: none;
-            background: var(--bg-input);
-            border-color: var(--border);
-            color: var(--primary);
+        /* Slot where the picker sits when on stats view */
+        #statsPickerSlot {
+            display: inline-flex;
+            align-items: center;
         }
 
         .stats-title {
@@ -1121,7 +1120,7 @@
     <div class="app" id="quizApp">
         <main class="card" id="quizCard" role="main" aria-labelledby="question-heading">
 
-            <div class="load-bar">
+            <div class="load-bar" id="quizLoadBar">
                 <div class="quiz-picker" id="quizPicker">
                     <button
                         class="quiz-picker-btn"
@@ -1209,18 +1208,7 @@
                     <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                     Back to Quiz
                 </button>
-                <div class="quiz-picker quiz-picker-readonly" id="statsQuizPicker">
-                    <button
-                        class="quiz-picker-btn"
-                        id="statsQuizPickerBtn"
-                        type="button"
-                        aria-label="Current quiz"
-                        disabled
-                    >
-                        <i class="fa-solid fa-book" aria-hidden="true"></i>
-                    </button>
-                    <div class="quiz-picker-menu" id="statsQuizPickerMenu" role="menu" aria-label="Current quiz"></div>
-                </div>
+                <div id="statsPickerSlot"></div>
             </div>
 
             <h2 class="stats-title" id="stats-heading">
@@ -1243,8 +1231,7 @@
             const JSON_DIR = 'json/';
             const VAZIR_LANGS = ['fa', 'ar', 'he', 'ur', 'ps'];
             const JP_LANGS = ['jp', 'ja'];
-            const STATS_COOKIE_PREFIX = 'qstats_';
-            const STATS_COOKIE_DAYS = 365;
+            const STATS_STORAGE_PREFIX = 'qstats_';
 
             // ─── DOM REFS ──────────────────────────────────────────
             const card           = document.getElementById('quizCard');
@@ -1258,6 +1245,7 @@
             const spoilerToggle  = document.getElementById('spoilerToggle');
             const spoilerAnswer  = document.getElementById('spoilerAnswer');
             const spoilerContainer = document.getElementById('spoilerContainer');
+            const quizLoadBar    = document.getElementById('quizLoadBar');
             const quizPicker     = document.getElementById('quizPicker');
             const quizPickerBtn  = document.getElementById('quizPickerBtn');
             const quizPickerMenu = document.getElementById('quizPickerMenu');
@@ -1272,9 +1260,7 @@
             const quizApp        = document.getElementById('quizApp');
             const statsApp       = document.getElementById('statsApp');
             const statsBackBtn   = document.getElementById('statsBackBtn');
-            const statsQuizPicker= document.getElementById('statsQuizPicker');
-            const statsQuizPickerBtn = document.getElementById('statsQuizPickerBtn');
-            const statsQuizPickerMenu = document.getElementById('statsQuizPickerMenu');
+            const statsPickerSlot = document.getElementById('statsPickerSlot');
             const statsOverview  = document.getElementById('statsOverview');
             const statsList      = document.getElementById('statsList');
 
@@ -1341,7 +1327,7 @@
                 totalNum.textContent = shuffledQuestions.length;
             }
 
-            // ─── HASH / COOKIES ────────────────────────────────────
+            // ─── HASH / LOCALSTORAGE ───────────────────────────────
             function hashString(str) {
                 let hash = 5381;
                 const s = String(str || '');
@@ -1352,48 +1338,29 @@
                 return (hash >>> 0).toString(36);
             }
 
-            function statsCookieKey(filename) {
-                return STATS_COOKIE_PREFIX + hashString(filename);
-            }
-
-            function readCookie(name) {
-                const eq = name + '=';
-                const parts = document.cookie.split(';');
-                for (let i = 0; i < parts.length; i++) {
-                    let c = parts[i].trim();
-                    if (c.indexOf(eq) === 0) {
-                        return decodeURIComponent(c.substring(eq.length));
-                    }
-                }
-                return null;
-            }
-
-            function writeCookie(name, value) {
-                const expires = new Date();
-                expires.setDate(expires.getDate() + STATS_COOKIE_DAYS);
-                document.cookie = name + '=' + encodeURIComponent(value) +
-                    '; expires=' + expires.toUTCString() +
-                    '; path=/; SameSite=Lax';
+            function statsStorageKey(filename) {
+                return STATS_STORAGE_PREFIX + hashString(filename);
             }
 
             function loadStats(filename) {
-                const key = statsCookieKey(filename);
-                const raw = readCookie(key);
-                if (!raw) return {};
+                const key = statsStorageKey(filename);
                 try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return {};
                     const parsed = JSON.parse(raw);
                     return (parsed && typeof parsed === 'object') ? parsed : {};
                 } catch (e) {
+                    console.warn('localStorage read failed:', e);
                     return {};
                 }
             }
 
             function saveStats(filename, stats) {
-                const key = statsCookieKey(filename);
+                const key = statsStorageKey(filename);
                 try {
-                    writeCookie(key, JSON.stringify(stats));
+                    localStorage.setItem(key, JSON.stringify(stats));
                 } catch (e) {
-                    console.warn('Could not save stats cookie:', e);
+                    console.warn('localStorage save failed:', e);
                 }
             }
 
@@ -1405,6 +1372,7 @@
             }
 
             function getQuestionStatus(questionText) {
+                if (!currentStats || typeof currentStats !== 'object') return 'unanswered';
                 const h = hashString(questionText);
                 const s = currentStats[h];
                 if (s === 'c') return 'correct';
@@ -1539,7 +1507,7 @@
                 });
             }
 
-            // ─── QUIZ PICKER (quiz view) ───────────────────────────
+            // ─── QUIZ PICKER ───────────────────────────────────────
             const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
             function openPicker() {
@@ -1720,58 +1688,14 @@
                     cancelClose();
                     closePicker();
                 }
-                if (!statsQuizPicker.contains(e.target)) {
-                    statsQuizPicker.classList.remove('open');
-                }
             });
 
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     cancelClose();
                     closePicker();
-                    statsQuizPicker.classList.remove('open');
                 }
             });
-
-            // ─── STATS VIEW PICKER (read-only) ─────────────────────
-            statsQuizPickerBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (!currentFile) return;
-                statsQuizPicker.classList.toggle('open');
-            });
-
-            statsQuizPickerMenu.addEventListener('click', function(e) {
-                e.stopPropagation();
-                statsQuizPicker.classList.remove('open');
-            });
-
-            function renderStatsPicker() {
-                if (!currentFile) {
-                    statsQuizPickerBtn.disabled = true;
-                    statsQuizPickerMenu.innerHTML = '';
-                    return;
-                }
-                statsQuizPickerBtn.disabled = false;
-
-                const title = currentQuizTitle || currentFile.replace(/\.json$/i, '');
-                const cat = currentCategory || '';
-
-                let html = '';
-                if (cat) {
-                    html +=
-                        '<button type="button" class="quiz-picker-item quiz-picker-cat active" ' +
-                        'data-category="' + escapeHtml(cat) + '" disabled style="cursor:default;opacity:0.9;">' +
-                            '<span class="quiz-cat">' + escapeHtml(cat) + '</span>' +
-                        '</button>';
-                }
-                html +=
-                    '<button type="button" class="quiz-picker-item quiz-picker-quiz active" ' +
-                    'data-file="' + escapeHtml(currentFile) + '" ' +
-                    'title="' + escapeHtml(currentFile) + '" disabled style="cursor:default;opacity:1;">' +
-                        '<span class="quiz-title">' + escapeHtml(title) + '</span>' +
-                    '</button>';
-                statsQuizPickerMenu.innerHTML = html;
-            }
 
             // ─── LANGUAGE / FONT ───────────────────────────────────
             function applyLanguageFont(language) {
@@ -1861,6 +1785,8 @@
 
             // ─── STATS VIEW ────────────────────────────────────────
             function renderStatsView() {
+                // Always render items from ALL_QUESTIONS. If currentStats is
+                // empty (fresh localStorage), every item renders as "unanswered".
                 if (!ALL_QUESTIONS.length) {
                     statsOverview.innerHTML = '';
                     statsList.innerHTML = '<div class="stats-empty">No quiz loaded. Return to the quiz to load one.</div>';
@@ -1896,11 +1822,6 @@
                     '<span class="ov-neutral">' + unansweredCount + '</span> not answered' +
                     ' &nbsp;·&nbsp; ' + pct + '% correct';
 
-                if (items.length === 0) {
-                    statsList.innerHTML = '<div class="stats-empty">No questions in this quiz.</div>';
-                    return;
-                }
-
                 let html = '';
                 items.forEach(function(item) {
                     let badgeIcon = 'fa-circle';
@@ -1926,24 +1847,47 @@
 
             function openStatsView() {
                 if (!currentFile) return;
+
+                // Move the picker into the stats top bar
+                statsPickerSlot.appendChild(quizPicker);
+
+                // Hide the now-empty quiz load bar
+                quizLoadBar.classList.add('hidden-bar');
+
                 quizApp.classList.add('hidden');
                 statsApp.classList.remove('hidden');
                 statsApp.classList.add('view-enter');
                 setTimeout(function() {
                     statsApp.classList.remove('view-enter');
                 }, 350);
-                renderStatsPicker();
+
+                // Swap header icon to home
+                statsBtn.querySelector('i').className = 'fa-solid fa-home';
+                statsBtn.title = 'Back to quiz';
+                statsBtn.disabled = false;
+
                 renderStatsView();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             function closeStatsView() {
+                cancelClose();
+                closePicker();
+
+                // Move the picker back into the quiz load bar
+                quizLoadBar.appendChild(quizPicker);
+                quizLoadBar.classList.remove('hidden-bar');
+
                 statsApp.classList.add('hidden');
                 quizApp.classList.remove('hidden');
                 quizApp.classList.add('view-enter');
                 setTimeout(function() {
                     quizApp.classList.remove('view-enter');
                 }, 350);
+
+                // Swap header icon back to dumbbell
+                statsBtn.querySelector('i').className = 'fa-solid fa-dumbbell';
+                statsBtn.title = 'View stats';
             }
 
             // ─── EMPTY STATE ───────────────────────────────────────
@@ -2021,7 +1965,7 @@
                 if (currentIndex >= shuffledQuestions.length) return;
 
                 const current = shuffledQuestions[currentIndex];
-                recordStat(current.question, 'c');   // live cookie update
+                recordStat(current.question, 'c');   // live localStorage update
 
                 setFeedback('fa-check-circle', 'Marked as known. Moving on…', 'correct');
                 knowBtn.disabled = true;
@@ -2042,7 +1986,7 @@
                 if (currentIndex >= shuffledQuestions.length) return;
 
                 const current = shuffledQuestions[currentIndex];
-                recordStat(current.question, 'w');   // live cookie update
+                recordStat(current.question, 'w');   // live localStorage update
 
                 failures.push({
                     question: normalizeAnswer(current.question),
@@ -2059,7 +2003,7 @@
                 }, 400);
             }
 
-            // ─── RESTART (cookie preserved) ────────────────────────
+            // ─── RESTART (localStorage preserved) ──────────────────
             function restartQuiz() {
                 if (autoAdvanceTimer) {
                     clearTimeout(autoAdvanceTimer);
@@ -2070,11 +2014,10 @@
                     return;
                 }
 
-                // NOTE: cookie is intentionally NOT cleared here.
+                // localStorage is intentionally NOT cleared here.
                 // Stats persist across restarts — only the in-session
                 // "failures" summary is reset.
 
-                // Reload stats from cookie to guarantee memory ↔ cookie consistency
                 if (currentFile) {
                     currentStats = loadStats(currentFile);
                 }
@@ -2123,7 +2066,7 @@
                 totalNum.textContent = ALL_QUESTIONS.length;
                 applyLanguageFont(language);
 
-                // Load stats for this file (per-quiz cookie key)
+                // Load per-quiz stats from localStorage
                 currentStats = loadStats(sourceName);
 
                 shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
@@ -2134,6 +2077,11 @@
                 ensureFontsAndReveal(language);
 
                 statsBtn.disabled = false;
+
+                // If the user is on the stats view, re-render for the new quiz
+                if (!statsApp.classList.contains('hidden')) {
+                    renderStatsView();
+                }
             }
 
             // ─── LOAD A QUIZ ───────────────────────────────────────
@@ -2256,7 +2204,14 @@
             summaryRestartBtn.addEventListener('click', restartQuiz);
             spoilerToggle.addEventListener('click', toggleSpoiler);
 
-            statsBtn.addEventListener('click', openStatsView);
+            statsBtn.addEventListener('click', function() {
+                if (statsApp.classList.contains('hidden')) {
+                    openStatsView();
+                } else {
+                    closeStatsView();
+                }
+            });
+
             statsBackBtn.addEventListener('click', closeStatsView);
 
             reloadBtn.addEventListener('click', function() {
