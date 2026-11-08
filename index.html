@@ -5,1076 +5,258 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz · FMHY Theme</title>
 
+    <!-- jsmediatags for reading embedded ID3 metadata -->
+    <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.5/dist/jsmediatags.min.js"></script>
+
+    <!-- videojs audio player -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/cdn@10.2.0/audio.js"></script>
+
     <style>
-        /* ====== INTER VARIABLE ====== */
-        @font-face {
-            font-family: 'Inter';
-            font-style: normal;
-            font-weight: 1 999;
-            src: url('https://raw.githubusercontent.com/loserbadbakht-wq/shs/refs/heads/main/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
-            font-display: swap;
-        }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 1 999; src: url('https://raw.githubusercontent.com/loserbadbakht-wq/shs/refs/heads/main/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations'); font-display: swap; }
+        @font-face { font-family: 'Vazir'; src: url('fonts/Vazir.ttf') format('truetype'); font-weight: normal; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'Vazir Bold'; src: url('fonts/Vazir-Bold.ttf') format('truetype'); font-weight: bold; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'BIZ UDPMincho'; src: url('fonts/BIZUDPMincho-Regular.ttf') format('truetype'); font-weight: normal; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'BIZ UDPMincho Bold'; src: url('fonts/BIZUDPMincho-Bold.ttf') format('truetype'); font-weight: bold; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'Font Awesome 6 Free'; font-style: normal; font-weight: 900; src: url('fonts/fa-solid-900.ttf') format('truetype'); font-display: block; }
+        .fas, .fa-solid { font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; font-style: normal; font-variant: normal; text-rendering: auto; line-height: 1; width: 1em; text-align: center; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-        /* ====== LOCAL VAZIR ====== */
-        @font-face {
-            font-family: 'Vazir';
-            src: url('fonts/Vazir.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Vazir Bold';
-            src: url('fonts/Vazir-Bold.ttf') format('truetype');
-            font-weight: bold;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        /* ====== LOCAL BIZ UDPMINCHO ====== */
-        @font-face {
-            font-family: 'BIZ UDPMincho';
-            src: url('fonts/BIZUDPMincho-Regular.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'BIZ UDPMincho Bold';
-            src: url('fonts/BIZUDPMincho-Bold.ttf') format('truetype');
-            font-weight: bold;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        /* ====== FONT AWESOME ====== */
-        @font-face {
-            font-family: 'Font Awesome 6 Free';
-            font-style: normal;
-            font-weight: 900;
-            src: url('fonts/fa-solid-900.ttf') format('truetype');
-            font-display: block;
-        }
-        .fas,
-        .fa-solid {
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            display: inline-block;
-            font-style: normal;
-            font-variant: normal;
-            text-rendering: auto;
-            line-height: 1;
-            width: 1em;
-            text-align: center;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* ====== ICON DEFINITIONS ====== */
         .fa-graduation-cap::before { content: "\f19d"; }
-        .fa-book::before          { content: "\f02d"; }
-        .fa-sync-alt::before      { content: "\f2f1"; }
-        .fa-undo::before          { content: "\f0e2"; }
-        .fa-check::before         { content: "\f00c"; }
-        .fa-times::before         { content: "\f00d"; }
-        .fa-folder-open::before   { content: "\f07c"; }
-        .fa-hourglass-half::before{ content: "\f252"; }
-        .fa-check-circle::before  { content: "\f058"; }
-        .fa-times-circle::before  { content: "\f057"; }
-        .fa-flag-checkered::before{ content: "\f11e"; }
+        .fa-book::before { content: "\f02d"; }
+        .fa-sync-alt::before { content: "\f2f1"; }
+        .fa-undo::before { content: "\f0e2"; }
+        .fa-check::before { content: "\f00c"; }
+        .fa-times::before { content: "\f00d"; }
+        .fa-folder-open::before { content: "\f07c"; }
+        .fa-hourglass-half::before { content: "\f252"; }
+        .fa-check-circle::before { content: "\f058"; }
+        .fa-times-circle::before { content: "\f057"; }
+        .fa-flag-checkered::before { content: "\f11e"; }
         .fa-exclamation-circle::before { content: "\f06a"; }
-        .fa-list-ul::before       { content: "\f0ca"; }
-        .fa-trophy::before        { content: "\f091"; }
+        .fa-list-ul::before { content: "\f0ca"; }
+        .fa-trophy::before { content: "\f091"; }
         .fa-chevron-right::before { content: "\f054"; }
-        .fa-dumbbell::before      { content: "\f44b"; }
-        .fa-home::before          { content: "\f015"; }
-        .fa-circle::before        { content: "\f111"; }
-        .fa-arrow-left::before    { content: "\f060"; }
+        .fa-dumbbell::before { content: "\f44b"; }
+        .fa-home::before { content: "\f015"; }
+        .fa-circle::before { content: "\f111"; }
+        .fa-arrow-left::before { content: "\f060"; }
+        .fa-music::before { content: "\f001"; }
+        .fa-backward-step::before { content: "\f048"; }
+        .fa-forward-step::before { content: "\f051"; }
+        .fa-shuffle::before { content: "\f074"; }
 
-        /* ─── ROOT ─── */
         :root {
-            --bg: #0c0c0c;
-            --bg-card: #161616;
-            --bg-input: #1e1e1e;
-            --bg-hover: #242424;
-            --text: #e6e6e6;
-            --text-secondary: #9a9a9a;
-            --text-muted: #5a5a5a;
-            --border: #262626;
-            --border-hover: #383838;
-            --primary: #00d4ff;
-            --primary-hover: #40e0ff;
-            --primary-light: #0a2833;
-            --danger: #ef4444;
-            --danger-light: rgba(239, 68, 68, 0.1);
-            --success: #22c55e;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            --radius: 10px;
-            --radius-sm: 6px;
-            --transition: 0.2s ease;
+            --bg: #0c0c0c; --bg-card: #161616; --bg-input: #1e1e1e; --bg-hover: #242424;
+            --text: #e6e6e6; --text-secondary: #9a9a9a; --text-muted: #5a5a5a;
+            --border: #262626; --border-hover: #383838;
+            --primary: #00d4ff; --primary-hover: #40e0ff; --primary-light: #0a2833;
+            --danger: #ef4444; --danger-light: rgba(239,68,68,.1); --success: #22c55e;
+            --shadow: 0 8px 32px rgba(0,0,0,.6); --radius: 10px; --radius-sm: 6px;
+            --transition: .2s ease;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --header-height: 56px;
         }
 
-        /* ─── RESET & BASE ─── */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        html {
-            font-size: 17px;
-            -webkit-font-smoothing: antialiased;
-        }
-        body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            transition: background var(--transition), color var(--transition);
-            display: flex;
-            flex-direction: column;
-            background-image:
-                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.04) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; transition: background var(--transition), color var(--transition); display: flex; flex-direction: column; background-image: radial-gradient(circle at 20% 30%, rgba(0,212,255,.04) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(0,212,255,.03) 0%, transparent 50%); background-attachment: fixed; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-hover);
-            border-radius: 20px;
-        }
+        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 20px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        /* ─── HEADER ─── */
-        .header {
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            flex-shrink: 0;
-        }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 24px; height: var(--header-height); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); flex-shrink: 0; }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .header-logo {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: -0.3px;
-        }
+        .header-logo { font-size: 20px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; letter-spacing: -.3px; }
         .header-logo i { font-size: 22px; }
-        .header-logo span {
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .header-actions .btn-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition);
-        }
-        .header-actions .btn-icon:hover:not(:disabled) {
-            background: var(--bg-hover);
-            border-color: var(--border-hover);
-            color: var(--text);
-        }
-        .header-actions .btn-icon:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
+        .header-logo span { color: var(--text-secondary); font-weight: 400; }
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+        .header-actions .btn-icon { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition); }
+        .header-actions .btn-icon:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
+        .header-actions .btn-icon:disabled { opacity: .35; cursor: not-allowed; }
 
-        /* ─── APP LAYOUT ─── */
-        .app {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            padding: 24px 24px 32px;
-        }
-        .app.view-enter {
-            animation: viewFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-        @keyframes viewFadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        .music-panel-wrap { position: relative; display: inline-flex; }
+        .music-panel { position: absolute; top: calc(100% + 10px); right: 0; width: 360px; max-width: calc(100vw - 24px); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.97); transform-origin: top right; transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s; }
+        .music-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s; }
+        .music-panel-header { display: flex; align-items: center; gap: 8px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .music-playlist-select { flex: 1; padding: 7px 10px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--text); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); outline: none; cursor: pointer; min-width: 0; }
+        .music-playlist-select:hover:not(:disabled) { border-color: var(--border-hover); }
+        .music-playlist-select:focus { border-color: var(--primary); }
+        .music-playlist-select:disabled { opacity: .5; cursor: not-allowed; }
+        .music-close { width: 28px; height: 28px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); flex-shrink: 0; }
+        .music-close:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
+        .music-now-playing { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; min-height: 56px; }
+        .music-cover { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--bg-input); object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); display: block; }
+        .music-info { flex: 1; min-width: 0; }
+        .music-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .music-artist { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .music-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .music-ctrl { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); }
+        .music-ctrl:hover:not(:disabled) { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
+        .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
+        .music-ctrl.active { background: var(--primary-light); color: var(--primary); border-color: rgba(0,212,255,.4); }
+        .music-player-slot { border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-input); min-height: 48px; }
+        .music-player-slot audio-player { display: block; width: 100%; border-radius: var(--radius-sm); }
+        .music-player-slot audio-player a { display: none !important; }
+        .music-player-slot audio { width: 100%; display: block; }
+        #musicBtn.playing i { color: var(--primary); animation: musicPulse 1s ease-in-out infinite; }
+        @keyframes musicPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
 
-        /* ─── MAIN CARD (hidden until fonts ready) ─── */
-        .card {
-            max-width: 720px;
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 22px 26px 26px;
-            box-shadow: var(--shadow);
-            height: fit-content;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .card.fonts-ready {
-            opacity: 1;
-            pointer-events: auto;
-            animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
+        .app { flex: 1; display: flex; justify-content: center; padding: 24px 24px 32px; }
+        .app.view-enter { animation: viewFadeIn .28s cubic-bezier(.16,1,.3,1) both; }
+        @keyframes viewFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ✅ FIX: Stats card bypasses the font-loading gate so it's always visible. */
-        .card.stats-card {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .card { max-width: 720px; width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 26px 26px; box-shadow: var(--shadow); height: fit-content; opacity: 0; pointer-events: none; }
+        .card.fonts-ready { opacity: 1; pointer-events: auto; animation: fadeUp .55s cubic-bezier(.16,1,.3,1) both; }
+        .card.stats-card { opacity: 1; pointer-events: auto; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+        .card.quiz-finished #progressDisplay, .card.quiz-finished #question-heading, .card.quiz-finished #spoilerContainer, .card.quiz-finished #answerBtnRow, .card.quiz-finished #feedbackArea { display: none !important; }
 
-        /* ─── END-OF-QUIZ: only the results panel visible ─── */
-        .card.quiz-finished #progressDisplay,
-        .card.quiz-finished #question-heading,
-        .card.quiz-finished #spoilerContainer,
-        .card.quiz-finished #answerBtnRow,
-        .card.quiz-finished #feedbackArea {
-            display: none !important;
-        }
+        .load-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid var(--border); min-height: 0; }
+        .load-bar.hidden-bar { display: none; }
 
-        /* ─── LOAD BAR (picker slot) ─── */
-        .load-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            padding-bottom: 14px;
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-            min-height: 0;
-        }
-        .load-bar.hidden-bar {
-            display: none;
-        }
+        .quiz-picker { position: relative; display: inline-flex; align-items: center; flex-shrink: 0; }
+        .quiz-picker-btn { width: 36px; height: 36px; padding: 0; border-radius: 50%; background: var(--bg-input); border: 1px solid var(--border); color: var(--primary); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: .95rem; line-height: 1; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease; }
+        .quiz-picker-btn .fa-solid { transition: transform .25s ease; }
+        .quiz-picker-btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--primary); color: var(--primary-hover); transform: scale(1.08); box-shadow: 0 4px 18px rgba(0,212,255,.35); }
+        .quiz-picker-btn:hover:not(:disabled) .fa-solid { transform: rotate(-12deg); }
+        .quiz-picker-btn:active:not(:disabled) { transform: scale(.97); }
+        .quiz-picker-btn:disabled { opacity: .4; cursor: not-allowed; }
+        .quiz-picker.open .quiz-picker-btn { background: var(--bg-hover); border-color: var(--primary); color: var(--primary-hover); box-shadow: 0 4px 18px rgba(0,212,255,.4); }
 
-        /* ─── CIRCULAR QUIZ PICKER ─── */
-        .quiz-picker {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .quiz-picker-btn {
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            border-radius: 50%;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--primary);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            line-height: 1;
-            transition: background 0.2s ease, border-color 0.2s ease,
-                        color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-        }
-        .quiz-picker-btn .fa-solid { transition: transform 0.25s ease; }
-        .quiz-picker-btn:hover:not(:disabled) {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            color: var(--primary-hover);
-            transform: scale(1.08);
-            box-shadow: 0 4px 18px rgba(0, 212, 255, 0.35);
-        }
-        .quiz-picker-btn:hover:not(:disabled) .fa-solid {
-            transform: rotate(-12deg);
-        }
-        .quiz-picker-btn:active:not(:disabled) { transform: scale(0.97); }
-        .quiz-picker-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .quiz-picker.open .quiz-picker-btn {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            color: var(--primary-hover);
-            box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
-        }
+        .quiz-picker-menu { position: absolute; top: calc(100% + 10px); left: 0; display: block; padding: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); max-width: calc(100vw - 40px); opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.97); transform-origin: top left; transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s; z-index: 100; }
+        .quiz-picker.open .quiz-picker-menu { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s; }
 
-        /* ─── MENU ─── */
-        .quiz-picker-menu {
-            position: absolute;
-            top: calc(100% + 10px);
-            left: 0;
-            display: block;
-            padding: 6px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow);
-            max-width: calc(100vw - 40px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-6px) scale(0.97);
-            transform-origin: top left;
-            transition: opacity 0.18s ease, transform 0.18s ease,
-                        visibility 0s linear 0.18s;
-            z-index: 100;
-        }
-        .quiz-picker.open .quiz-picker-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-            transition: opacity 0.18s ease, transform 0.18s ease,
-                        visibility 0s linear 0s;
-        }
-
-        .quiz-picker-col {
-            overflow-y: auto;
-            max-height: 340px;
-            min-width: 210px;
-        }
+        .quiz-picker-col { overflow-y: auto; max-height: 340px; min-width: 210px; }
         .quiz-picker-col::-webkit-scrollbar { width: 4px; }
         .quiz-picker-col::-webkit-scrollbar-track { background: transparent; }
-        .quiz-picker-col::-webkit-scrollbar-thumb {
-            background: var(--border-hover);
-            border-radius: 20px;
-        }
+        .quiz-picker-col::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 20px; }
 
-        .quiz-picker-quizzes {
-            position: absolute;
-            left: calc(100% + 6px);
-            top: 6px;
-            min-width: 210px;
-            max-width: 320px;
-            max-height: 340px;
-            overflow-y: auto;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 6px;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.15s ease, visibility 0s linear 0.15s;
-            z-index: 101;
-        }
-        .quiz-picker-quizzes.visible {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.15s ease, visibility 0s linear 0s;
-        }
-        .quiz-picker-quizzes.direct-mode {
-            position: static;
-            left: auto;
-            top: auto;
-            min-width: 0;
-            width: 100%;
-            max-width: none;
-            max-height: 340px;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            opacity: 1;
-            visibility: visible;
-            z-index: auto;
-            transition: none;
-        }
+        .quiz-picker-quizzes { position: absolute; left: calc(100% + 6px); top: 6px; min-width: 210px; max-width: 320px; max-height: 340px; overflow-y: auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px; box-shadow: var(--shadow); opacity: 0; visibility: hidden; transition: opacity .15s ease, visibility 0s linear .15s; z-index: 101; }
+        .quiz-picker-quizzes.visible { opacity: 1; visibility: visible; transition: opacity .15s ease, visibility 0s linear 0s; }
+        .quiz-picker-quizzes.direct-mode { position: static; left: auto; top: auto; min-width: 0; width: 100%; max-width: none; max-height: 340px; border: none; box-shadow: none; padding: 0; opacity: 1; visibility: visible; z-index: auto; transition: none; }
 
-        /* ─── PICKER ITEM ─── */
-        .quiz-picker-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            padding: 8px 10px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: transparent;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            text-align: left;
-            transition: background var(--transition), color var(--transition);
-            direction: ltr;
-            overflow: hidden;
-        }
-        .quiz-picker-cat .quiz-cat {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px;
-            border-radius: 5px;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .quiz-picker-cat .quiz-cat-count {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.04);
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-left: auto;
-            flex-shrink: 0;
-        }
-        .quiz-picker-cat .quiz-cat-arrow {
-            font-size: 9px;
-            color: var(--text-muted);
-            transition: transform 0.2s ease, color 0.2s ease;
-            width: auto;
-            flex-shrink: 0;
-        }
-        .quiz-picker-cat:hover {
-            background: var(--bg-hover);
-            color: var(--text);
-        }
-        .quiz-picker-cat:hover .quiz-cat {
-            background: rgba(255, 255, 255, 0.09);
-            color: var(--text);
-        }
-        .quiz-picker-cat:hover .quiz-cat-arrow {
-            color: var(--primary);
-            transform: translateX(2px);
-        }
-        .quiz-picker-cat.active {
-            background: var(--primary-light);
-        }
-        .quiz-picker-cat.active .quiz-cat {
-            background: rgba(0, 212, 255, 0.16);
-            color: var(--primary);
-        }
-        .quiz-picker-cat.active .quiz-cat-count {
-            color: var(--primary);
-            background: rgba(0, 212, 255, 0.1);
-        }
-        .quiz-picker-cat.active .quiz-cat-arrow {
-            color: var(--primary);
-        }
-        .quiz-picker-quiz .quiz-title {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            min-width: 0;
-            direction: auto;
-            text-align: left;
-        }
-        .quiz-picker-quiz:hover {
-            background: var(--bg-hover);
-            color: var(--text);
-        }
-        .quiz-picker-quiz.active {
-            background: var(--primary-light);
-            color: var(--primary);
-            font-weight: 600;
-        }
-        .quiz-picker-quiz.active:hover {
-            background: var(--primary-light);
-            color: var(--primary-hover);
-        }
-        .quiz-picker-quiz.has-error .quiz-title {
-            color: var(--danger);
-            opacity: 0.8;
-        }
-        .quiz-picker-item.disabled {
-            color: var(--text-muted);
-            cursor: default;
-            font-style: italic;
-            justify-content: center;
-        }
-        .quiz-picker-item.disabled:hover {
-            background: transparent;
-            color: var(--text-muted);
-        }
+        .quiz-picker-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-secondary); background: transparent; border: none; border-radius: var(--radius-sm); cursor: pointer; text-align: left; transition: background var(--transition), color var(--transition); direction: ltr; overflow: hidden; }
+        .quiz-picker-cat .quiz-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); background: rgba(255,255,255,.05); padding: 4px 10px; border-radius: 5px; flex-shrink: 0; white-space: nowrap; }
+        .quiz-picker-cat .quiz-cat-count { font-size: 10px; font-weight: 600; color: var(--text-muted); background: rgba(255,255,255,.04); padding: 2px 8px; border-radius: 10px; margin-left: auto; flex-shrink: 0; }
+        .quiz-picker-cat .quiz-cat-arrow { font-size: 9px; color: var(--text-muted); transition: transform .2s ease, color .2s ease; width: auto; flex-shrink: 0; }
+        .quiz-picker-cat:hover { background: var(--bg-hover); color: var(--text); }
+        .quiz-picker-cat:hover .quiz-cat { background: rgba(255,255,255,.09); color: var(--text); }
+        .quiz-picker-cat:hover .quiz-cat-arrow { color: var(--primary); transform: translateX(2px); }
+        .quiz-picker-cat.active { background: var(--primary-light); }
+        .quiz-picker-cat.active .quiz-cat { background: rgba(0,212,255,.16); color: var(--primary); }
+        .quiz-picker-cat.active .quiz-cat-count { color: var(--primary); background: rgba(0,212,255,.1); }
+        .quiz-picker-cat.active .quiz-cat-arrow { color: var(--primary); }
+        .quiz-picker-quiz .quiz-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; direction: auto; text-align: left; }
+        .quiz-picker-quiz:hover { background: var(--bg-hover); color: var(--text); }
+        .quiz-picker-quiz.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+        .quiz-picker-quiz.active:hover { background: var(--primary-light); color: var(--primary-hover); }
+        .quiz-picker-quiz.has-error .quiz-title { color: var(--danger); opacity: .8; }
+        .quiz-picker-item.disabled { color: var(--text-muted); cursor: default; font-style: italic; justify-content: center; }
+        .quiz-picker-item.disabled:hover { background: transparent; color: var(--text-muted); }
 
-        /* ─── PROGRESS ─── */
-        .progress {
-            color: var(--text-muted);
-            font-size: 11px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-        .progress span {
-            color: var(--primary);
-            font-weight: 700;
-        }
+        .progress { color: var(--text-muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 20px; text-align: center; font-weight: 600; }
+        .progress span { color: var(--primary); font-weight: 700; }
 
-        /* ─── QUESTION (animated gradient) ─── */
-        .question {
-            font-family: var(--font);
-            font-size: 2rem;
-            font-weight: 700;
-            line-height: 1.55;
-            letter-spacing: -0.02em;
-            margin-bottom: 30px;
-            text-align: center;
-            white-space: pre-wrap;
-            min-height: 3.2rem;
-            background: linear-gradient(135deg, #a78bfa, #34d399);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradShift 5s ease-in-out infinite alternate;
-            dir: auto;
-        }
-        @keyframes gradShift {
-            0%   { background-position: 0% 50%; }
-            50%  { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .question::after {
-            content: '';
-            display: block;
-            width: 56px;
-            height: 3px;
-            margin: 14px auto 0;
-            border-radius: 3px;
-            background: linear-gradient(90deg, #a78bfa, #34d399);
-            background-size: 200% 200%;
-            animation: gradShift 5s ease-in-out infinite alternate;
-            opacity: 0.4;
-        }
+        .question { font-family: var(--font); font-size: 2rem; font-weight: 700; line-height: 1.55; letter-spacing: -.02em; margin-bottom: 30px; text-align: center; white-space: pre-wrap; min-height: 3.2rem; background: linear-gradient(135deg, #a78bfa, #34d399); background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: gradShift 5s ease-in-out infinite alternate; dir: auto; }
+        @keyframes gradShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .question::after { content: ''; display: block; width: 56px; height: 3px; margin: 14px auto 0; border-radius: 3px; background: linear-gradient(90deg, #a78bfa, #34d399); background-size: 200% 200%; animation: gradShift 5s ease-in-out infinite alternate; opacity: .4; }
 
-        /* ─── SPOILER ─── */
-        .spoiler-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin: 0 0 4px 0;
-            padding: 0;
-        }
-        .spoiler-toggle {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            font-family: inherit;
-            white-space: nowrap;
-            transition: background 0.2s ease, border-color 0.2s ease,
-                        color 0.2s ease,
-                        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            will-change: transform;
-        }
-        .spoiler-toggle:hover:not(:disabled) {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-        .spoiler-toggle:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .spoiler-container.revealed .spoiler-toggle {
-            transform: translateY(var(--spoiler-lift, -6px));
-        }
-        .spoiler-answer {
-            font-family: var(--font);
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--primary);
-            background: var(--primary-light);
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(0, 212, 255, 0.25);
-            white-space: pre-wrap;
-            line-height: 1.55;
-            max-width: 100%;
-            word-break: break-word;
-            dir: auto;
-            text-align: center;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            margin-top: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-width: 0;
-            transition: max-height 0.4s ease,
-                        opacity 0.35s ease,
-                        margin-top 0.35s ease,
-                        padding 0.35s ease,
-                        border-width 0.35s ease;
-        }
-        .spoiler-container.revealed .spoiler-answer {
-            max-height: var(--answer-max-height, 800px);
-            opacity: 1;
-            margin-top: 6px;
-            padding: 8px 16px;
-            border-width: 1px;
-        }
+        .spoiler-container { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; margin: 0 0 4px 0; padding: 0; }
+        .spoiler-toggle { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .4s cubic-bezier(.34,1.56,.64,1); will-change: transform; }
+        .spoiler-toggle:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .spoiler-toggle:disabled { opacity: .4; cursor: not-allowed; }
+        .spoiler-container.revealed .spoiler-toggle { transform: translateY(var(--spoiler-lift, -6px)); }
+        .spoiler-answer { font-family: var(--font); font-size: 14px; font-weight: 500; color: var(--primary); background: var(--primary-light); padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid rgba(0,212,255,.25); white-space: pre-wrap; line-height: 1.55; max-width: 100%; word-break: break-word; dir: auto; text-align: center; max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; padding-top: 0; padding-bottom: 0; border-width: 0; transition: max-height .4s ease, opacity .35s ease, margin-top .35s ease, padding .35s ease, border-width .35s ease; }
+        .spoiler-container.revealed .spoiler-answer { max-height: var(--answer-max-height, 800px); opacity: 1; margin-top: 6px; padding: 8px 16px; border-width: 1px; }
 
-        /* ─── FONT SWITCHING BY LANGUAGE ─── */
-        .card.font-vazir .question,
-        .card.font-vazir .failure-item .failure-q,
-        .card.font-vazir .stats-item .stats-q {
-            font-family: 'Vazir Bold', var(--font);
-        }
-        .card.font-vazir .spoiler-answer,
-        .card.font-vazir .failure-item .failure-a,
-        .card.font-vazir .stats-item .stats-a {
-            font-family: 'Vazir', var(--font);
-        }
-        .card.font-jp .question,
-        .card.font-jp .failure-item .failure-q,
-        .card.font-jp .stats-item .stats-q {
-            font-family: 'BIZ UDPMincho Bold', var(--font);
-        }
-        .card.font-jp .spoiler-answer,
-        .card.font-jp .failure-item .failure-a,
-        .card.font-jp .stats-item .stats-a {
-            font-family: 'BIZ UDPMincho', var(--font);
-        }
+        .card.font-vazir .question, .card.font-vazir .failure-item .failure-q, .card.font-vazir .stats-item .stats-q { font-family: 'Vazir Bold', var(--font); }
+        .card.font-vazir .spoiler-answer, .card.font-vazir .failure-item .failure-a, .card.font-vazir .stats-item .stats-a { font-family: 'Vazir', var(--font); }
+        .card.font-jp .question, .card.font-jp .failure-item .failure-q, .card.font-jp .stats-item .stats-q { font-family: 'BIZ UDPMincho Bold', var(--font); }
+        .card.font-jp .spoiler-answer, .card.font-jp .failure-item .failure-a, .card.font-jp .stats-item .stats-a { font-family: 'BIZ UDPMincho', var(--font); }
 
-        /* ─── ACTION BUTTONS ─── */
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-        .btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 14px 20px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: inherit;
-            color: var(--text);
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-        .btn:active:not(:disabled) { transform: scale(0.98); }
-        .btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-        .btn span {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn .fa-solid {
-            font-size: 0.9em;
-            transition: transform 0.25s ease;
-        }
-        .btn-know {
-            color: var(--primary);
-            border-color: rgba(0, 212, 255, 0.45);
-            background: transparent;
-        }
-        .btn-know:hover:not(:disabled) {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary-hover);
-        }
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .btn { flex: 1; min-width: 100px; padding: 14px 20px; font-size: 15px; font-weight: 700; font-family: inherit; color: var(--text); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); position: relative; overflow: hidden; text-align: center; }
+        .btn:active:not(:disabled) { transform: scale(.98); }
+        .btn:disabled { opacity: .35; cursor: not-allowed; transform: none !important; }
+        .btn span { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn .fa-solid { font-size: .9em; transition: transform .25s ease; }
+        .btn-know { color: var(--primary); border-color: rgba(0,212,255,.45); background: transparent; }
+        .btn-know:hover:not(:disabled) { background: var(--primary-light); border-color: var(--primary); color: var(--primary-hover); }
         .btn-know:hover:not(:disabled) .fa-check { transform: scale(1.25); }
-        .btn-dontknow {
-            color: var(--danger);
-            border-color: rgba(239, 68, 68, 0.45);
-            background: transparent;
-        }
-        .btn-dontknow:hover:not(:disabled) {
-            background: var(--danger-light);
-            border-color: var(--danger);
-            color: #fca5a5;
-        }
+        .btn-dontknow { color: var(--danger); border-color: rgba(239,68,68,.45); background: transparent; }
+        .btn-dontknow:hover:not(:disabled) { background: var(--danger-light); border-color: var(--danger); color: #fca5a5; }
         .btn-dontknow:hover:not(:disabled) .fa-times { transform: rotate(90deg); }
-        .btn-reset {
-            color: var(--text-secondary);
-            flex: 0 0 auto;
-            min-width: 60px;
-            padding: 14px 20px;
-            font-size: 15px;
-        }
-        .btn-reset:hover:not(:disabled) {
-            background: var(--bg-hover);
-            border-color: var(--border-hover);
-            color: var(--text);
-        }
+        .btn-reset { color: var(--text-secondary); flex: 0 0 auto; min-width: 60px; padding: 14px 20px; font-size: 15px; }
+        .btn-reset:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
         .btn-reset:hover:not(:disabled) .fa-undo { transform: rotate(-180deg); }
 
-        /* ─── FEEDBACK ─── */
-        .feedback {
-            margin-top: 18px;
-            padding: 14px 18px;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.5;
-            min-height: 3.4rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            transition: border var(--transition), background var(--transition),
-                        color var(--transition);
-        }
-        .feedback.correct {
-            background: rgba(34, 197, 94, 0.08);
-            border-color: rgba(34, 197, 94, 0.4);
-            color: #4ade80;
-        }
-        .feedback.wrong {
-            background: rgba(220, 38, 38, 0.08);
-            border-color: rgba(220, 38, 38, 0.4);
-            color: #f87171;
-        }
-        .feedback.done {
-            background: var(--primary-light);
-            border-color: rgba(0, 212, 255, 0.4);
-            color: var(--primary);
-        }
-        .feedback .icon {
-            font-size: 1.4rem;
-            flex-shrink: 0;
-            line-height: 1;
-        }
+        .feedback { margin-top: 18px; padding: 14px 18px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; line-height: 1.5; min-height: 3.4rem; display: flex; align-items: center; gap: 12px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); transition: border var(--transition), background var(--transition), color var(--transition); }
+        .feedback.correct { background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.4); color: #4ade80; }
+        .feedback.wrong { background: rgba(220,38,38,.08); border-color: rgba(220,38,38,.4); color: #f87171; }
+        .feedback.done { background: var(--primary-light); border-color: rgba(0,212,255,.4); color: var(--primary); }
+        .feedback .icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
         .feedback .msg { flex: 1; }
 
-        /* ─── SUMMARY PANEL ─── */
-        .summary {
-            margin-top: 0;
-            padding: 20px 22px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-        .summary-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-        }
+        .summary { margin-top: 0; padding: 20px 22px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); animation: fadeUp .45s cubic-bezier(.16,1,.3,1) both; }
+        .summary-title { font-size: 17px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 12px; letter-spacing: -.01em; }
         .summary-title .fa-solid { font-size: 1rem; }
-        .summary-stats {
-            font-size: 13px;
-            color: var(--text-secondary);
-            padding-bottom: 14px;
-            margin-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-            line-height: 1.6;
-        }
+        .summary-stats { font-size: 13px; color: var(--text-secondary); padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--border); line-height: 1.6; }
         .summary-stats strong { color: var(--text); font-weight: 600; }
         .summary-stats .stat-know { color: #4ade80; font-weight: 700; }
         .summary-stats .stat-miss { color: #f87171; font-weight: 700; }
-        .summary-failures-title {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .summary-failures-title .fa-solid { font-size: 0.85em; }
-        .failure-item {
-            padding: 11px 14px;
-            background: rgba(220, 38, 38, 0.06);
-            border-inline-start: 3px solid var(--danger);
-            border-radius: var(--radius-sm);
-            margin-bottom: 8px;
-        }
+        .summary-failures-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .summary-failures-title .fa-solid { font-size: .85em; }
+        .failure-item { padding: 11px 14px; background: rgba(220,38,38,.06); border-inline-start: 3px solid var(--danger); border-radius: var(--radius-sm); margin-bottom: 8px; }
         .failure-item:last-child { margin-bottom: 0; }
-        .failure-item .failure-q {
-            font-size: 13.5px;
-            font-weight: 500;
-            color: var(--text);
-            margin-bottom: 6px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        .failure-item .failure-a {
-            font-size: 12.5px;
-            color: #fca5a5;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        .failure-item .failure-a .a-label {
-            display: block;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            font-size: 10px;
-            margin-bottom: 4px;
-            text-align: inherit;
-        }
-        .failure-item .failure-a strong {
-            color: #fecaca;
-            font-weight: 600;
-        }
-        .summary-all-good {
-            padding: 14px 16px;
-            background: rgba(34, 197, 94, 0.08);
-            border-inline-start: 3px solid var(--success);
-            border-radius: var(--radius-sm);
-            color: #4ade80;
-            font-size: 13.5px;
-            font-weight: 500;
-        }
-        .summary-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-        .summary-actions .btn {
-            flex: 1;
-            min-width: 120px;
-        }
+        .failure-item .failure-q { font-size: 13.5px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .failure-item .failure-a { font-size: 12.5px; color: #fca5a5; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .failure-item .failure-a .a-label { display: block; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: 10px; margin-bottom: 4px; text-align: inherit; }
+        .failure-item .failure-a strong { color: #fecaca; font-weight: 600; }
+        .summary-all-good { padding: 14px 16px; background: rgba(34,197,94,.08); border-inline-start: 3px solid var(--success); border-radius: var(--radius-sm); color: #4ade80; font-size: 13.5px; font-weight: 500; }
+        .summary-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .summary-actions .btn { flex: 1; min-width: 120px; }
 
-        /* ═══════════════════════════════════════════════════════
-           STATS VIEW
-           ═══════════════════════════════════════════════════════ */
-        .stats-card {
-            padding: 22px 26px 26px;
-        }
-        .stats-top-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            padding-bottom: 14px;
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            font-size: 12px;
-            font-weight: 600;
-            font-family: inherit;
-            color: var(--text-secondary);
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-            white-space: nowrap;
-        }
-        .btn-back:hover {
-            background: var(--bg-hover);
-            border-color: var(--border-hover);
-            color: var(--text);
-        }
-        .btn-back:hover .fa-arrow-left {
-            transform: translateX(-2px);
-        }
-        .btn-back .fa-solid {
-            transition: transform 0.2s ease;
-        }
-
-        /* Slot where the picker sits when on stats view */
-        #statsPickerSlot {
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .stats-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-        }
+        .stats-card { padding: 22px 26px 26px; }
+        .stats-top-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; font-family: inherit; color: var(--text-secondary); background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); white-space: nowrap; }
+        .btn-back:hover { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
+        .btn-back:hover .fa-arrow-left { transform: translateX(-2px); }
+        .btn-back .fa-solid { transition: transform .2s ease; }
+        #statsPickerSlot { display: inline-flex; align-items: center; }
+        .stats-title { font-size: 18px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 12px; letter-spacing: -.01em; }
         .stats-title .fa-solid { font-size: 1rem; }
-
-        .stats-overview {
-            font-size: 13px;
-            color: var(--text-secondary);
-            padding-bottom: 14px;
-            margin-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-            line-height: 1.6;
-        }
+        .stats-overview { font-size: 13px; color: var(--text-secondary); padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--border); line-height: 1.6; }
         .stats-overview .ov-correct { color: #4ade80; font-weight: 700; }
-        .stats-overview .ov-wrong   { color: #f87171; font-weight: 700; }
+        .stats-overview .ov-wrong { color: #f87171; font-weight: 700; }
         .stats-overview .ov-neutral { color: var(--text-muted); font-weight: 700; }
-
-        .stats-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .stats-item {
-            padding: 11px 14px;
-            border-radius: var(--radius-sm);
-            border-inline-start: 3px solid var(--border);
-            background: rgba(255, 255, 255, 0.02);
-            position: relative;
-        }
-        .stats-item .stats-status-badge {
-            position: absolute;
-            top: 12px;
-            inset-inline-end: 14px;
-            font-size: 14px;
-            opacity: 0.85;
-        }
-        .stats-item .stats-q {
-            font-size: 13.5px;
-            font-weight: 500;
-            color: var(--text);
-            margin-bottom: 6px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-            padding-right: 24px;
-        }
-        .stats-item .stats-a {
-            font-size: 12.5px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        .stats-item .stats-a .a-label {
-            display: block;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            font-size: 10px;
-            margin-bottom: 4px;
-            text-align: inherit;
-        }
-
-        .stats-item.correct {
-            background: rgba(34, 197, 94, 0.06);
-            border-inline-start-color: var(--success);
-        }
+        .stats-list { display: flex; flex-direction: column; gap: 8px; }
+        .stats-item { padding: 11px 14px; border-radius: var(--radius-sm); border-inline-start: 3px solid var(--border); background: rgba(255,255,255,.02); position: relative; }
+        .stats-item .stats-status-badge { position: absolute; top: 12px; inset-inline-end: 14px; font-size: 14px; opacity: .85; }
+        .stats-item .stats-q { font-size: 13.5px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; padding-right: 24px; }
+        .stats-item .stats-a { font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .stats-item .stats-a .a-label { display: block; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: 10px; margin-bottom: 4px; text-align: inherit; }
+        .stats-item.correct { background: rgba(34,197,94,.06); border-inline-start-color: var(--success); }
         .stats-item.correct .stats-a { color: #4ade80; }
         .stats-item.correct .stats-a strong { color: #6ee7b7; }
         .stats-item.correct .stats-status-badge { color: var(--success); }
-
-        .stats-item.wrong {
-            background: rgba(220, 38, 38, 0.06);
-            border-inline-start-color: var(--danger);
-        }
+        .stats-item.wrong { background: rgba(220,38,38,.06); border-inline-start-color: var(--danger); }
         .stats-item.wrong .stats-a { color: #fca5a5; }
         .stats-item.wrong .stats-a strong { color: #fecaca; }
         .stats-item.wrong .stats-status-badge { color: var(--danger); }
-
-        .stats-item.unanswered {
-            background: rgba(255, 255, 255, 0.02);
-            border-inline-start-color: var(--border-hover);
-        }
+        .stats-item.unanswered { background: rgba(255,255,255,.02); border-inline-start-color: var(--border-hover); }
         .stats-item.unanswered .stats-a { color: var(--text-secondary); }
         .stats-item.unanswered .stats-a strong { color: var(--text-secondary); }
         .stats-item.unanswered .stats-status-badge { color: var(--text-muted); }
+        .stats-empty { padding: 24px 20px; text-align: center; color: var(--text-muted); font-size: 13.5px; line-height: 1.6; }
 
-        .stats-empty {
-            padding: 24px 20px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13.5px;
-            line-height: 1.6;
-        }
-
-        /* ─── RESPONSIVE ─── */
         @media (max-width: 700px) {
-            .quiz-picker-menu {
-                display: block;
-                max-height: 70vh;
-                overflow-y: auto;
-                max-width: 88vw;
-            }
-            .quiz-picker-col {
-                max-height: none;
-                overflow-y: visible;
-                min-width: 0;
-                width: 100%;
-            }
-            .quiz-picker-quizzes {
-                position: static;
-                left: auto;
-                top: auto;
-                margin-top: 6px;
-                padding-top: 6px;
-                border-top: 1px solid var(--border);
-                border-left: none;
-                box-shadow: none;
-                min-width: 0;
-                max-width: none;
-                max-height: none;
-                overflow-y: visible;
-                display: none;
-                opacity: 1;
-                visibility: visible;
-            }
+            .quiz-picker-menu { display: block; max-height: 70vh; overflow-y: auto; max-width: 88vw; }
+            .quiz-picker-col { max-height: none; overflow-y: visible; min-width: 0; width: 100%; }
+            .quiz-picker-quizzes { position: static; left: auto; top: auto; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); border-left: none; box-shadow: none; min-width: 0; max-width: none; max-height: none; overflow-y: visible; display: none; opacity: 1; visibility: visible; }
             .quiz-picker-quizzes.visible { display: block; }
-            .quiz-picker-quizzes.direct-mode {
-                display: block;
-                border-top: none;
-                margin-top: 0;
-                padding-top: 0;
-            }
+            .quiz-picker-quizzes.direct-mode { display: block; border-top: none; margin-top: 0; padding-top: 0; }
         }
 
         @media (max-width: 540px) {
@@ -1094,10 +276,12 @@
             .summary-actions { flex-direction: column; }
             .summary-actions .btn { min-width: 100%; }
             .stats-title { font-size: 16px; }
+            .music-panel { width: 320px; padding: 10px; }
         }
         @media (max-width: 380px) {
             .question { font-size: 1.25rem; }
             .card { padding: 16px 12px 18px; }
+            .music-panel { width: 300px; }
         }
 
         .hidden { display: none !important; }
@@ -1112,6 +296,41 @@
             </div>
         </div>
         <div class="header-actions">
+            <div class="music-panel-wrap">
+                <button class="btn-icon" id="musicBtn" type="button" title="Music player">
+                    <i class="fa-solid fa-music"></i>
+                </button>
+                <div class="music-panel" id="musicPanel">
+                    <div class="music-panel-header">
+                        <select class="music-playlist-select" id="musicPlaylistSelect" disabled>
+                            <option>Loading playlists…</option>
+                        </select>
+                        <button class="music-close" id="musicCloseBtn" type="button" title="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="music-now-playing">
+                        <img class="music-cover" id="musicCover" src="" alt="" style="display:none;" />
+                        <div class="music-info">
+                            <div class="music-title" id="musicTitle">No track</div>
+                            <div class="music-artist" id="musicArtist">—</div>
+                        </div>
+                    </div>
+                    <div class="music-controls">
+                        <button class="music-ctrl" id="musicShuffleBtn" type="button" title="Shuffle">
+                            <i class="fas fa-shuffle"></i>
+                        </button>
+                        <button class="music-ctrl" id="musicPrevBtn" type="button" title="Previous">
+                            <i class="fas fa-backward-step"></i>
+                        </button>
+                        <button class="music-ctrl" id="musicNextBtn" type="button" title="Next">
+                            <i class="fas fa-forward-step"></i>
+                        </button>
+                    </div>
+                    <div class="music-player-slot" id="musicPlayerSlot"></div>
+                </div>
+            </div>
+
             <button class="btn-icon" id="statsBtn" type="button" title="View stats" disabled>
                 <i class="fa-solid fa-dumbbell"></i>
             </button>
@@ -1121,23 +340,12 @@
         </div>
     </header>
 
-    <!-- ══════════════════════════════════════════ -->
-    <!-- QUIZ VIEW                                -->
-    <!-- ══════════════════════════════════════════ -->
     <div class="app" id="quizApp">
         <main class="card" id="quizCard" role="main" aria-labelledby="question-heading">
 
             <div class="load-bar" id="quizLoadBar">
                 <div class="quiz-picker" id="quizPicker">
-                    <button
-                        class="quiz-picker-btn"
-                        id="quizPickerBtn"
-                        type="button"
-                        aria-label="Choose quiz file"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        disabled
-                    >
+                    <button class="quiz-picker-btn" id="quizPickerBtn" type="button" aria-label="Choose quiz file" aria-haspopup="true" aria-expanded="false" disabled>
                         <i class="fa-solid fa-book" aria-hidden="true"></i>
                     </button>
                     <div class="quiz-picker-menu" id="quizPickerMenu" role="menu" aria-label="Quizzes">
@@ -1160,22 +368,13 @@
 
             <div class="btn-row" id="answerBtnRow">
                 <button class="btn btn-know" id="knowBtn" type="button" disabled>
-                    <span>
-                        <i class="fa-solid fa-check" aria-hidden="true"></i>
-                        میدونم
-                    </span>
+                    <span><i class="fa-solid fa-check" aria-hidden="true"></i> میدونم</span>
                 </button>
                 <button class="btn btn-dontknow" id="dontKnowBtn" type="button" disabled>
-                    <span>
-                        <i class="fa-solid fa-times" aria-hidden="true"></i>
-                        نمیدونم
-                    </span>
+                    <span><i class="fa-solid fa-times" aria-hidden="true"></i> نمیدونم</span>
                 </button>
                 <button class="btn btn-reset" id="resetBtn" type="button" title="Restart quiz">
-                    <span>
-                        <i class="fa-solid fa-undo" aria-hidden="true"></i>
-                        Restart
-                    </span>
+                    <span><i class="fa-solid fa-undo" aria-hidden="true"></i> Restart</span>
                 </button>
             </div>
 
@@ -1186,46 +385,32 @@
 
             <section class="summary" id="summaryPanel" hidden aria-live="polite">
                 <h2 class="summary-title">
-                    <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>
-                    Results
+                    <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> Results
                 </h2>
                 <div class="summary-stats" id="summaryStats"></div>
                 <div id="summaryFailuresContainer"></div>
                 <div class="summary-actions">
                     <button class="btn btn-know" id="summaryRestartBtn" type="button">
-                        <span>
-                            <i class="fa-solid fa-undo" aria-hidden="true"></i>
-                            Restart Quiz
-                        </span>
+                        <span><i class="fa-solid fa-undo" aria-hidden="true"></i> Restart Quiz</span>
                     </button>
                 </div>
             </section>
-
         </main>
     </div>
 
-    <!-- ══════════════════════════════════════════ -->
-    <!-- STATS VIEW                               -->
-    <!-- ══════════════════════════════════════════ -->
     <div class="app hidden" id="statsApp">
         <main class="card stats-card" role="main" aria-labelledby="stats-heading">
-
             <div class="stats-top-bar">
                 <button class="btn-back" id="statsBackBtn" type="button">
-                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-                    Back to Quiz
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Quiz
                 </button>
                 <div id="statsPickerSlot"></div>
             </div>
-
             <h2 class="stats-title" id="stats-heading">
-                <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
-                Your Progress
+                <i class="fa-solid fa-dumbbell" aria-hidden="true"></i> Your Progress
             </h2>
-
             <div class="stats-overview" id="statsOverview"></div>
             <div class="stats-list" id="statsList"></div>
-
         </main>
     </div>
 
@@ -1233,45 +418,57 @@
         (function() {
             'use strict';
 
-            // ─── CONFIG ────────────────────────────────────────────
             const MANIFEST_URL = 'json/manifest.json';
             const JSON_DIR = 'json/';
             const VAZIR_LANGS = ['fa', 'ar', 'he', 'ur', 'ps'];
             const JP_LANGS = ['jp', 'ja'];
             const STATS_STORAGE_PREFIX = 'qstats_';
+            const MUSIC_MANIFEST_URL = 'music/manifest.json';
+            const MUSIC_DIR = 'music/';
 
-            // ─── DOM REFS ──────────────────────────────────────────
-            const card           = document.getElementById('quizCard');
-            const questionEl     = document.getElementById('question-heading');
-            const progressNum    = document.getElementById('currentNum');
-            const totalNum       = document.getElementById('totalNum');
-            const knowBtn        = document.getElementById('knowBtn');
-            const dontKnowBtn    = document.getElementById('dontKnowBtn');
-            const resetBtn       = document.getElementById('resetBtn');
-            const feedbackEl     = document.getElementById('feedbackArea');
-            const spoilerToggle  = document.getElementById('spoilerToggle');
-            const spoilerAnswer  = document.getElementById('spoilerAnswer');
+            const card = document.getElementById('quizCard');
+            const questionEl = document.getElementById('question-heading');
+            const progressNum = document.getElementById('currentNum');
+            const totalNum = document.getElementById('totalNum');
+            const knowBtn = document.getElementById('knowBtn');
+            const dontKnowBtn = document.getElementById('dontKnowBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const feedbackEl = document.getElementById('feedbackArea');
+            const spoilerToggle = document.getElementById('spoilerToggle');
+            const spoilerAnswer = document.getElementById('spoilerAnswer');
             const spoilerContainer = document.getElementById('spoilerContainer');
-            const quizLoadBar    = document.getElementById('quizLoadBar');
-            const quizPicker     = document.getElementById('quizPicker');
-            const quizPickerBtn  = document.getElementById('quizPickerBtn');
+            const quizLoadBar = document.getElementById('quizLoadBar');
+            const quizPicker = document.getElementById('quizPicker');
+            const quizPickerBtn = document.getElementById('quizPickerBtn');
             const quizPickerMenu = document.getElementById('quizPickerMenu');
-            const categoriesCol  = document.getElementById('quizPickerCategories');
-            const quizzesCol     = document.getElementById('quizPickerQuizzes');
-            const reloadBtn      = document.getElementById('reloadBtn');
-            const summaryPanel   = document.getElementById('summaryPanel');
-            const summaryStats   = document.getElementById('summaryStats');
+            const categoriesCol = document.getElementById('quizPickerCategories');
+            const quizzesCol = document.getElementById('quizPickerQuizzes');
+            const reloadBtn = document.getElementById('reloadBtn');
+            const summaryPanel = document.getElementById('summaryPanel');
+            const summaryStats = document.getElementById('summaryStats');
             const summaryFailuresContainer = document.getElementById('summaryFailuresContainer');
             const summaryRestartBtn = document.getElementById('summaryRestartBtn');
-            const statsBtn       = document.getElementById('statsBtn');
-            const quizApp        = document.getElementById('quizApp');
-            const statsApp       = document.getElementById('statsApp');
-            const statsBackBtn   = document.getElementById('statsBackBtn');
+            const statsBtn = document.getElementById('statsBtn');
+            const quizApp = document.getElementById('quizApp');
+            const statsApp = document.getElementById('statsApp');
+            const statsBackBtn = document.getElementById('statsBackBtn');
             const statsPickerSlot = document.getElementById('statsPickerSlot');
-            const statsOverview  = document.getElementById('statsOverview');
-            const statsList      = document.getElementById('statsList');
+            const statsOverview = document.getElementById('statsOverview');
+            const statsList = document.getElementById('statsList');
 
-            // ─── STATE ─────────────────────────────────────────────
+            const musicBtn = document.getElementById('musicBtn');
+            const musicPanel = document.getElementById('musicPanel');
+            const musicCloseBtn = document.getElementById('musicCloseBtn');
+            const musicPlaylistSelect = document.getElementById('musicPlaylistSelect');
+            const musicCover = document.getElementById('musicCover');
+            const musicTitle = document.getElementById('musicTitle');
+            const musicArtist = document.getElementById('musicArtist');
+            const musicShuffleBtn = document.getElementById('musicShuffleBtn');
+            const musicPrevBtn = document.getElementById('musicPrevBtn');
+            const musicNextBtn = document.getElementById('musicNextBtn');
+            const musicPlayerSlot = document.getElementById('musicPlayerSlot');
+
+            // Quiz state
             let ALL_QUESTIONS = [];
             let shuffledQuestions = [];
             let currentIndex = 0;
@@ -1283,22 +480,28 @@
             let currentLanguage = '';
             let currentQuizTitle = '';
             let failures = [];
-            let currentStats = {};   // { hash: 'c' | 'w' }
-
+            let currentStats = {};
             let QUIZ_CACHE = {};
-            let QUIZ_TREE  = {};
+            let QUIZ_TREE = {};
             let HAS_CATEGORIES = false;
-
             let hoverCloseTimer = null;
             let activeCategoryPreview = '';
 
-            // ─── HELPERS ───────────────────────────────────────────
+            // Music state
+            let MUSIC_PLAYLISTS = [];
+            let currentPlaylistIndex = 0;
+            let currentPlaylist = null;
+            let currentTrackIndex = 0;
+            let musicShuffle = false;
+            let musicAudioEl = null;
+            const musicMetaCache = new Map();
+
+            // ─── HELPERS ───
             function normalizeAnswer(answer) {
                 if (Array.isArray(answer)) return answer.map(String).join('\n');
                 if (answer == null) return '';
                 return String(answer).replace(/<br\s*\/?>/gi, '\n');
             }
-
             function shuffleArray(arr) {
                 for (let i = arr.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1306,16 +509,9 @@
                 }
                 return arr;
             }
-
             function escapeHtml(str) {
-                return String(str == null ? '' : str)
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#39;');
+                return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             }
-
             function setFeedback(iconClass, message, type) {
                 feedbackEl.classList.remove('correct', 'wrong', 'done');
                 const iconSpan = feedbackEl.querySelector('.icon');
@@ -1324,17 +520,12 @@
                 if (msgSpan) msgSpan.innerHTML = message;
                 if (type) feedbackEl.classList.add(type);
             }
-
-            function resetFeedback() {
-                setFeedback('fa-hourglass-half', 'Choose میدونم or نمیدونم.', null);
-            }
-
+            function resetFeedback() { setFeedback('fa-hourglass-half', 'Choose میدونم or نمیدونم.', null); }
             function updateProgress() {
                 progressNum.textContent = Math.min(currentIndex + 1, shuffledQuestions.length);
                 totalNum.textContent = shuffledQuestions.length;
             }
 
-            // ─── HASH / LOCALSTORAGE ───────────────────────────────
             function hashString(str) {
                 let hash = 5381;
                 const s = String(str || '');
@@ -1344,11 +535,7 @@
                 }
                 return (hash >>> 0).toString(36);
             }
-
-            function statsStorageKey(filename) {
-                return STATS_STORAGE_PREFIX + hashString(filename);
-            }
-
+            function statsStorageKey(filename) { return STATS_STORAGE_PREFIX + hashString(filename); }
             function loadStats(filename) {
                 const key = statsStorageKey(filename);
                 try {
@@ -1356,124 +543,75 @@
                     if (!raw) return {};
                     const parsed = JSON.parse(raw);
                     return (parsed && typeof parsed === 'object') ? parsed : {};
-                } catch (e) {
-                    console.warn('localStorage read failed:', e);
-                    return {};
-                }
+                } catch (e) { return {}; }
             }
-
             function saveStats(filename, stats) {
-                const key = statsStorageKey(filename);
-                try {
-                    localStorage.setItem(key, JSON.stringify(stats));
-                } catch (e) {
-                    console.warn('localStorage save failed:', e);
-                }
+                try { localStorage.setItem(statsStorageKey(filename), JSON.stringify(stats)); }
+                catch (e) { console.warn('localStorage save failed:', e); }
             }
-
             function recordStat(questionText, status) {
                 if (!currentFile) return;
-                const h = hashString(questionText);
-                currentStats[h] = status;   // 'c' or 'w' — overwrites previous value
+                currentStats[hashString(questionText)] = status;
                 saveStats(currentFile, currentStats);
             }
-
             function getQuestionStatus(questionText) {
                 if (!currentStats || typeof currentStats !== 'object') return 'unanswered';
-                const h = hashString(questionText);
-                const s = currentStats[h];
+                const s = currentStats[hashString(questionText)];
                 if (s === 'c') return 'correct';
                 if (s === 'w') return 'wrong';
                 return 'unanswered';
             }
 
-            // ─── FONT LOADING ──────────────────────────────────────
             function getFontSpecs(language) {
                 const lang = (language || '').toLowerCase().trim();
-                const specs = [
-                    '400 16px Inter',
-                    '700 16px Inter',
-                    '900 16px "Font Awesome 6 Free"'
-                ];
-                if (VAZIR_LANGS.indexOf(lang) !== -1) {
-                    specs.push('400 16px Vazir');
-                    specs.push('700 16px "Vazir Bold"');
-                }
-                if (JP_LANGS.indexOf(lang) !== -1) {
-                    specs.push('400 16px "BIZ UDPMincho"');
-                    specs.push('700 16px "BIZ UDPMincho Bold"');
-                }
+                const specs = ['400 16px Inter', '700 16px Inter', '900 16px "Font Awesome 6 Free"'];
+                if (VAZIR_LANGS.indexOf(lang) !== -1) { specs.push('400 16px Vazir'); specs.push('700 16px "Vazir Bold"'); }
+                if (JP_LANGS.indexOf(lang) !== -1) { specs.push('400 16px "BIZ UDPMincho"'); specs.push('700 16px "BIZ UDPMincho Bold"'); }
                 return specs;
             }
-
             function fontsAlreadyLoaded(language) {
-                return getFontSpecs(language).every(function(spec) {
-                    return document.fonts.check(spec);
-                });
+                return getFontSpecs(language).every(function(spec) { return document.fonts.check(spec); });
             }
-
             async function waitForFonts(language) {
                 const specs = getFontSpecs(language);
-                const timeout = new Promise(function(resolve) {
-                    setTimeout(resolve, 3000);
-                });
+                const timeout = new Promise(function(resolve) { setTimeout(resolve, 3000); });
                 try {
                     await Promise.race([
-                        Promise.all(specs.map(function(spec) {
-                            return document.fonts.load(spec).catch(function() {});
-                        })),
+                        Promise.all(specs.map(function(spec) { return document.fonts.load(spec).catch(function() {}); })),
                         timeout
                     ]);
-                } catch (err) {
-                    console.warn('Font loading error:', err);
-                }
+                } catch (err) {}
             }
-
             function ensureFontsAndReveal(language) {
-                if (fontsAlreadyLoaded(language)) {
-                    card.classList.add('fonts-ready');
-                    return;
-                }
+                if (fontsAlreadyLoaded(language)) { card.classList.add('fonts-ready'); return; }
                 card.classList.remove('fonts-ready');
-                waitForFonts(language).then(function() {
-                    card.classList.add('fonts-ready');
-                });
+                waitForFonts(language).then(function() { card.classList.add('fonts-ready'); });
             }
 
-            // ─── MANIFEST NORMALIZATION ────────────────────────────
             function normalizeManifest(manifest) {
                 const out = [];
-
                 if (manifest && manifest.categories && typeof manifest.categories === 'object') {
                     Object.keys(manifest.categories).forEach(function(cat) {
                         const list = manifest.categories[cat];
                         if (!Array.isArray(list)) return;
                         list.forEach(function(fname) {
-                            if (typeof fname === 'string' && fname.trim()) {
-                                out.push({ file: fname.trim(), category: cat });
-                            }
+                            if (typeof fname === 'string' && fname.trim()) out.push({ file: fname.trim(), category: cat });
                         });
                     });
                     return out;
                 }
-
                 if (manifest && Array.isArray(manifest.files)) {
                     manifest.files.forEach(function(entry) {
                         if (typeof entry === 'string') {
                             if (entry.trim()) out.push({ file: entry.trim(), category: '' });
                         } else if (entry && typeof entry.file === 'string' && entry.file.trim()) {
-                            out.push({
-                                file: entry.file.trim(),
-                                category: (typeof entry.category === 'string') ? entry.category.trim() : ''
-                            });
+                            out.push({ file: entry.file.trim(), category: (typeof entry.category === 'string') ? entry.category.trim() : '' });
                         }
                     });
                 }
-
                 return out;
             }
 
-            // ─── PRELOAD & TREE BUILD ──────────────────────────────
             async function preloadAllQuizzes(entries) {
                 await Promise.all(entries.map(async function(entry) {
                     const filename = entry.file;
@@ -1481,42 +619,27 @@
                         const res = await fetch(JSON_DIR + filename, { cache: 'no-store' });
                         if (!res.ok) throw new Error('HTTP ' + res.status);
                         const data = await res.json();
-                        const title = (data && typeof data.title === 'string' && data.title.trim())
-                            ? data.title.trim()
-                            : filename.replace(/\.json$/i, '');
+                        const title = (data && typeof data.title === 'string' && data.title.trim()) ? data.title.trim() : filename.replace(/\.json$/i, '');
                         QUIZ_CACHE[filename] = { data: data, title: title, error: null };
                     } catch (err) {
-                        console.warn('Preload failed:', filename, err);
-                        QUIZ_CACHE[filename] = {
-                            data: null,
-                            title: filename.replace(/\.json$/i, ''),
-                            error: err.message || 'Failed to load'
-                        };
+                        QUIZ_CACHE[filename] = { data: null, title: filename.replace(/\.json$/i, ''), error: err.message || 'Failed to load' };
                     }
                 }));
             }
-
             function buildQuizTree(entries) {
                 QUIZ_TREE = {};
                 HAS_CATEGORIES = false;
-
                 entries.forEach(function(entry) {
                     const info = QUIZ_CACHE[entry.file] || {};
                     const title = info.title || entry.file.replace(/\.json$/i, '');
                     const cat = (entry.category || '').trim() || 'Uncategorized';
                     if (entry.category && entry.category.trim()) HAS_CATEGORIES = true;
                     if (!QUIZ_TREE[cat]) QUIZ_TREE[cat] = [];
-                    QUIZ_TREE[cat].push({
-                        file: entry.file,
-                        title: title,
-                        error: info.error || null
-                    });
+                    QUIZ_TREE[cat].push({ file: entry.file, title: title, error: info.error || null });
                 });
             }
 
-            // ─── QUIZ PICKER ───────────────────────────────────────
             const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
             function openPicker() {
                 if (quizPickerBtn.disabled) return;
                 cancelClose();
@@ -1529,25 +652,15 @@
                 quizPickerBtn.setAttribute('aria-expanded', 'false');
                 quizzesCol.classList.remove('visible');
             }
-            function togglePicker() {
-                quizPicker.classList.contains('open') ? closePicker() : openPicker();
-            }
+            function togglePicker() { quizPicker.classList.contains('open') ? closePicker() : openPicker(); }
             function scheduleClose() {
                 cancelClose();
-                hoverCloseTimer = setTimeout(function() {
-                    hoverCloseTimer = null;
-                    closePicker();
-                }, 220);
+                hoverCloseTimer = setTimeout(function() { hoverCloseTimer = null; closePicker(); }, 220);
             }
-            function cancelClose() {
-                if (hoverCloseTimer) {
-                    clearTimeout(hoverCloseTimer);
-                    hoverCloseTimer = null;
-                }
-            }
+            function cancelClose() { if (hoverCloseTimer) { clearTimeout(hoverCloseTimer); hoverCloseTimer = null; } }
             function positionQuizColumn(catBtn) {
                 if (!catBtn) return;
-                const catRect  = catBtn.getBoundingClientRect();
+                const catRect = catBtn.getBoundingClientRect();
                 const menuRect = quizPickerMenu.getBoundingClientRect();
                 let offsetTop = catRect.top - menuRect.top;
                 if (offsetTop < 6) offsetTop = 6;
@@ -1560,17 +673,9 @@
                 quizzesCol.classList.remove('visible', 'direct-mode');
                 quizPickerBtn.disabled = true;
             }
-
             function renderPickerInitial() {
-                const categories = Object.keys(QUIZ_TREE).sort(function(a, b) {
-                    return a.localeCompare(b);
-                });
-
-                if (categories.length === 0) {
-                    renderPickerLoading('No quizzes');
-                    return;
-                }
-
+                const categories = Object.keys(QUIZ_TREE).sort(function(a, b) { return a.localeCompare(b); });
+                if (categories.length === 0) { renderPickerLoading('No quizzes'); return; }
                 if (!HAS_CATEGORIES || categories.length === 1) {
                     categoriesCol.style.display = 'none';
                     quizzesCol.classList.add('visible', 'direct-mode');
@@ -1581,47 +686,29 @@
                     activeCategoryPreview = '';
                     renderCategoriesHTML('');
                 }
-
                 quizPickerBtn.disabled = false;
             }
-
             function renderCategoriesHTML(activeCat) {
-                const categories = Object.keys(QUIZ_TREE).sort(function(a, b) {
-                    return a.localeCompare(b);
-                });
+                const categories = Object.keys(QUIZ_TREE).sort(function(a, b) { return a.localeCompare(b); });
                 let html = '';
                 categories.forEach(function(cat) {
                     const quizzes = QUIZ_TREE[cat];
                     const isActive = cat === activeCat;
-                    html +=
-                        '<button type="button" class="quiz-picker-item quiz-picker-cat' +
-                            (isActive ? ' active' : '') + '" ' +
-                            'data-category="' + escapeHtml(cat) + '">' +
-                            '<span class="quiz-cat">' + escapeHtml(cat) + '</span>' +
-                            '<span class="quiz-cat-count">' + quizzes.length + '</span>' +
-                            '<i class="fa-solid fa-chevron-right quiz-cat-arrow" aria-hidden="true"></i>' +
-                        '</button>';
+                    html += '<button type="button" class="quiz-picker-item quiz-picker-cat' + (isActive ? ' active' : '') + '" data-category="' + escapeHtml(cat) + '">' +
+                        '<span class="quiz-cat">' + escapeHtml(cat) + '</span>' +
+                        '<span class="quiz-cat-count">' + quizzes.length + '</span>' +
+                        '<i class="fa-solid fa-chevron-right quiz-cat-arrow" aria-hidden="true"></i></button>';
                 });
                 categoriesCol.innerHTML = html;
             }
-
             function renderQuizzesHTML(quizzes) {
-                if (!quizzes || quizzes.length === 0) {
-                    quizzesCol.innerHTML = '<div class="quiz-picker-item disabled">No quizzes</div>';
-                    return;
-                }
+                if (!quizzes || quizzes.length === 0) { quizzesCol.innerHTML = '<div class="quiz-picker-item disabled">No quizzes</div>'; return; }
                 let html = '';
                 quizzes.forEach(function(q) {
                     const isActive = q.file === currentFile;
                     const hasError = !!q.error;
-                    html +=
-                        '<button type="button" class="quiz-picker-item quiz-picker-quiz' +
-                            (isActive ? ' active' : '') +
-                            (hasError ? ' has-error' : '') + '" ' +
-                            'data-file="' + escapeHtml(q.file) + '" ' +
-                            'title="' + escapeHtml(q.file) + '">' +
-                            '<span class="quiz-title">' + escapeHtml(q.title) + '</span>' +
-                        '</button>';
+                    html += '<button type="button" class="quiz-picker-item quiz-picker-quiz' + (isActive ? ' active' : '') + (hasError ? ' has-error' : '') + '" data-file="' + escapeHtml(q.file) + '" title="' + escapeHtml(q.file) + '">' +
+                        '<span class="quiz-title">' + escapeHtml(q.title) + '</span></button>';
                 });
                 quizzesCol.innerHTML = html;
             }
@@ -1633,7 +720,6 @@
                 const cat = catBtn.dataset.category;
                 if (cat === activeCategoryPreview && quizzesCol.classList.contains('visible')) return;
                 activeCategoryPreview = cat;
-
                 categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
                     el.classList.toggle('active', el.dataset.category === cat);
                 });
@@ -1641,7 +727,6 @@
                 positionQuizColumn(catBtn);
                 quizzesCol.classList.add('visible');
             });
-
             if (canHover) {
                 categoriesCol.addEventListener('mouseover', function(e) {
                     const catBtn = e.target.closest('.quiz-picker-cat');
@@ -1649,7 +734,6 @@
                     const cat = catBtn.dataset.category;
                     if (cat === activeCategoryPreview && quizzesCol.classList.contains('visible')) return;
                     activeCategoryPreview = cat;
-
                     categoriesCol.querySelectorAll('.quiz-picker-cat').forEach(function(el) {
                         el.classList.toggle('active', el.dataset.category === cat);
                     });
@@ -1658,85 +742,55 @@
                     quizzesCol.classList.add('visible');
                 });
             }
-
             categoriesCol.addEventListener('scroll', function() {
                 const activeCat = categoriesCol.querySelector('.quiz-picker-cat.active');
                 if (activeCat) positionQuizColumn(activeCat);
             });
-
             quizzesCol.addEventListener('click', function(e) {
                 const quizBtn = e.target.closest('.quiz-picker-quiz');
                 if (!quizBtn) return;
                 e.stopPropagation();
                 const filename = quizBtn.dataset.file;
                 closePicker();
-                if (filename !== currentFile) {
-                    loadQuiz(filename);
-                }
+                if (filename !== currentFile) loadQuiz(filename);
             });
-
             if (canHover) {
-                quizPicker.addEventListener('mouseenter', function() {
-                    cancelClose();
-                    openPicker();
-                });
-                quizPicker.addEventListener('mouseleave', function() {
-                    scheduleClose();
-                });
+                quizPicker.addEventListener('mouseenter', function() { cancelClose(); openPicker(); });
+                quizPicker.addEventListener('mouseleave', function() { scheduleClose(); });
             }
-
-            quizPickerBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                togglePicker();
-            });
-
+            quizPickerBtn.addEventListener('click', function(e) { e.stopPropagation(); togglePicker(); });
             document.addEventListener('click', function(e) {
-                if (!quizPicker.contains(e.target)) {
-                    cancelClose();
-                    closePicker();
-                }
+                if (!quizPicker.contains(e.target)) { cancelClose(); closePicker(); }
+                if (!musicPanel.contains(e.target) && !musicBtn.contains(e.target)) musicPanel.classList.remove('open');
             });
-
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    cancelClose();
-                    closePicker();
-                }
+                if (e.key === 'Escape') { cancelClose(); closePicker(); musicPanel.classList.remove('open'); }
             });
 
-            // ─── LANGUAGE / FONT ───────────────────────────────────
             function applyLanguageFont(language) {
                 const lang = (language || '').toLowerCase().trim();
                 const useVazir = VAZIR_LANGS.indexOf(lang) !== -1;
-                const useJP    = JP_LANGS.indexOf(lang) !== -1;
+                const useJP = JP_LANGS.indexOf(lang) !== -1;
                 card.classList.toggle('font-vazir', useVazir);
                 card.classList.toggle('font-jp', useJP);
                 const statsCard = statsApp.querySelector('.stats-card');
-                if (statsCard) {
-                    statsCard.classList.toggle('font-vazir', useVazir);
-                    statsCard.classList.toggle('font-jp', useJP);
-                }
+                if (statsCard) { statsCard.classList.toggle('font-vazir', useVazir); statsCard.classList.toggle('font-jp', useJP); }
             }
 
-            // ─── SPOILER ───────────────────────────────────────────
             function updateSpoiler(answer) {
                 const normalized = normalizeAnswer(answer);
                 spoilerAnswer.textContent = normalized;
                 spoilerContainer.classList.remove('revealed');
                 spoilerToggle.textContent = 'Show answer';
                 spoilerVisible = false;
-
                 const lines = Math.max(1, normalized.split('\n').length);
                 const lift = -(6 + Math.min((lines - 1) * 5, 24));
                 spoilerContainer.style.setProperty('--spoiler-lift', lift + 'px');
-
                 requestAnimationFrame(function() {
                     const h = spoilerAnswer.scrollHeight;
-                    const maxH = Math.max(h + 40, 200);
-                    spoilerContainer.style.setProperty('--answer-max-height', maxH + 'px');
+                    spoilerContainer.style.setProperty('--answer-max-height', Math.max(h + 40, 200) + 'px');
                 });
             }
-
             function toggleSpoiler() {
                 if (spoilerVisible) {
                     spoilerContainer.classList.remove('revealed');
@@ -1748,155 +802,93 @@
                 spoilerVisible = !spoilerVisible;
             }
 
-            // ─── SUMMARY (end of quiz) ─────────────────────────────
             function showSummary() {
                 const total = shuffledQuestions.length;
                 const failCount = failures.length;
                 const knowCount = total - failCount;
                 const pct = total > 0 ? Math.round((knowCount / total) * 100) : 0;
-
                 const lang = (currentLanguage || '').toLowerCase().trim();
                 const isRTL = VAZIR_LANGS.indexOf(lang) !== -1;
                 summaryFailuresContainer.dir = isRTL ? 'rtl' : 'ltr';
-
-                summaryStats.innerHTML =
-                    'You knew <span class="stat-know">' + knowCount + '</span> of <strong>' + total + '</strong> ' +
-                    '(' + pct + '%) &nbsp;·&nbsp; missed <span class="stat-miss">' + failCount + '</span>';
-
+                summaryStats.innerHTML = 'You knew <span class="stat-know">' + knowCount + '</span> of <strong>' + total + '</strong> (' + pct + '%) &nbsp;·&nbsp; missed <span class="stat-miss">' + failCount + '</span>';
                 if (failCount === 0) {
-                    summaryFailuresContainer.innerHTML =
-                        '<div class="summary-all-good"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Perfect! You knew every question.</div>';
+                    summaryFailuresContainer.innerHTML = '<div class="summary-all-good"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Perfect! You knew every question.</div>';
                 } else {
-                    let html = '<div class="summary-failures-title">' +
-                               '<i class="fa-solid fa-list-ul" aria-hidden="true"></i>' +
-                               ' Questions you missed</div>';
+                    let html = '<div class="summary-failures-title"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> Questions you missed</div>';
                     failures.forEach(function(f) {
-                        html +=
-                            '<div class="failure-item">' +
-                                '<div class="failure-q">' + escapeHtml(f.question) + '</div>' +
-                                '<div class="failure-a"><span class="a-label"><bdi>Answer:</bdi></span>' +
-                                    '<strong>' + escapeHtml(f.answer) + '</strong></div>' +
-                            '</div>';
+                        html += '<div class="failure-item"><div class="failure-q">' + escapeHtml(f.question) + '</div>' +
+                            '<div class="failure-a"><span class="a-label"><bdi>Answer:</bdi></span><strong>' + escapeHtml(f.answer) + '</strong></div></div>';
                     });
                     summaryFailuresContainer.innerHTML = html;
                 }
-
                 summaryPanel.hidden = false;
             }
+            function hideSummary() { summaryPanel.hidden = true; summaryStats.innerHTML = ''; summaryFailuresContainer.innerHTML = ''; }
 
-            function hideSummary() {
-                summaryPanel.hidden = true;
-                summaryStats.innerHTML = '';
-                summaryFailuresContainer.innerHTML = '';
-            }
-
-            // ─── STATS VIEW ────────────────────────────────────────
             function renderStatsView() {
                 if (!ALL_QUESTIONS.length) {
                     statsOverview.innerHTML = '';
                     statsList.innerHTML = '<div class="stats-empty">No quiz loaded. Return to the quiz to load one.</div>';
                     return;
                 }
-
                 const lang = (currentLanguage || '').toLowerCase().trim();
-                const isRTL = VAZIR_LANGS.indexOf(lang) !== -1;
-                statsList.dir = isRTL ? 'rtl' : 'ltr';
-
-                let correctCount = 0;
-                let wrongCount = 0;
-                let unansweredCount = 0;
-
+                statsList.dir = VAZIR_LANGS.indexOf(lang) !== -1 ? 'rtl' : 'ltr';
+                let correctCount = 0, wrongCount = 0, unansweredCount = 0;
                 const items = ALL_QUESTIONS.map(function(q) {
                     const status = getQuestionStatus(q.question);
                     if (status === 'correct') correctCount++;
                     else if (status === 'wrong') wrongCount++;
                     else unansweredCount++;
-                    return {
-                        question: normalizeAnswer(q.question),
-                        answer: normalizeAnswer(q.answer),
-                        status: status
-                    };
+                    return { question: normalizeAnswer(q.question), answer: normalizeAnswer(q.answer), status: status };
                 });
-
                 const total = items.length;
                 const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-
-                statsOverview.innerHTML =
-                    '<span class="ov-correct">' + correctCount + '</span> correct &nbsp;·&nbsp; ' +
+                statsOverview.innerHTML = '<span class="ov-correct">' + correctCount + '</span> correct &nbsp;·&nbsp; ' +
                     '<span class="ov-wrong">' + wrongCount + '</span> wrong &nbsp;·&nbsp; ' +
-                    '<span class="ov-neutral">' + unansweredCount + '</span> not answered' +
-                    ' &nbsp;·&nbsp; ' + pct + '% correct';
-
+                    '<span class="ov-neutral">' + unansweredCount + '</span> not answered &nbsp;·&nbsp; ' + pct + '% correct';
                 let html = '';
                 items.forEach(function(item) {
-                    let badgeIcon = 'fa-circle';
-                    let badgeTitle = 'Not answered';
-                    if (item.status === 'correct') {
-                        badgeIcon = 'fa-check-circle';
-                        badgeTitle = 'Correct';
-                    } else if (item.status === 'wrong') {
-                        badgeIcon = 'fa-times-circle';
-                        badgeTitle = 'Wrong';
-                    }
-
-                    html +=
-                        '<div class="stats-item ' + item.status + '">' +
-                            '<i class="stats-status-badge fa-solid ' + badgeIcon + '" title="' + badgeTitle + '" aria-label="' + badgeTitle + '"></i>' +
-                            '<div class="stats-q">' + escapeHtml(item.question) + '</div>' +
-                            '<div class="stats-a"><span class="a-label"><bdi>Answer:</bdi></span>' +
-                                '<strong>' + escapeHtml(item.answer) + '</strong></div>' +
-                        '</div>';
+                    let badgeIcon = 'fa-circle', badgeTitle = 'Not answered';
+                    if (item.status === 'correct') { badgeIcon = 'fa-check-circle'; badgeTitle = 'Correct'; }
+                    else if (item.status === 'wrong') { badgeIcon = 'fa-times-circle'; badgeTitle = 'Wrong'; }
+                    html += '<div class="stats-item ' + item.status + '">' +
+                        '<i class="stats-status-badge fa-solid ' + badgeIcon + '" title="' + badgeTitle + '" aria-label="' + badgeTitle + '"></i>' +
+                        '<div class="stats-q">' + escapeHtml(item.question) + '</div>' +
+                        '<div class="stats-a"><span class="a-label"><bdi>Answer:</bdi></span><strong>' + escapeHtml(item.answer) + '</strong></div></div>';
                 });
                 statsList.innerHTML = html;
             }
-
             function openStatsView() {
                 if (!currentFile) return;
-
                 statsPickerSlot.appendChild(quizPicker);
                 quizLoadBar.classList.add('hidden-bar');
-
                 quizApp.classList.add('hidden');
                 statsApp.classList.remove('hidden');
                 statsApp.classList.add('view-enter');
-                setTimeout(function() {
-                    statsApp.classList.remove('view-enter');
-                }, 350);
-
+                setTimeout(function() { statsApp.classList.remove('view-enter'); }, 350);
                 statsBtn.querySelector('i').className = 'fa-solid fa-home';
                 statsBtn.title = 'Back to quiz';
                 statsBtn.disabled = false;
-
                 renderStatsView();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-
             function closeStatsView() {
                 cancelClose();
                 closePicker();
-
                 quizLoadBar.appendChild(quizPicker);
                 quizLoadBar.classList.remove('hidden-bar');
-
                 statsApp.classList.add('hidden');
                 quizApp.classList.remove('hidden');
                 quizApp.classList.add('view-enter');
-                setTimeout(function() {
-                    quizApp.classList.remove('view-enter');
-                }, 350);
-
+                setTimeout(function() { quizApp.classList.remove('view-enter'); }, 350);
                 statsBtn.querySelector('i').className = 'fa-solid fa-dumbbell';
                 statsBtn.title = 'View stats';
             }
 
-            // ─── EMPTY STATE ───────────────────────────────────────
             function showEmptyState(message, reveal) {
                 card.classList.remove('quiz-finished');
-                if (reveal === true) {
-                    card.classList.add('fonts-ready');
-                } else {
-                    card.classList.remove('fonts-ready');
-                }
+                if (reveal === true) card.classList.add('fonts-ready');
+                else card.classList.remove('fonts-ready');
                 currentLanguage = '';
                 questionEl.textContent = message || 'Load a quiz file to begin';
                 progressNum.textContent = '0';
@@ -1913,13 +905,8 @@
                 statsBtn.disabled = true;
             }
 
-            // ─── DISPLAY QUESTION ──────────────────────────────────
             function displayQuestion(index) {
-                if (autoAdvanceTimer) {
-                    clearTimeout(autoAdvanceTimer);
-                    autoAdvanceTimer = null;
-                }
-
+                if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
                 if (index >= shuffledQuestions.length) {
                     isComplete = true;
                     card.classList.add('quiz-finished');
@@ -1933,90 +920,44 @@
                     showSummary();
                     return;
                 }
-
                 card.classList.remove('quiz-finished');
                 hideSummary();
                 spoilerContainer.style.display = '';
                 const q = shuffledQuestions[index];
                 questionEl.textContent = normalizeAnswer(q.question);
                 updateSpoiler(q.answer);
-
                 knowBtn.disabled = false;
                 dontKnowBtn.disabled = false;
                 spoilerToggle.disabled = false;
                 resetFeedback();
                 updateProgress();
             }
+            function advanceToNext() { if (isComplete) return; currentIndex++; displayQuestion(currentIndex); }
 
-            function advanceToNext() {
-                if (isComplete) return;
-                currentIndex++;
-                displayQuestion(currentIndex);
-            }
-
-            // ─── ANSWER ACTIONS ────────────────────────────────────
             function markKnown() {
-                if (autoAdvanceTimer) {
-                    clearTimeout(autoAdvanceTimer);
-                    autoAdvanceTimer = null;
-                }
-                if (isComplete) return;
-                if (currentIndex >= shuffledQuestions.length) return;
-
-                const current = shuffledQuestions[currentIndex];
-                recordStat(current.question, 'c');
-
+                if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+                if (isComplete || currentIndex >= shuffledQuestions.length) return;
+                recordStat(shuffledQuestions[currentIndex].question, 'c');
                 setFeedback('fa-check-circle', 'Marked as known. Moving on…', 'correct');
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
-
-                autoAdvanceTimer = setTimeout(function() {
-                    autoAdvanceTimer = null;
-                    advanceToNext();
-                }, 400);
+                autoAdvanceTimer = setTimeout(function() { autoAdvanceTimer = null; advanceToNext(); }, 400);
             }
-
             function markUnknown() {
-                if (autoAdvanceTimer) {
-                    clearTimeout(autoAdvanceTimer);
-                    autoAdvanceTimer = null;
-                }
-                if (isComplete) return;
-                if (currentIndex >= shuffledQuestions.length) return;
-
+                if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+                if (isComplete || currentIndex >= shuffledQuestions.length) return;
                 const current = shuffledQuestions[currentIndex];
                 recordStat(current.question, 'w');
-
-                failures.push({
-                    question: normalizeAnswer(current.question),
-                    answer:   normalizeAnswer(current.answer)
-                });
-
+                failures.push({ question: normalizeAnswer(current.question), answer: normalizeAnswer(current.answer) });
                 setFeedback('fa-times-circle', 'Recorded as not known. Moving on…', 'wrong');
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
-
-                autoAdvanceTimer = setTimeout(function() {
-                    autoAdvanceTimer = null;
-                    advanceToNext();
-                }, 400);
+                autoAdvanceTimer = setTimeout(function() { autoAdvanceTimer = null; advanceToNext(); }, 400);
             }
-
-            // ─── RESTART (localStorage preserved) ──────────────────
             function restartQuiz() {
-                if (autoAdvanceTimer) {
-                    clearTimeout(autoAdvanceTimer);
-                    autoAdvanceTimer = null;
-                }
-                if (ALL_QUESTIONS.length === 0) {
-                    showEmptyState();
-                    return;
-                }
-
-                if (currentFile) {
-                    currentStats = loadStats(currentFile);
-                }
-
+                if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+                if (ALL_QUESTIONS.length === 0) { showEmptyState(); return; }
+                if (currentFile) currentStats = loadStats(currentFile);
                 failures = [];
                 card.classList.remove('quiz-finished');
                 hideSummary();
@@ -2027,31 +968,15 @@
                 displayQuestion(0);
             }
 
-            // ─── LOAD QUESTIONS ────────────────────────────────────
             function loadQuestionsFromData(data, sourceName) {
-                let arr = [];
-                let language = '';
-
-                if (Array.isArray(data)) {
-                    arr = data;
-                } else if (data && Array.isArray(data.questions)) {
-                    arr = data.questions;
-                    language = (typeof data.language === 'string') ? data.language : '';
-                } else {
-                    throw new Error('Invalid format. Expected an array or { language, questions: [...] }.');
-                }
-
+                let arr = [], language = '';
+                if (Array.isArray(data)) arr = data;
+                else if (data && Array.isArray(data.questions)) { arr = data.questions; language = (typeof data.language === 'string') ? data.language : ''; }
+                else throw new Error('Invalid format.');
                 const valid = arr.filter(function(q) {
-                    return q &&
-                        typeof q.question === 'string' &&
-                        (typeof q.answer === 'string' || Array.isArray(q.answer)) &&
-                        q.question.trim().length > 0;
+                    return q && typeof q.question === 'string' && (typeof q.answer === 'string' || Array.isArray(q.answer)) && q.question.trim().length > 0;
                 });
-
-                if (valid.length === 0) {
-                    throw new Error('No valid questions found in this file.');
-                }
-
+                if (valid.length === 0) throw new Error('No valid questions found.');
                 ALL_QUESTIONS = valid;
                 currentLanguage = language;
                 failures = [];
@@ -2060,115 +985,65 @@
                 spoilerContainer.style.display = '';
                 totalNum.textContent = ALL_QUESTIONS.length;
                 applyLanguageFont(language);
-
                 currentStats = loadStats(sourceName);
-
                 shuffledQuestions = shuffleArray([...ALL_QUESTIONS]);
                 currentIndex = 0;
                 isComplete = false;
                 displayQuestion(0);
-
                 ensureFontsAndReveal(language);
-
                 statsBtn.disabled = false;
-
-                if (!statsApp.classList.contains('hidden')) {
-                    renderStatsView();
-                }
+                if (!statsApp.classList.contains('hidden')) renderStatsView();
             }
 
-            // ─── LOAD A QUIZ ───────────────────────────────────────
             function loadQuiz(filename) {
                 for (const cat in QUIZ_TREE) {
-                    if (QUIZ_TREE[cat].some(function(q) { return q.file === filename; })) {
-                        currentCategory = cat;
-                        break;
-                    }
+                    if (QUIZ_TREE[cat].some(function(q) { return q.file === filename; })) { currentCategory = cat; break; }
                 }
                 currentFile = filename;
-
                 if (QUIZ_CACHE[filename] && QUIZ_CACHE[filename].data) {
                     currentQuizTitle = QUIZ_CACHE[filename].title || filename.replace(/\.json$/i, '');
                     loadQuestionsFromData(QUIZ_CACHE[filename].data, filename);
-                } else {
-                    fetchJsonFile(filename);
-                }
+                } else fetchJsonFile(filename);
             }
-
-            // ─── FETCH JSON FILE (fresh) ───────────────────────────
             function fetchJsonFile(filename) {
                 knowBtn.disabled = true;
                 dontKnowBtn.disabled = true;
                 statsBtn.disabled = true;
-
                 fetch(JSON_DIR + filename, { cache: 'no-store' })
-                    .then(function(res) {
-                        if (!res.ok) throw new Error('HTTP ' + res.status);
-                        return res.json();
-                    })
+                    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
                     .then(function(data) {
-                        const title = (data && typeof data.title === 'string' && data.title.trim())
-                            ? data.title.trim()
-                            : filename.replace(/\.json$/i, '');
+                        const title = (data && typeof data.title === 'string' && data.title.trim()) ? data.title.trim() : filename.replace(/\.json$/i, '');
                         currentQuizTitle = title;
-
                         QUIZ_CACHE[filename] = { data: data, title: title, error: null };
-
                         for (const cat in QUIZ_TREE) {
-                            const entry = QUIZ_TREE[cat].find(function(q) {
-                                return q.file === filename;
-                            });
-                            if (entry) {
-                                entry.title = title;
-                                entry.error = null;
-                                break;
-                            }
+                            const entry = QUIZ_TREE[cat].find(function(q) { return q.file === filename; });
+                            if (entry) { entry.title = title; entry.error = null; break; }
                         }
-
                         currentFile = filename;
                         loadQuestionsFromData(data, filename);
                     })
                     .catch(function(err) {
-                        console.error(err);
                         card.classList.remove('font-vazir', 'font-jp');
                         showEmptyState('Failed to load ' + filename, true);
                         setFeedback('fa-exclamation-circle', 'Could not load ' + filename + ': ' + err.message, 'wrong');
                     });
             }
-
-            // ─── LOAD MANIFEST + PRELOAD + FIRST QUIZ ──────────────
             async function loadManifestAndFirstQuiz() {
-                QUIZ_CACHE = {};
-                QUIZ_TREE = {};
-                HAS_CATEGORIES = false;
-                currentFile = '';
-                currentCategory = '';
-                currentLanguage = '';
-                currentQuizTitle = '';
-                currentStats = {};
-                activeCategoryPreview = '';
+                QUIZ_CACHE = {}; QUIZ_TREE = {}; HAS_CATEGORIES = false;
+                currentFile = ''; currentCategory = ''; currentLanguage = ''; currentQuizTitle = '';
+                currentStats = {}; activeCategoryPreview = '';
                 renderPickerLoading('Loading manifest…');
-
                 try {
                     const res = await fetch(MANIFEST_URL, { cache: 'no-store' });
                     if (!res.ok) throw new Error('HTTP ' + res.status + ' for manifest.json');
                     const manifest = await res.json();
-
                     const entries = normalizeManifest(manifest);
-                    if (entries.length === 0) {
-                        throw new Error('manifest.json must contain a non-empty "files" array.');
-                    }
-
+                    if (entries.length === 0) throw new Error('manifest.json must contain a non-empty "files" array.');
                     renderPickerLoading('Loading quizzes…');
                     await preloadAllQuizzes(entries);
-
                     buildQuizTree(entries);
                     renderPickerInitial();
-
-                    const firstGood = entries.find(function(e) {
-                        return QUIZ_CACHE[e.file] && QUIZ_CACHE[e.file].data;
-                    });
-
+                    const firstGood = entries.find(function(e) { return QUIZ_CACHE[e.file] && QUIZ_CACHE[e.file].data; });
                     if (firstGood) {
                         currentFile = firstGood.file;
                         currentQuizTitle = QUIZ_CACHE[firstGood.file].title || firstGood.file.replace(/\.json$/i, '');
@@ -2178,50 +1053,332 @@
                         setFeedback('fa-exclamation-circle', 'All quiz files failed to load.', 'wrong');
                     }
                 } catch (err) {
-                    console.error(err);
                     renderPickerLoading('— error —');
                     showEmptyState('Could not read json/manifest.json', true);
-                    setFeedback(
-                        'fa-exclamation-circle',
-                        'Manifest error: ' + err.message +
-                        '<span class="detail">Run from a server (not file://) and make sure json/manifest.json exists.</span>',
-                        'wrong'
-                    );
+                    setFeedback('fa-exclamation-circle', 'Manifest error: ' + err.message, 'wrong');
                 }
             }
 
-            // ─── EVENTS ────────────────────────────────────────────
+            // ═══════════════════════════════════════════
+            // MUSIC PLAYER — jsmediatags based
+            // ═══════════════════════════════════════════
+            function waitForAudioPlayer(timeout) {
+                timeout = timeout || 5000;
+                if (customElements.get('audio-player')) return Promise.resolve();
+                return new Promise(function(resolve, reject) {
+                    const start = Date.now();
+                    (function check() {
+                        if (customElements.get('audio-player')) return resolve();
+                        if (Date.now() - start > timeout) return reject(new Error('Audio player failed to load'));
+                        setTimeout(check, 100);
+                    })();
+                });
+            }
+
+            function deriveFromUrl(url) {
+                try {
+                    let name = url.split('?')[0].split('#')[0].split('/').pop();
+                    name = decodeURIComponent(name);
+                    name = name.replace(/\.(mp3|ogg|m4a|wav|flac|aac|opus|webm|mp4)$/i, '');
+                    name = name.replace(/[_\-.]+/g, ' ').replace(/\s+/g, ' ').trim();
+                    name = name.replace(/^\d+\s*[-.]?\s*/, '');
+                    const dashMatch = name.match(/^(.+?)\s*[-–—]\s*(.+)$/);
+                    if (dashMatch) {
+                        return {
+                            title: dashMatch[2].trim() || dashMatch[1].trim(),
+                            artist: dashMatch[1].trim() || 'Unknown Artist',
+                            cover: ''
+                        };
+                    }
+                    return { title: name || 'Untitled', artist: 'Unknown Artist', cover: '' };
+                } catch (e) {
+                    return { title: 'Untitled', artist: 'Unknown Artist', cover: '' };
+                }
+            }
+
+            // Convert jsmediatags picture object to a data URL
+            function pictureToDataUrl(picture) {
+                if (!picture || !picture.data) return '';
+                try {
+                    const data = picture.data;
+                    const len = data.length;
+                    let binary = '';
+                    const chunkSize = 0x8000;
+                    for (let i = 0; i < len; i += chunkSize) {
+                        const chunk = (typeof data.subarray === 'function')
+                            ? data.subarray(i, i + chunkSize)
+                            : data.slice(i, i + chunkSize);
+                        binary += String.fromCharCode.apply(null, chunk);
+                    }
+                    const base64 = btoa(binary);
+                    const format = ((picture.format || 'image/jpeg').split(' ')[0] || 'image/jpeg').toLowerCase();
+                    return 'data:' + format + ';base64,' + base64;
+                } catch (e) {
+                    console.warn('pictureToDataUrl failed:', e);
+                    return '';
+                }
+            }
+
+            // Read metadata from the audio file using jsmediatags
+            function readTagsWithJsmediatags(url) {
+                return new Promise(function(resolve, reject) {
+                    if (typeof jsmediatags === 'undefined') {
+                        reject(new Error('jsmediatags not loaded'));
+                        return;
+                    }
+                    let done = false;
+                    const timeout = setTimeout(function() {
+                        if (!done) { done = true; reject(new Error('timeout')); }
+                    }, 10000);
+
+                    try {
+                        jsmediatags.read(url, {
+                            onSuccess: function(tag) {
+                                if (done) return;
+                                done = true;
+                                clearTimeout(timeout);
+                                resolve(tag.tags || {});
+                            },
+                            onError: function(error) {
+                                if (done) return;
+                                done = true;
+                                clearTimeout(timeout);
+                                reject(new Error((error && error.type) || 'read error'));
+                            }
+                        });
+                    } catch (e) {
+                        if (!done) { done = true; clearTimeout(timeout); reject(e); }
+                    }
+                });
+            }
+
+            async function fetchTrackMeta(url) {
+                if (musicMetaCache.has(url)) return musicMetaCache.get(url);
+                const fallback = deriveFromUrl(url);
+
+                try {
+                    const tags = await readTagsWithJsmediatags(url);
+                    const meta = {
+                        title: (tags.title && String(tags.title).trim()) || fallback.title,
+                        artist: (tags.artist && String(tags.artist).trim()) || fallback.artist,
+                        cover: pictureToDataUrl(tags.picture)
+                    };
+                    musicMetaCache.set(url, meta);
+                    return meta;
+                } catch (err) {
+                    console.warn('jsmediatags failed for', url, '-', err.message);
+                    musicMetaCache.set(url, fallback);
+                    return fallback;
+                }
+            }
+
+            function normalizeSong(s) {
+                if (typeof s === 'string') return { url: s };
+                if (s && typeof s.url === 'string') {
+                    return {
+                        url: s.url,
+                        title: typeof s.title === 'string' ? s.title : '',
+                        artist: typeof s.artist === 'string' ? s.artist : '',
+                        cover: typeof s.cover === 'string' ? s.cover : ''
+                    };
+                }
+                return null;
+            }
+
+            async function getSongMeta(song) {
+                if (song.title && song.artist) {
+                    return { title: song.title, artist: song.artist, cover: song.cover || '' };
+                }
+                const fetched = await fetchTrackMeta(song.url);
+                return {
+                    title: song.title || fetched.title,
+                    artist: song.artist || fetched.artist,
+                    cover: song.cover || fetched.cover
+                };
+            }
+
+            function applyTrackDisplay(meta) {
+                musicTitle.textContent = meta.title || 'Untitled';
+                musicArtist.textContent = meta.artist || 'Unknown Artist';
+                if (meta.cover) {
+                    musicCover.src = meta.cover;
+                    musicCover.style.display = '';
+                } else {
+                    musicCover.removeAttribute('src');
+                    musicCover.style.display = 'none';
+                }
+            }
+
+            async function buildPlayerAudio(url) {
+                let useVideojs = true;
+                try { await waitForAudioPlayer(3000); } catch (e) { useVideojs = false; }
+
+                if (useVideojs) {
+                    musicPlayerSlot.innerHTML =
+                        '<audio-player><audio-skin><audio src="' + url.replace(/"/g, '&quot;') + '" preload="metadata"></audio></audio-skin></audio-player>';
+                } else {
+                    musicPlayerSlot.innerHTML =
+                        '<audio controls preload="metadata" src="' + url.replace(/"/g, '&quot;') + '" style="width:100%;display:block;"></audio>';
+                }
+                musicAudioEl = musicPlayerSlot.querySelector('audio');
+                if (!musicAudioEl) return null;
+
+                musicAudioEl.addEventListener('play', function() { musicBtn.classList.add('playing'); });
+                musicAudioEl.addEventListener('pause', function() { if (!musicAudioEl.ended) musicBtn.classList.remove('playing'); });
+                musicAudioEl.addEventListener('ended', function() {
+                    musicBtn.classList.remove('playing');
+                    nextTrack(true);
+                });
+                musicAudioEl.addEventListener('error', function() {
+                    musicTitle.textContent = 'Failed to load audio';
+                    musicArtist.textContent = 'Check the URL';
+                    musicBtn.classList.remove('playing');
+                });
+                return musicAudioEl;
+            }
+
+            async function loadMusicManifest() {
+                try {
+                    const res = await fetch(MUSIC_MANIFEST_URL, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    const playlists = Array.isArray(data) ? data : (data.playlists || []);
+                    MUSIC_PLAYLISTS = playlists.filter(function(p) { return p && typeof p.file === 'string' && p.file.trim(); });
+                    if (MUSIC_PLAYLISTS.length === 0) throw new Error('No playlists in manifest');
+                    musicPlaylistSelect.innerHTML = '';
+                    MUSIC_PLAYLISTS.forEach(function(p, i) {
+                        const opt = document.createElement('option');
+                        opt.value = String(i);
+                        opt.textContent = p.name || p.file.replace(/\.json$/i, '');
+                        musicPlaylistSelect.appendChild(opt);
+                    });
+                    musicPlaylistSelect.disabled = false;
+                    await selectPlaylist(0);
+                } catch (err) {
+                    console.warn('Music manifest failed:', err);
+                    musicTitle.textContent = 'No music available';
+                    musicArtist.textContent = 'Add music/manifest.json';
+                    musicPlaylistSelect.innerHTML = '<option>— unavailable —</option>';
+                    musicPlaylistSelect.disabled = true;
+                }
+            }
+
+            async function selectPlaylist(index) {
+                if (index < 0 || index >= MUSIC_PLAYLISTS.length) return;
+                currentPlaylistIndex = index;
+                musicPlaylistSelect.value = String(index);
+                try {
+                    const res = await fetch(MUSIC_DIR + MUSIC_PLAYLISTS[index].file, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    const raw = Array.isArray(data) ? data : (data.songs || []);
+                    const songs = raw.map(normalizeSong).filter(Boolean);
+                    if (songs.length === 0) throw new Error('No valid songs');
+                    currentPlaylist = {
+                        title: data.title || MUSIC_PLAYLISTS[index].name || 'Playlist',
+                        songs: songs
+                    };
+                    currentTrackIndex = 0;
+                    await loadTrack(0, false);
+                } catch (err) {
+                    console.warn('Playlist load failed:', err);
+                    musicTitle.textContent = 'Failed to load';
+                    musicArtist.textContent = err.message;
+                }
+            }
+
+            async function loadTrack(index, autoplay) {
+                if (!currentPlaylist || currentPlaylist.songs.length === 0) return;
+                const total = currentPlaylist.songs.length;
+                currentTrackIndex = ((index % total) + total) % total;
+                const song = currentPlaylist.songs[currentTrackIndex];
+
+                // Instant fallback display
+                applyTrackDisplay(deriveFromUrl(song.url));
+
+                // Build the audio player immediately
+                await buildPlayerAudio(song.url);
+
+                // Trigger autoplay if requested
+                if (autoplay && musicAudioEl) {
+                    try { await musicAudioEl.play(); } catch (e) {}
+                }
+
+                // Fetch accurate metadata from the file's ID3 tags in the background
+                const urlAtStart = song.url;
+                getSongMeta(song).then(function(meta) {
+                    if (!currentPlaylist || !currentPlaylist.songs[currentTrackIndex]) return;
+                    if (currentPlaylist.songs[currentTrackIndex].url !== urlAtStart) return;
+                    applyTrackDisplay(meta);
+                });
+            }
+
+            function nextTrack(autoplay) {
+                if (!currentPlaylist || currentPlaylist.songs.length === 0) return;
+                const total = currentPlaylist.songs.length;
+                let next;
+                if (musicShuffle && total > 1) {
+                    do { next = Math.floor(Math.random() * total); } while (next === currentTrackIndex);
+                } else {
+                    next = currentTrackIndex + 1;
+                }
+                loadTrack(next, autoplay !== false);
+            }
+
+            function prevTrack() {
+                if (!currentPlaylist || currentPlaylist.songs.length === 0) return;
+                const total = currentPlaylist.songs.length;
+                let prev;
+                if (musicShuffle && total > 1) {
+                    do { prev = Math.floor(Math.random() * total); } while (prev === currentTrackIndex);
+                } else {
+                    prev = currentTrackIndex - 1;
+                }
+                loadTrack(prev, true);
+            }
+
+            musicBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                musicPanel.classList.toggle('open');
+            });
+            musicCloseBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                musicPanel.classList.remove('open');
+            });
+            musicPlaylistSelect.addEventListener('change', function() {
+                const idx = parseInt(musicPlaylistSelect.value, 10);
+                if (!isNaN(idx)) selectPlaylist(idx);
+            });
+            musicShuffleBtn.addEventListener('click', function() {
+                musicShuffle = !musicShuffle;
+                musicShuffleBtn.classList.toggle('active', musicShuffle);
+            });
+            musicPrevBtn.addEventListener('click', function() { prevTrack(); });
+            musicNextBtn.addEventListener('click', function() { nextTrack(true); });
+
+            // ─── QUIZ EVENTS ───
             knowBtn.addEventListener('click', markKnown);
             dontKnowBtn.addEventListener('click', markUnknown);
             resetBtn.addEventListener('click', restartQuiz);
             summaryRestartBtn.addEventListener('click', restartQuiz);
             spoilerToggle.addEventListener('click', toggleSpoiler);
-
             statsBtn.addEventListener('click', function() {
-                if (statsApp.classList.contains('hidden')) {
-                    openStatsView();
-                } else {
-                    closeStatsView();
-                }
+                if (statsApp.classList.contains('hidden')) openStatsView();
+                else closeStatsView();
             });
-
             statsBackBtn.addEventListener('click', closeStatsView);
-
             reloadBtn.addEventListener('click', function() {
                 cancelClose();
                 closePicker();
-                if (currentFile) {
-                    fetchJsonFile(currentFile);
-                } else {
-                    loadManifestAndFirstQuiz();
-                }
+                if (currentFile) fetchJsonFile(currentFile);
+                else loadManifestAndFirstQuiz();
             });
 
-            // ─── INIT ──────────────────────────────────────────────
             card.classList.remove('font-vazir', 'font-jp', 'quiz-finished', 'fonts-ready');
             statsBtn.disabled = true;
             showEmptyState('Loading quiz…');
             loadManifestAndFirstQuiz();
+            loadMusicManifest();
 
         })();
     </script>
