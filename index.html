@@ -1118,19 +1118,31 @@
                 }
             }
 
+            // ✅ FIXED: resolve to absolute URL before passing to jsmediatags
             function readTagsWithJsmediatags(url) {
                 return new Promise(function(resolve, reject) {
                     if (typeof jsmediatags === 'undefined') {
                         reject(new Error('jsmediatags not loaded'));
                         return;
                     }
+
+                    // jsmediatags requires an absolute URL with a scheme.
+                    // Relative paths like "music/song.mp3" cause "No suitable file reader found".
+                    let absoluteUrl;
+                    try {
+                        absoluteUrl = new URL(url, window.location.href).href;
+                    } catch (e) {
+                        reject(new Error('invalid URL: ' + url));
+                        return;
+                    }
+
                     let done = false;
                     const timeout = setTimeout(function() {
                         if (!done) { done = true; reject(new Error('timeout')); }
                     }, 10000);
 
                     try {
-                        jsmediatags.read(url, {
+                        jsmediatags.read(absoluteUrl, {
                             onSuccess: function(tag) {
                                 if (done) return;
                                 done = true;
