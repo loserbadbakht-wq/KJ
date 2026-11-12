@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz · FMHY Theme</title>
 
-    <!-- jsmediatags for reading embedded ID3 metadata -->
     <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
-
-    <!-- videojs audio player -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/cdn@10.2.0/audio.js"></script>
 
     <style>
@@ -1060,7 +1057,7 @@
             }
 
             // ═══════════════════════════════════════════
-            // MUSIC PLAYER — jsmediatags based
+            // MUSIC PLAYER — jsmediatags + Range fetch
             // ═══════════════════════════════════════════
             function waitForAudioPlayer(timeout) {
                 timeout = timeout || 5000;
@@ -1118,65 +1115,60 @@
                 }
             }
 
-            // ✅ FIXED: resolve to absolute URL before passing to jsmediatags
-            function readTagsWithJsmediatags(url) {
-                return new Promise(function(resolve, reject) {
-                    if (typeof jsmediatags === 'undefined') {
-                        reject(new Error('jsmediatags not loaded'));
-                        return;
-                    }
-
-                    // jsmediatags requires an absolute URL with a scheme.
-                    // Relative paths like "music/song.mp3" cause "No suitable file reader found".
-                    let absoluteUrl;
-                    try {
-                        absoluteUrl = new URL(url, window.location.href).href;
-                    } catch (e) {
-                        reject(new Error('invalid URL: ' + url));
-                        return;
-                    }
-
-                    let done = false;
-                    const timeout = setTimeout(function() {
-                        if (!done) { done = true; reject(new Error('timeout')); }
-                    }, 10000);
-
-                    try {
-                        jsmediatags.read(absoluteUrl, {
-                            onSuccess: function(tag) {
-                                if (done) return;
-                                done = true;
-                                clearTimeout(timeout);
-                                resolve(tag.tags || {});
-                            },
-                            onError: function(error) {
-                                if (done) return;
-                                done = true;
-                                clearTimeout(timeout);
-                                reject(new Error((error && error.type) || 'read error'));
-                            }
-                        });
-                    } catch (e) {
-                        if (!done) { done = true; clearTimeout(timeout); reject(e); }
-                    }
-                });
-            }
-
+            // ✅ Fetch a small chunk ourselves, then parse tags locally.
+            // This avoids jsmediatags' slow internal XHR and its 10-second timeout.
             async function fetchTrackMeta(url) {
                 if (musicMetaCache.has(url)) return musicMetaCache.get(url);
                 const fallback = deriveFromUrl(url);
 
+                if (typeof jsmediatags === 'undefined') {
+                    musicMetaCache.set(url, fallback);
+                    return fallback;
+                }
+
                 try {
-                    const tags = await readTagsWithJsmediatags(url);
+                    // 1. Absolute URL — jsmediatags doesn't accept relative paths
+                    const absoluteUrl = new URL(url, window.location.href).href;
+
+                    // 2. Fetch first 1 MB via Range request. ID3v2 tags + cover art fit easily.
+                    //    200 = server ignored Range (full body), 206 = Range honored.
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(function() { controller.abort(); }, 20000);
+                    let blob;
+                    try {
+                        const response = await fetch(absoluteUrl, {
+                            headers: { 'Range': 'bytes=0-1048575' },
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+                        if (!response.ok && response.status !== 206) {
+                            throw new Error('HTTP ' + response.status);
+                        }
+                        blob = await response.blob();
+                    } catch (e) {
+                        clearTimeout(timeoutId);
+                        throw e;
+                    }
+
+                    // 3. Parse tags from the blob — instant, no network
+                    const tags = await new Promise(function(resolve, reject) {
+                        try {
+                            jsmediatags.read(blob, {
+                                onSuccess: function(tag) { resolve(tag.tags || {}); },
+                                onError: function(error) { reject(new Error((error && error.type) || 'read error')); }
+                            });
+                        } catch (e) { reject(e); }
+                    });
+
                     const meta = {
-                        title: (tags.title && String(tags.title).trim()) || fallback.title,
+                        title:  (tags.title  && String(tags.title).trim())  || fallback.title,
                         artist: (tags.artist && String(tags.artist).trim()) || fallback.artist,
-                        cover: pictureToDataUrl(tags.picture)
+                        cover:  pictureToDataUrl(tags.picture)
                     };
                     musicMetaCache.set(url, meta);
                     return meta;
                 } catch (err) {
-                    console.warn('jsmediatags failed for', url, '-', err.message);
+                    console.warn('Metadata read failed for', url, '-', err.message);
                     musicMetaCache.set(url, fallback);
                     return fallback;
                 }
