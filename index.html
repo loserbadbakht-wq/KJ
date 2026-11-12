@@ -6,7 +6,7 @@
     <title>Quiz · FMHY Theme</title>
 
     <!-- jsmediatags for reading embedded ID3 metadata -->
-    <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.5/dist/jsmediatags.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
 
     <!-- videojs audio player -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/cdn@10.2.0/audio.js"></script>
@@ -1096,7 +1096,6 @@
                 }
             }
 
-            // Convert jsmediatags picture object to a data URL
             function pictureToDataUrl(picture) {
                 if (!picture || !picture.data) return '';
                 try {
@@ -1119,7 +1118,6 @@
                 }
             }
 
-            // Read metadata from the audio file using jsmediatags
             function readTagsWithJsmediatags(url) {
                 return new Promise(function(resolve, reject) {
                     if (typeof jsmediatags === 'undefined') {
@@ -1293,18 +1291,13 @@
                 currentTrackIndex = ((index % total) + total) % total;
                 const song = currentPlaylist.songs[currentTrackIndex];
 
-                // Instant fallback display
                 applyTrackDisplay(deriveFromUrl(song.url));
-
-                // Build the audio player immediately
                 await buildPlayerAudio(song.url);
 
-                // Trigger autoplay if requested
                 if (autoplay && musicAudioEl) {
                     try { await musicAudioEl.play(); } catch (e) {}
                 }
 
-                // Fetch accurate metadata from the file's ID3 tags in the background
                 const urlAtStart = song.url;
                 getSongMeta(song).then(function(meta) {
                     if (!currentPlaylist || !currentPlaylist.songs[currentTrackIndex]) return;
