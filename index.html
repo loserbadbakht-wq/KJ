@@ -74,21 +74,124 @@
 
         /* ─── MUSIC PANEL ─── */
         .music-panel-wrap { position: relative; display: inline-flex; }
-        .music-panel { position: absolute; top: calc(100% + 10px); right: 0; width: 360px; max-width: calc(100vw - 24px); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.97); transform-origin: top right; transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s; }
+        .music-panel {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 360px;
+            max-width: calc(100vw - 24px);
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            padding: 12px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px) scale(.97);
+            transform-origin: top right;
+            transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+        }
         .music-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s; }
-        .music-panel-header { display: flex; align-items: center; gap: 8px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
-        .music-playlist-select { flex: 1; padding: 7px 10px; font-family: inherit; font-size: 12px; font-weight: 500; color: var(--text); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); outline: none; cursor: pointer; min-width: 0; }
-        .music-playlist-select:hover:not(:disabled) { border-color: var(--border-hover); }
-        .music-playlist-select:focus { border-color: var(--primary); }
-        .music-playlist-select:disabled { opacity: .5; cursor: not-allowed; }
+
+        .music-panel-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .music-panel-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); }
         .music-close { width: 28px; height: 28px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); flex-shrink: 0; }
         .music-close:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
 
-        /* Song section (cover + name + buttons) */
+        /* ─── PLAYLIST LIST ─── */
+        .music-playlist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+        .music-playlist-list::-webkit-scrollbar { width: 4px; }
+        .music-playlist-list::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 20px; }
+
+        .music-playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: all var(--transition);
+            width: 100%;
+        }
+        .music-playlist-item:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+        }
+        .music-playlist-item.active {
+            background: var(--primary-light);
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+
+        .music-playlist-cover {
+            width: 38px;
+            height: 38px;
+            border-radius: 5px;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            color: var(--text-muted);
+            font-size: 12px;
+            border: 1px solid var(--border);
+            transition: border-color var(--transition);
+        }
+        .music-playlist-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .music-playlist-item.active .music-playlist-cover {
+            border-color: rgba(0, 212, 255, 0.35);
+        }
+
+        .music-playlist-name {
+            flex: 1;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+        .music-playlist-item.active .music-playlist-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .music-playlist-empty {
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Song section */
         .music-song {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
         }
         .music-now-playing { display: flex; align-items: center; gap: 12px; min-height: 56px; }
         .music-cover { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--bg-input); object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); display: block; }
@@ -101,16 +204,12 @@
         .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
         .music-ctrl.active { background: var(--primary-light); color: var(--primary); border-color: rgba(0,212,255,.4); }
 
-        /* ✅ Player sits BELOW the song section — no background, no box, no radius */
+        /* Player sits BELOW the song section — background-free */
         .music-player-slot {
             margin-top: 12px;
             min-height: 40px;
-            /* no background, no border, no border-radius, no overflow:hidden */
         }
-        .music-player-slot audio-player {
-            display: block;
-            width: 100%;
-        }
+        .music-player-slot audio-player { display: block; width: 100%; }
         .music-player-slot audio-player a { display: none !important; }
 
         #musicBtn.playing i { color: var(--primary); animation: musicPulse 1s ease-in-out infinite; }
@@ -316,13 +415,14 @@
                 </button>
                 <div class="music-panel" id="musicPanel">
                     <div class="music-panel-header">
-                        <select class="music-playlist-select" id="musicPlaylistSelect" disabled>
-                            <option>Loading playlists…</option>
-                        </select>
+                        <span class="music-panel-title">Playlists</span>
                         <button class="music-close" id="musicCloseBtn" type="button" title="Close">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
+
+                    <!-- Playlist cards (in-page selector) -->
+                    <div class="music-playlist-list" id="musicPlaylistList"></div>
 
                     <!-- Song section: cover + name + controls -->
                     <div class="music-song">
@@ -479,7 +579,7 @@
             const musicBtn = document.getElementById('musicBtn');
             const musicPanel = document.getElementById('musicPanel');
             const musicCloseBtn = document.getElementById('musicCloseBtn');
-            const musicPlaylistSelect = document.getElementById('musicPlaylistSelect');
+            const musicPlaylistList = document.getElementById('musicPlaylistList');
             const musicCover = document.getElementById('musicCover');
             const musicTitle = document.getElementById('musicTitle');
             const musicArtist = document.getElementById('musicArtist');
@@ -515,6 +615,7 @@
             let musicShuffle = false;
             let musicAudioEl = null;
             const musicMetaCache = new Map();
+            const musicMetaPending = new Map();
 
             // ─── HELPERS ───
             function normalizeAnswer(answer) {
@@ -1138,57 +1239,59 @@
                 }
             }
 
-            async function fetchTrackMeta(url) {
-                if (musicMetaCache.has(url)) return musicMetaCache.get(url);
-                const fallback = deriveFromUrl(url);
+            // fetchTrackMeta with in-flight dedupe
+            function fetchTrackMeta(url) {
+                if (musicMetaCache.has(url)) return Promise.resolve(musicMetaCache.get(url));
+                if (musicMetaPending.has(url)) return musicMetaPending.get(url);
 
-                if (typeof jsmediatags === 'undefined') {
-                    musicMetaCache.set(url, fallback);
-                    return fallback;
-                }
-
-                try {
-                    const absoluteUrl = new URL(url, window.location.href).href;
-
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(function() { controller.abort(); }, 20000);
-                    let blob;
-                    try {
-                        const response = await fetch(absoluteUrl, {
-                            headers: { 'Range': 'bytes=0-1048575' },
-                            signal: controller.signal
-                        });
-                        clearTimeout(timeoutId);
-                        if (!response.ok && response.status !== 206) {
-                            throw new Error('HTTP ' + response.status);
-                        }
-                        blob = await response.blob();
-                    } catch (e) {
-                        clearTimeout(timeoutId);
-                        throw e;
+                const p = (async function() {
+                    const fallback = deriveFromUrl(url);
+                    if (typeof jsmediatags === 'undefined') {
+                        musicMetaCache.set(url, fallback);
+                        return fallback;
                     }
-
-                    const tags = await new Promise(function(resolve, reject) {
+                    try {
+                        const absoluteUrl = new URL(url, window.location.href).href;
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(function() { controller.abort(); }, 20000);
+                        let blob;
                         try {
-                            jsmediatags.read(blob, {
-                                onSuccess: function(tag) { resolve(tag.tags || {}); },
-                                onError: function(error) { reject(new Error((error && error.type) || 'read error')); }
+                            const response = await fetch(absoluteUrl, {
+                                headers: { 'Range': 'bytes=0-1048575' },
+                                signal: controller.signal
                             });
-                        } catch (e) { reject(e); }
-                    });
+                            clearTimeout(timeoutId);
+                            if (!response.ok && response.status !== 206) throw new Error('HTTP ' + response.status);
+                            blob = await response.blob();
+                        } catch (e) {
+                            clearTimeout(timeoutId);
+                            throw e;
+                        }
+                        const tags = await new Promise(function(resolve, reject) {
+                            try {
+                                jsmediatags.read(blob, {
+                                    onSuccess: function(tag) { resolve(tag.tags || {}); },
+                                    onError: function(error) { reject(new Error((error && error.type) || 'read error')); }
+                                });
+                            } catch (e) { reject(e); }
+                        });
+                        const meta = {
+                            title:  (tags.title  && String(tags.title).trim())  || fallback.title,
+                            artist: (tags.artist && String(tags.artist).trim()) || fallback.artist,
+                            cover:  pictureToDataUrl(tags.picture)
+                        };
+                        musicMetaCache.set(url, meta);
+                        return meta;
+                    } catch (err) {
+                        console.warn('Metadata read failed for', url, '-', err.message);
+                        musicMetaCache.set(url, fallback);
+                        return fallback;
+                    }
+                })();
 
-                    const meta = {
-                        title:  (tags.title  && String(tags.title).trim())  || fallback.title,
-                        artist: (tags.artist && String(tags.artist).trim()) || fallback.artist,
-                        cover:  pictureToDataUrl(tags.picture)
-                    };
-                    musicMetaCache.set(url, meta);
-                    return meta;
-                } catch (err) {
-                    console.warn('Metadata read failed for', url, '-', err.message);
-                    musicMetaCache.set(url, fallback);
-                    return fallback;
-                }
+                musicMetaPending.set(url, p);
+                p.finally(function() { musicMetaPending.delete(url); });
+                return p;
             }
 
             function normalizeSong(s) {
@@ -1228,7 +1331,67 @@
                 }
             }
 
-            // ✅ Only the videojs audio-player is used — no <audio> fallback
+            // ✅ Playlist rendering — cards with cover art from first song
+            function renderPlaylistList() {
+                if (MUSIC_PLAYLISTS.length === 0) {
+                    musicPlaylistList.innerHTML = '<div class="music-playlist-empty">No playlists available</div>';
+                    return;
+                }
+
+                let html = '';
+                MUSIC_PLAYLISTS.forEach(function(p, i) {
+                    const isActive = i === currentPlaylistIndex;
+                    const name = p.name || p.file.replace(/\.json$/i, '');
+                    html +=
+                        '<button type="button" class="music-playlist-item' + (isActive ? ' active' : '') + '" data-index="' + i + '">' +
+                            '<div class="music-playlist-cover" id="playlistCover_' + i + '"><i class="fas fa-music"></i></div>' +
+                            '<span class="music-playlist-name">' + escapeHtml(name) + '</span>' +
+                        '</button>';
+                });
+                musicPlaylistList.innerHTML = html;
+
+                musicPlaylistList.querySelectorAll('.music-playlist-item').forEach(function(el) {
+                    el.addEventListener('click', function() {
+                        const idx = parseInt(el.dataset.index, 10);
+                        if (!isNaN(idx) && idx !== currentPlaylistIndex) {
+                            selectPlaylist(idx);
+                        }
+                    });
+                });
+
+                // Load covers in the background (parallel)
+                MUSIC_PLAYLISTS.forEach(function(p, i) {
+                    fetchPlaylistCover(i).then(function(cover) {
+                        if (!cover) return;
+                        const coverEl = document.getElementById('playlistCover_' + i);
+                        if (!coverEl || coverEl.querySelector('img')) return;
+                        coverEl.innerHTML = '<img src="' + cover.replace(/"/g, '&quot;') + '" alt="" />';
+                    });
+                });
+            }
+
+            // Fetch the first song's cover art for a playlist
+            async function fetchPlaylistCover(index) {
+                const p = MUSIC_PLAYLISTS[index];
+                if (!p) return null;
+                if (p._cover !== undefined) return p._cover;
+
+                try {
+                    const res = await fetch(MUSIC_DIR + p.file, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    const raw = Array.isArray(data) ? data : (data.songs || []);
+                    const songs = raw.map(normalizeSong).filter(Boolean);
+                    if (songs.length === 0) { p._cover = null; return null; }
+                    const meta = await fetchTrackMeta(songs[0].url);
+                    p._cover = meta.cover || null;
+                    return p._cover;
+                } catch (e) {
+                    p._cover = null;
+                    return null;
+                }
+            }
+
             async function buildPlayerAudio(url) {
                 try {
                     await waitForAudioPlayer(5000);
@@ -1239,10 +1402,8 @@
                     musicAudioEl = null;
                     return null;
                 }
-
                 musicPlayerSlot.innerHTML =
                     '<audio-player><audio-skin><audio src="' + url.replace(/"/g, '&quot;') + '" preload="metadata"></audio></audio-skin></audio-player>';
-
                 musicAudioEl = musicPlayerSlot.querySelector('audio');
                 if (!musicAudioEl) return null;
 
@@ -1268,28 +1429,26 @@
                     const playlists = Array.isArray(data) ? data : (data.playlists || []);
                     MUSIC_PLAYLISTS = playlists.filter(function(p) { return p && typeof p.file === 'string' && p.file.trim(); });
                     if (MUSIC_PLAYLISTS.length === 0) throw new Error('No playlists in manifest');
-                    musicPlaylistSelect.innerHTML = '';
-                    MUSIC_PLAYLISTS.forEach(function(p, i) {
-                        const opt = document.createElement('option');
-                        opt.value = String(i);
-                        opt.textContent = p.name || p.file.replace(/\.json$/i, '');
-                        musicPlaylistSelect.appendChild(opt);
-                    });
-                    musicPlaylistSelect.disabled = false;
+
+                    renderPlaylistList();
                     await selectPlaylist(0);
                 } catch (err) {
                     console.warn('Music manifest failed:', err);
                     musicTitle.textContent = 'No music available';
                     musicArtist.textContent = 'Add music/manifest.json';
-                    musicPlaylistSelect.innerHTML = '<option>— unavailable —</option>';
-                    musicPlaylistSelect.disabled = true;
+                    musicPlaylistList.innerHTML = '<div class="music-playlist-empty">No playlists available</div>';
                 }
             }
 
             async function selectPlaylist(index) {
                 if (index < 0 || index >= MUSIC_PLAYLISTS.length) return;
                 currentPlaylistIndex = index;
-                musicPlaylistSelect.value = String(index);
+
+                // Update active state in the list
+                musicPlaylistList.querySelectorAll('.music-playlist-item').forEach(function(el, i) {
+                    el.classList.toggle('active', i === index);
+                });
+
                 try {
                     const res = await fetch(MUSIC_DIR + MUSIC_PLAYLISTS[index].file, { cache: 'no-store' });
                     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1362,10 +1521,6 @@
             musicCloseBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 musicPanel.classList.remove('open');
-            });
-            musicPlaylistSelect.addEventListener('change', function() {
-                const idx = parseInt(musicPlaylistSelect.value, 10);
-                if (!isNaN(idx)) selectPlaylist(idx);
             });
             musicShuffleBtn.addEventListener('click', function() {
                 musicShuffle = !musicShuffle;
