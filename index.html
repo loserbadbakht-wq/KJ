@@ -72,6 +72,7 @@
         .header-actions .btn-icon:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
         .header-actions .btn-icon:disabled { opacity: .35; cursor: not-allowed; }
 
+        /* ─── MUSIC PANEL ─── */
         .music-panel-wrap { position: relative; display: inline-flex; }
         .music-panel { position: absolute; top: calc(100% + 10px); right: 0; width: 360px; max-width: calc(100vw - 24px); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.97); transform-origin: top right; transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s; }
         .music-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s; }
@@ -82,20 +83,36 @@
         .music-playlist-select:disabled { opacity: .5; cursor: not-allowed; }
         .music-close { width: 28px; height: 28px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); flex-shrink: 0; }
         .music-close:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
-        .music-now-playing { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; min-height: 56px; }
+
+        /* Song section (cover + name + buttons) */
+        .music-song {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .music-now-playing { display: flex; align-items: center; gap: 12px; min-height: 56px; }
         .music-cover { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--bg-input); object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); display: block; }
         .music-info { flex: 1; min-width: 0; }
         .music-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
         .music-artist { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .music-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .music-controls { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .music-ctrl { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); }
         .music-ctrl:hover:not(:disabled) { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
         .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
         .music-ctrl.active { background: var(--primary-light); color: var(--primary); border-color: rgba(0,212,255,.4); }
-        .music-player-slot { border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-input); min-height: 48px; }
-        .music-player-slot audio-player { display: block; width: 100%; border-radius: var(--radius-sm); }
+
+        /* ✅ Player sits BELOW the song section — no background, no box, no radius */
+        .music-player-slot {
+            margin-top: 12px;
+            min-height: 40px;
+            /* no background, no border, no border-radius, no overflow:hidden */
+        }
+        .music-player-slot audio-player {
+            display: block;
+            width: 100%;
+        }
         .music-player-slot audio-player a { display: none !important; }
-        .music-player-slot audio { width: 100%; display: block; }
+
         #musicBtn.playing i { color: var(--primary); animation: musicPulse 1s ease-in-out infinite; }
         @keyframes musicPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
 
@@ -306,24 +323,30 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <div class="music-now-playing">
-                        <img class="music-cover" id="musicCover" src="" alt="" style="display:none;" />
-                        <div class="music-info">
-                            <div class="music-title" id="musicTitle">No track</div>
-                            <div class="music-artist" id="musicArtist">—</div>
+
+                    <!-- Song section: cover + name + controls -->
+                    <div class="music-song">
+                        <div class="music-now-playing">
+                            <img class="music-cover" id="musicCover" src="" alt="" style="display:none;" />
+                            <div class="music-info">
+                                <div class="music-title" id="musicTitle">No track</div>
+                                <div class="music-artist" id="musicArtist">—</div>
+                            </div>
+                        </div>
+                        <div class="music-controls">
+                            <button class="music-ctrl" id="musicShuffleBtn" type="button" title="Shuffle">
+                                <i class="fas fa-shuffle"></i>
+                            </button>
+                            <button class="music-ctrl" id="musicPrevBtn" type="button" title="Previous">
+                                <i class="fas fa-backward-step"></i>
+                            </button>
+                            <button class="music-ctrl" id="musicNextBtn" type="button" title="Next">
+                                <i class="fas fa-forward-step"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="music-controls">
-                        <button class="music-ctrl" id="musicShuffleBtn" type="button" title="Shuffle">
-                            <i class="fas fa-shuffle"></i>
-                        </button>
-                        <button class="music-ctrl" id="musicPrevBtn" type="button" title="Previous">
-                            <i class="fas fa-backward-step"></i>
-                        </button>
-                        <button class="music-ctrl" id="musicNextBtn" type="button" title="Next">
-                            <i class="fas fa-forward-step"></i>
-                        </button>
-                    </div>
+
+                    <!-- Player sits BELOW the song section — background-free -->
                     <div class="music-player-slot" id="musicPlayerSlot"></div>
                 </div>
             </div>
@@ -1115,8 +1138,6 @@
                 }
             }
 
-            // ✅ Fetch a small chunk ourselves, then parse tags locally.
-            // This avoids jsmediatags' slow internal XHR and its 10-second timeout.
             async function fetchTrackMeta(url) {
                 if (musicMetaCache.has(url)) return musicMetaCache.get(url);
                 const fallback = deriveFromUrl(url);
@@ -1127,11 +1148,8 @@
                 }
 
                 try {
-                    // 1. Absolute URL — jsmediatags doesn't accept relative paths
                     const absoluteUrl = new URL(url, window.location.href).href;
 
-                    // 2. Fetch first 1 MB via Range request. ID3v2 tags + cover art fit easily.
-                    //    200 = server ignored Range (full body), 206 = Range honored.
                     const controller = new AbortController();
                     const timeoutId = setTimeout(function() { controller.abort(); }, 20000);
                     let blob;
@@ -1150,7 +1168,6 @@
                         throw e;
                     }
 
-                    // 3. Parse tags from the blob — instant, no network
                     const tags = await new Promise(function(resolve, reject) {
                         try {
                             jsmediatags.read(blob, {
@@ -1211,17 +1228,21 @@
                 }
             }
 
+            // ✅ Only the videojs audio-player is used — no <audio> fallback
             async function buildPlayerAudio(url) {
-                let useVideojs = true;
-                try { await waitForAudioPlayer(3000); } catch (e) { useVideojs = false; }
-
-                if (useVideojs) {
-                    musicPlayerSlot.innerHTML =
-                        '<audio-player><audio-skin><audio src="' + url.replace(/"/g, '&quot;') + '" preload="metadata"></audio></audio-skin></audio-player>';
-                } else {
-                    musicPlayerSlot.innerHTML =
-                        '<audio controls preload="metadata" src="' + url.replace(/"/g, '&quot;') + '" style="width:100%;display:block;"></audio>';
+                try {
+                    await waitForAudioPlayer(5000);
+                } catch (e) {
+                    musicTitle.textContent = 'Player unavailable';
+                    musicArtist.textContent = 'Video.js failed to load';
+                    musicPlayerSlot.innerHTML = '';
+                    musicAudioEl = null;
+                    return null;
                 }
+
+                musicPlayerSlot.innerHTML =
+                    '<audio-player><audio-skin><audio src="' + url.replace(/"/g, '&quot;') + '" preload="metadata"></audio></audio-skin></audio-player>';
+
                 musicAudioEl = musicPlayerSlot.querySelector('audio');
                 if (!musicAudioEl) return null;
 
