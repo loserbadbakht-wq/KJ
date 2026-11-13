@@ -2,11 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const jsmediatags = require('jsmediatags');
 
-// Polyfill fetch for Node environments older than 18 (though GitHub Actions uses Node 20 which has it)
+// Polyfill fetch for Node environments older than 18
 const fetch = global.fetch || require('node-fetch');
 
 const MUSIC_DIR = path.join(__dirname, '..', 'music');
 const MANIFEST_FILE = path.join(MUSIC_DIR, 'manifest.json');
+
+const PROXY_URL = 'https://prox.loserbadbakht.workers.dev/';
 
 // Helper to get metadata from local file
 function getLocalMetadata(filePath) {
@@ -18,9 +20,12 @@ function getLocalMetadata(filePath) {
     });
 }
 
-// Helper to get metadata from remote URL
+// Helper to get metadata from remote URL (using Proxy to bypass CORS)
 async function getRemoteMetadata(url) {
-    const res = await fetch(url);
+    // Ensure the URL is formatted with the proxy
+    const fetchUrl = url.startsWith(PROXY_URL) ? url : PROXY_URL + url;
+    
+    const res = await fetch(fetchUrl);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const arrayBuffer = await res.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
