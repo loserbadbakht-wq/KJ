@@ -73,15 +73,20 @@
         .header-actions .btn-icon:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
         .header-actions .btn-icon:disabled { opacity: .35; cursor: not-allowed; }
 
-        /* ─── MUSIC PANEL ─── */
-        .music-panel-wrap { position: relative; display: inline-flex; }
+        /* ─── MUSIC PANEL WRAP (just the button) ─── */
+        .music-panel-wrap { display: inline-flex; }
+
+        /* ═══════════════════════════════════════════
+           MUSIC PANEL — anchored to the RIGHT edge
+           of the viewport (fixed), not to the button
+           ═══════════════════════════════════════════ */
         .music-panel {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
+            position: fixed;
+            top: calc(var(--header-height) + 10px);
+            right: 24px;
             width: 360px;
-            max-width: calc(100vw - 24px);
-            max-height: calc(100vh - 80px);
+            max-width: calc(100vw - 48px);
+            max-height: calc(100vh - var(--header-height) - 20px);
             overflow-y: auto;
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -102,7 +107,7 @@
         .music-close { width: 28px; height: 28px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); flex-shrink: 0; }
         .music-close:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
 
-        /* ─── PLAYLIST SELECTOR (button + dropdown) ─── */
+        /* ─── PLAYLIST SELECTOR ─── */
         .music-playlist-selector {
             position: relative;
             margin-bottom: 12px;
@@ -267,7 +272,6 @@
         .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
         .music-ctrl.active { background: var(--primary-light); color: var(--primary); border-color: rgba(0,212,255,.4); }
 
-        /* Player sits BELOW the song section — background-free */
         .music-player-slot {
             margin-top: 12px;
             min-height: 40px;
@@ -452,12 +456,12 @@
             .summary-actions { flex-direction: column; }
             .summary-actions .btn { min-width: 100%; }
             .stats-title { font-size: 16px; }
-            .music-panel { width: 320px; padding: 10px; }
+            .music-panel { right: 16px; width: 340px; max-width: calc(100vw - 32px); padding: 10px; }
         }
         @media (max-width: 380px) {
             .question { font-size: 1.25rem; }
             .card { padding: 16px 12px 18px; }
-            .music-panel { width: 300px; }
+            .music-panel { right: 12px; width: 300px; max-width: calc(100vw - 24px); }
         }
 
         .hidden { display: none !important; }
@@ -476,48 +480,6 @@
                 <button class="btn-icon" id="musicBtn" type="button" title="Music player">
                     <i class="fa-solid fa-music"></i>
                 </button>
-                <div class="music-panel" id="musicPanel">
-                    <div class="music-panel-header">
-                        <span class="music-panel-title">Music</span>
-                        <button class="music-close" id="musicCloseBtn" type="button" title="Close">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-
-                    <!-- Playlist selector: button (name only) → dropdown menu (with covers) -->
-                    <div class="music-playlist-selector" id="musicPlaylistSelector">
-                        <button class="music-playlist-trigger" id="musicPlaylistTrigger" type="button" disabled>
-                            <span class="music-playlist-trigger-name" id="musicPlaylistTriggerName">Loading playlists…</span>
-                            <i class="fa-solid fa-chevron-down music-playlist-trigger-arrow"></i>
-                        </button>
-                        <div class="music-playlist-menu" id="musicPlaylistMenu"></div>
-                    </div>
-
-                    <!-- Song section: cover + name + controls -->
-                    <div class="music-song">
-                        <div class="music-now-playing">
-                            <img class="music-cover" id="musicCover" src="" alt="" style="display:none;" />
-                            <div class="music-info">
-                                <div class="music-title" id="musicTitle">No track</div>
-                                <div class="music-artist" id="musicArtist">—</div>
-                            </div>
-                        </div>
-                        <div class="music-controls">
-                            <button class="music-ctrl" id="musicShuffleBtn" type="button" title="Shuffle">
-                                <i class="fas fa-shuffle"></i>
-                            </button>
-                            <button class="music-ctrl" id="musicPrevBtn" type="button" title="Previous">
-                                <i class="fas fa-backward-step"></i>
-                            </button>
-                            <button class="music-ctrl" id="musicNextBtn" type="button" title="Next">
-                                <i class="fas fa-forward-step"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Player sits BELOW the song section — background-free -->
-                    <div class="music-player-slot" id="musicPlayerSlot"></div>
-                </div>
             </div>
 
             <button class="btn-icon" id="statsBtn" type="button" title="View stats" disabled>
@@ -528,6 +490,47 @@
             </button>
         </div>
     </header>
+
+    <!-- Music panel moved OUTSIDE the wrap so position:fixed works cleanly -->
+    <div class="music-panel" id="musicPanel">
+        <div class="music-panel-header">
+            <span class="music-panel-title">Music</span>
+            <button class="music-close" id="musicCloseBtn" type="button" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="music-playlist-selector" id="musicPlaylistSelector">
+            <button class="music-playlist-trigger" id="musicPlaylistTrigger" type="button" disabled>
+                <span class="music-playlist-trigger-name" id="musicPlaylistTriggerName">Loading playlists…</span>
+                <i class="fa-solid fa-chevron-down music-playlist-trigger-arrow"></i>
+            </button>
+            <div class="music-playlist-menu" id="musicPlaylistMenu"></div>
+        </div>
+
+        <div class="music-song">
+            <div class="music-now-playing">
+                <img class="music-cover" id="musicCover" src="" alt="" style="display:none;" />
+                <div class="music-info">
+                    <div class="music-title" id="musicTitle">No track</div>
+                    <div class="music-artist" id="musicArtist">—</div>
+                </div>
+            </div>
+            <div class="music-controls">
+                <button class="music-ctrl" id="musicShuffleBtn" type="button" title="Shuffle">
+                    <i class="fas fa-shuffle"></i>
+                </button>
+                <button class="music-ctrl" id="musicPrevBtn" type="button" title="Previous">
+                    <i class="fas fa-backward-step"></i>
+                </button>
+                <button class="music-ctrl" id="musicNextBtn" type="button" title="Next">
+                    <i class="fas fa-forward-step"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="music-player-slot" id="musicPlayerSlot"></div>
+    </div>
 
     <div class="app" id="quizApp">
         <main class="card" id="quizCard" role="main" aria-labelledby="question-heading">
@@ -1284,7 +1287,7 @@
             }
 
             // ═══════════════════════════════════════════
-            // MUSIC PLAYER — jsmediatags + Range fetch
+            // MUSIC PLAYER
             // ═══════════════════════════════════════════
             function waitForAudioPlayer(timeout) {
                 timeout = timeout || 5000;
@@ -1433,7 +1436,6 @@
                 }
             }
 
-            // ─── PLAYLIST DROPDOWN ───
             function updatePlaylistTriggerLabel() {
                 const p = MUSIC_PLAYLISTS[currentPlaylistIndex];
                 if (!p) {
@@ -1477,7 +1479,6 @@
                 updatePlaylistTriggerLabel();
                 musicPlaylistTrigger.disabled = false;
 
-                // Load covers in the background (parallel)
                 MUSIC_PLAYLISTS.forEach(function(p, i) {
                     fetchPlaylistCover(i).then(function(cover) {
                         if (!cover) return;
@@ -1488,7 +1489,6 @@
                 });
             }
 
-            // Fetch the first song's cover art for a playlist
             async function fetchPlaylistCover(index) {
                 const p = MUSIC_PLAYLISTS[index];
                 if (!p) return null;
