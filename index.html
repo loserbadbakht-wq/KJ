@@ -129,11 +129,98 @@
 
         /* ─── SONG SECTION ─── */
         .music-song { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-        .music-now-playing { display: flex; align-items: center; gap: 12px; min-height: 56px; }
+        
+        /* Updated with relative positioning to hold the absolute track menu */
+        .music-now-playing { display: flex; align-items: center; gap: 12px; min-height: 56px; position: relative; }
         .music-cover { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--bg-input); object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); display: block; }
         .music-info { flex: 1; min-width: 0; }
         .music-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
         .music-artist { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* NEW: Tiny song list button */
+        .music-track-list-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+            transition: all var(--transition);
+            margin-left: auto;
+        }
+        .music-track-list-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .music-track-list-btn.open { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+        /* NEW: Song list menu */
+        .music-track-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            padding: 4px;
+            z-index: 20;
+            max-height: 240px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px) scale(0.98);
+            transform-origin: top right;
+            transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+        }
+        .music-track-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0s; }
+        .music-track-menu::-webkit-scrollbar { width: 4px; }
+        .music-track-menu::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 20px; }
+
+        .music-track-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: background var(--transition);
+            width: 100%;
+        }
+        .music-track-item.active { background: var(--primary-light); }
+        .music-track-cover {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            color: var(--text-muted);
+            font-size: 11px;
+            border: 1px solid var(--border);
+        }
+        .music-track-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .music-track-item.active .music-track-cover { border-color: rgba(0, 212, 255, 0.4); }
+        
+        .music-track-info { flex: 1; min-width: 0; }
+        .music-track-name { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .music-track-artist { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .music-track-item.active .music-track-name { color: var(--primary); font-weight: 600; }
+        .music-track-item.active .music-track-artist { color: var(--primary-hover); }
+
+        /* CONTROLS */
         .music-controls { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .music-ctrl { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); }
         .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
@@ -289,16 +376,19 @@
             
             .music-close:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
             
-            /* Song menu button (playlist trigger) hover -> Blue */
             .music-playlist-trigger:hover:not(:disabled) { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
             
-            /* Song control buttons (shuffle, prev, next) hover -> Blue */
             .music-ctrl:hover:not(:disabled) { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
             
-            /* Playlist dropdown item hover -> Blue */
+            .music-track-list-btn:hover:not(:disabled) { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+            
             .music-playlist-item:hover { background: var(--primary-light); }
             .music-playlist-item:hover .music-playlist-name { color: var(--primary); }
             .music-playlist-item:hover .music-playlist-cover { border-color: rgba(0, 212, 255, 0.4); }
+            
+            .music-track-item:hover { background: var(--primary-light); }
+            .music-track-item:hover .music-track-name { color: var(--primary); }
+            .music-track-item:hover .music-track-cover { border-color: rgba(0, 212, 255, 0.4); }
             
             .quiz-picker-cat:hover { background: var(--bg-hover); color: var(--text); }
             .quiz-picker-cat:hover .quiz-cat { background: rgba(255,255,255,.09); color: var(--text); }
@@ -407,6 +497,10 @@
                     <div class="music-title" id="musicTitle">No track</div>
                     <div class="music-artist" id="musicArtist">—</div>
                 </div>
+                <button class="music-track-list-btn" id="musicTrackListBtn" type="button" title="Select song" disabled>
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <div class="music-track-menu" id="musicTrackMenu"></div>
             </div>
             <div class="music-controls">
                 <button class="music-ctrl" id="musicShuffleBtn" type="button" title="Shuffle">
@@ -551,6 +645,10 @@
             const musicCover = document.getElementById('musicCover');
             const musicTitle = document.getElementById('musicTitle');
             const musicArtist = document.getElementById('musicArtist');
+            
+            const musicTrackListBtn = document.getElementById('musicTrackListBtn');
+            const musicTrackMenu = document.getElementById('musicTrackMenu');
+
             const musicShuffleBtn = document.getElementById('musicShuffleBtn');
             const musicPrevBtn = document.getElementById('musicPrevBtn');
             const musicNextBtn = document.getElementById('musicNextBtn');
@@ -849,22 +947,38 @@
             }
             quizPickerBtn.addEventListener('click', function(e) { e.stopPropagation(); togglePicker(); });
 
-            function openPlaylistMenu() {
-                musicPlaylistMenu.classList.add('open');
-                musicPlaylistTrigger.classList.add('open');
-            }
+            // ─── MENUS OPEN/CLOSE ───
             function closePlaylistMenu() {
                 musicPlaylistMenu.classList.remove('open');
                 musicPlaylistTrigger.classList.remove('open');
             }
-            function togglePlaylistMenu() {
-                if (musicPlaylistMenu.classList.contains('open')) closePlaylistMenu();
-                else openPlaylistMenu();
+            function closeTrackMenu() {
+                musicTrackMenu.classList.remove('open');
+                musicTrackListBtn.classList.remove('open');
             }
+
             musicPlaylistTrigger.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (musicPlaylistTrigger.disabled) return;
-                togglePlaylistMenu();
+                const isOpen = musicPlaylistMenu.classList.contains('open');
+                closePlaylistMenu();
+                closeTrackMenu();
+                if (!isOpen) {
+                    musicPlaylistMenu.classList.add('open');
+                    musicPlaylistTrigger.classList.add('open');
+                }
+            });
+
+            musicTrackListBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (musicTrackListBtn.disabled) return;
+                const isOpen = musicTrackMenu.classList.contains('open');
+                closePlaylistMenu();
+                closeTrackMenu();
+                if (!isOpen) {
+                    musicTrackMenu.classList.add('open');
+                    musicTrackListBtn.classList.add('open');
+                }
             });
 
             document.addEventListener('click', function(e) {
@@ -872,9 +986,13 @@
                 if (!musicPanel.contains(e.target) && !musicBtn.contains(e.target)) {
                     musicPanel.classList.remove('open');
                     closePlaylistMenu();
+                    closeTrackMenu();
                 }
                 if (!musicPlaylistSelector.contains(e.target)) {
                     closePlaylistMenu();
+                }
+                if (!musicTrackListBtn.contains(e.target) && !musicTrackMenu.contains(e.target)) {
+                    closeTrackMenu();
                 }
             });
             document.addEventListener('keydown', function(e) {
@@ -883,6 +1001,7 @@
                     closePicker();
                     musicPanel.classList.remove('open');
                     closePlaylistMenu();
+                    closeTrackMenu();
                 }
             });
 
@@ -1399,6 +1518,54 @@
                 }
             }
 
+            async function renderTrackMenu() {
+                if (!currentPlaylist || currentPlaylist.songs.length === 0) {
+                    musicTrackMenu.innerHTML = '<div class="music-playlist-empty">No songs available</div>';
+                    musicTrackListBtn.disabled = true;
+                    return;
+                }
+
+                musicTrackListBtn.disabled = false;
+                musicTrackMenu.innerHTML = '';
+
+                currentPlaylist.songs.forEach(function(song, i) {
+                    const isActive = i === currentTrackIndex;
+                    const initialMeta = deriveFromUrl(song.url);
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'music-track-item' + (isActive ? ' active' : '');
+                    btn.dataset.index = i;
+                    
+                    btn.innerHTML = 
+                        '<div class="music-track-cover" id="trackCover_' + i + '"><i class="fas fa-music"></i></div>' +
+                        '<div class="music-track-info">' +
+                            '<div class="music-track-name" id="trackName_' + i + '">' + escapeHtml(initialMeta.title) + '</div>' +
+                            '<div class="music-track-artist" id="trackArtist_' + i + '">' + escapeHtml(initialMeta.artist) + '</div>' +
+                        '</div>';
+
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (i !== currentTrackIndex) {
+                            loadTrack(i, true);
+                        }
+                        closeTrackMenu();
+                    });
+
+                    musicTrackMenu.appendChild(btn);
+
+                    // Fetch metadata async for this menu item
+                    fetchTrackMeta(song.url).then(function(meta) {
+                        const coverEl = document.getElementById('trackCover_' + i);
+                        const nameEl = document.getElementById('trackName_' + i);
+                        const artistEl = document.getElementById('trackArtist_' + i);
+                        if (coverEl && meta.cover) coverEl.innerHTML = '<img src="' + meta.cover.replace(/"/g, '&quot;') + '" alt="" />';
+                        if (nameEl) nameEl.textContent = meta.title || 'Untitled';
+                        if (artistEl) artistEl.textContent = meta.artist || 'Unknown Artist';
+                    });
+                });
+            }
+
             async function buildPlayerAudio(url) {
                 try {
                     await waitForAudioPlayer(5000);
@@ -1491,6 +1658,11 @@
                     try { await musicAudioEl.play(); } catch (e) {}
                 }
 
+                // Update menu highlight
+                musicTrackMenu.querySelectorAll('.music-track-item').forEach(function(el, i) {
+                    el.classList.toggle('active', i === currentTrackIndex);
+                });
+
                 const urlAtStart = song.url;
                 getSongMeta(song).then(function(meta) {
                     if (!currentPlaylist || !currentPlaylist.songs[currentTrackIndex]) return;
@@ -1526,12 +1698,16 @@
             musicBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 musicPanel.classList.toggle('open');
-                if (!musicPanel.classList.contains('open')) closePlaylistMenu();
+                if (!musicPanel.classList.contains('open')) {
+                    closePlaylistMenu();
+                    closeTrackMenu();
+                }
             });
             musicCloseBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 musicPanel.classList.remove('open');
                 closePlaylistMenu();
+                closeTrackMenu();
             });
             musicShuffleBtn.addEventListener('click', function() {
                 musicShuffle = !musicShuffle;
