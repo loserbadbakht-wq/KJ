@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kanji Quiz</title>
+    <title>Quiz · FMHY Theme</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/cdn@10.2.0/audio.js"></script>
 
     <style>
@@ -69,7 +68,6 @@
         .header-logo span { color: var(--text-secondary); font-weight: 400; }
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .header-actions .btn-icon { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition); }
-        .header-actions .btn-icon:disabled { opacity: .35; cursor: not-allowed; }
 
         /* ─── MUSIC PANEL ─── */
         .music-panel-wrap { display: inline-flex; }
@@ -105,16 +103,15 @@
         .music-close { width: 28px; height: 28px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); flex-shrink: 0; }
 
         /* ─── PLAYLIST SELECTOR ─── */
-        .music-playlist-selector { position: relative; margin-bottom: 12px; }
+        .music-playlist-selector { position: relative; margin-bottom: 12px; z-index: 30; }
         .music-playlist-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 9px 12px; font-family: inherit; font-size: 12.5px; font-weight: 500; color: var(--text); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); text-align: left; }
-        .music-playlist-trigger:disabled { opacity: 0.5; cursor: not-allowed; }
         .music-playlist-trigger.open { border-color: var(--primary); background: var(--bg-hover); box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1); }
         .music-playlist-trigger-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
         .music-playlist-trigger-arrow { font-size: 10px; color: var(--text-muted); transition: transform 0.2s ease; flex-shrink: 0; }
         .music-playlist-trigger.open .music-playlist-trigger-arrow { transform: rotate(180deg); color: var(--primary); }
 
-        .music-playlist-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 4px; z-index: 20; max-height: 240px; overflow-y: auto; opacity: 0; visibility: hidden; transform: translateY(-4px) scale(0.98); transform-origin: top center; transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s; }
-        .music-playlist-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0s; }
+        .music-playlist-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 4px; z-index: 40; max-height: 240px; overflow-y: auto; opacity: 0; visibility: hidden; transform: translateY(-4px) scale(0.98); transform-origin: top center; transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s; pointer-events: none; }
+        .music-playlist-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0s; pointer-events: auto; }
         .music-playlist-menu::-webkit-scrollbar { width: 4px; }
         .music-playlist-menu::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 20px; }
 
@@ -130,85 +127,42 @@
         /* ─── SONG SECTION ─── */
         .music-song { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
         
-        /* Updated with relative positioning to hold the absolute track menu */
-        .music-now-playing { display: flex; align-items: center; gap: 12px; min-height: 56px; position: relative; }
+        .music-now-playing { display: flex; align-items: center; gap: 12px; min-height: 56px; position: relative; z-index: 20; }
         .music-cover { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--bg-input); object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); display: block; }
         .music-info { flex: 1; min-width: 0; }
         .music-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
         .music-artist { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* NEW: Tiny song list button */
         .music-track-list-btn {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            flex-shrink: 0;
-            transition: all var(--transition);
-            margin-left: auto;
+            width: 26px; height: 26px; border-radius: 50%; background: transparent;
+            border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+            flex-shrink: 0; transition: all var(--transition); margin-left: auto; pointer-events: auto;
         }
-        .music-track-list-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .music-track-list-btn.open { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 
-        /* NEW: Song list menu */
         .music-track-menu {
-            position: absolute;
-            top: calc(100% + 4px);
-            right: 0;
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow);
-            padding: 4px;
-            z-index: 20;
-            max-height: 240px;
-            overflow-y: auto;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-4px) scale(0.98);
-            transform-origin: top right;
-            transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+            position: absolute; top: calc(100% + 4px); right: 0; width: 100%;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            box-shadow: var(--shadow); padding: 4px; z-index: 50; max-height: 240px; overflow-y: auto;
+            opacity: 0; visibility: hidden; transform: translateY(-4px) scale(0.98);
+            transform-origin: top right; transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+            pointer-events: none;
         }
-        .music-track-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0s; }
+        .music-track-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0s; pointer-events: auto; }
         .music-track-menu::-webkit-scrollbar { width: 4px; }
         .music-track-menu::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 20px; }
 
         .music-track-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 8px;
-            background: transparent;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-family: inherit;
-            text-align: left;
-            transition: background var(--transition);
-            width: 100%;
+            display: flex; align-items: center; gap: 10px; padding: 6px 8px;
+            background: transparent; border: none; border-radius: var(--radius-sm);
+            cursor: pointer; font-family: inherit; text-align: left; transition: background var(--transition); width: 100%;
         }
         .music-track-item.active { background: var(--primary-light); }
         .music-track-cover {
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            background: var(--bg-input);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            overflow: hidden;
-            color: var(--text-muted);
-            font-size: 11px;
-            border: 1px solid var(--border);
+            width: 32px; height: 32px; border-radius: 4px; background: var(--bg-input);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
+            color: var(--text-muted); font-size: 11px; border: 1px solid var(--border);
         }
         .music-track-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .music-track-item.active .music-track-cover { border-color: rgba(0, 212, 255, 0.4); }
@@ -221,9 +175,8 @@
         .music-track-item.active .music-track-artist { color: var(--primary-hover); }
 
         /* CONTROLS */
-        .music-controls { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .music-controls { display: flex; align-items: center; justify-content: center; gap: 10px; position: relative; z-index: 10; }
         .music-ctrl { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all var(--transition); }
-        .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
         .music-ctrl.active { background: var(--primary-light); color: var(--primary); border-color: rgba(0,212,255,.4); }
 
         .music-player-slot { margin-top: 12px; min-height: 40px; }
@@ -365,48 +318,32 @@
         .stats-item.unanswered .stats-status-badge { color: var(--text-muted); }
         .stats-empty { padding: 24px 20px; text-align: center; color: var(--text-muted); font-size: 13.5px; line-height: 1.6; }
 
-        /* ═══════════════════════════════════════════════════════════
-           HOVER EFFECTS (Only applied on devices that support hover)
-           ═══════════════════════════════════════════════════════════ */
         @media (hover: hover) and (pointer: fine) {
             .header-actions .btn-icon:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
-            
             .quiz-picker-btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--primary); color: var(--primary-hover); transform: scale(1.08); box-shadow: 0 4px 18px rgba(0,212,255,.35); }
             .quiz-picker-btn:hover:not(:disabled) .fa-solid { transform: rotate(-12deg); }
-            
             .music-close:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border-hover); }
-            
             .music-playlist-trigger:hover:not(:disabled) { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
-            
-            .music-ctrl:hover:not(:disabled) { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-            
-            .music-track-list-btn:hover:not(:disabled) { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-            
+            .music-ctrl:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+            .music-track-list-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
             .music-playlist-item:hover { background: var(--primary-light); }
             .music-playlist-item:hover .music-playlist-name { color: var(--primary); }
             .music-playlist-item:hover .music-playlist-cover { border-color: rgba(0, 212, 255, 0.4); }
-            
             .music-track-item:hover { background: var(--primary-light); }
             .music-track-item:hover .music-track-name { color: var(--primary); }
             .music-track-item:hover .music-track-cover { border-color: rgba(0, 212, 255, 0.4); }
-            
             .quiz-picker-cat:hover { background: var(--bg-hover); color: var(--text); }
             .quiz-picker-cat:hover .quiz-cat { background: rgba(255,255,255,.09); color: var(--text); }
             .quiz-picker-cat:hover .quiz-cat-arrow { color: var(--primary); transform: translateX(2px); }
-            
             .quiz-picker-quiz:hover { background: var(--bg-hover); color: var(--text); }
             .quiz-picker-quiz.active:hover { background: var(--primary-light); color: var(--primary-hover); }
             .quiz-picker-item.disabled:hover { background: transparent; color: var(--text-muted); }
-            
             .btn-know:hover:not(:disabled) { background: var(--primary-light); border-color: var(--primary); color: var(--primary-hover); }
             .btn-know:hover:not(:disabled) .fa-check { transform: scale(1.25); }
-            
             .btn-dontknow:hover:not(:disabled) { background: var(--danger-light); border-color: var(--danger); color: #fca5a5; }
             .btn-dontknow:hover:not(:disabled) .fa-times { transform: rotate(90deg); }
-            
             .btn-reset:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
             .btn-reset:hover:not(:disabled) .fa-undo { transform: rotate(-180deg); }
-            
             .btn-back:hover { background: var(--bg-hover); border-color: var(--border-hover); color: var(--text); }
             .btn-back:hover .fa-arrow-left { transform: translateX(-2px); }
         }
@@ -497,7 +434,7 @@
                     <div class="music-title" id="musicTitle">No track</div>
                     <div class="music-artist" id="musicArtist">—</div>
                 </div>
-                <button class="music-track-list-btn" id="musicTrackListBtn" type="button" title="Select song" disabled>
+                <button class="music-track-list-btn" id="musicTrackListBtn" type="button" title="Select song">
                     <i class="fas fa-list-ul"></i>
                 </button>
                 <div class="music-track-menu" id="musicTrackMenu"></div>
@@ -680,8 +617,6 @@
             let currentTrackIndex = 0;
             let musicShuffle = false;
             let musicAudioEl = null;
-            const musicMetaCache = new Map();
-            const musicMetaPending = new Map();
 
             // ─── HELPERS ───
             function normalizeAnswer(answer) {
@@ -971,11 +906,13 @@
 
             musicTrackListBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                if (musicTrackListBtn.disabled) return;
                 const isOpen = musicTrackMenu.classList.contains('open');
                 closePlaylistMenu();
                 closeTrackMenu();
                 if (!isOpen) {
+                    if (!currentPlaylist || currentPlaylist.songs.length === 0) {
+                        musicTrackMenu.innerHTML = '<div class="music-playlist-empty">No songs available</div>';
+                    }
                     musicTrackMenu.classList.add('open');
                     musicTrackListBtn.classList.add('open');
                 }
@@ -1310,133 +1247,24 @@
                 });
             }
 
-            function deriveFromUrl(url) {
-                try {
-                    let name = url.split('?')[0].split('#')[0].split('/').pop();
-                    name = decodeURIComponent(name);
-                    name = name.replace(/\.(mp3|ogg|m4a|wav|flac|aac|opus|webm|mp4)$/i, '');
-                    name = name.replace(/[_\-.]+/g, ' ').replace(/\s+/g, ' ').trim();
-                    name = name.replace(/^\d+\s*[-.]?\s*/, '');
-                    const dashMatch = name.match(/^(.+?)\s*[-–—]\s*(.+)$/);
-                    if (dashMatch) {
-                        return {
-                            title: dashMatch[2].trim() || dashMatch[1].trim(),
-                            artist: dashMatch[1].trim() || 'Unknown Artist',
-                            cover: ''
-                        };
-                    }
-                    return { title: name || 'Untitled', artist: 'Unknown Artist', cover: '' };
-                } catch (e) {
-                    return { title: 'Untitled', artist: 'Unknown Artist', cover: '' };
-                }
-            }
-
-            function pictureToDataUrl(picture) {
-                if (!picture || !picture.data) return '';
-                try {
-                    const data = picture.data;
-                    const len = data.length;
-                    let binary = '';
-                    const chunkSize = 0x8000;
-                    for (let i = 0; i < len; i += chunkSize) {
-                        const chunk = (typeof data.subarray === 'function')
-                            ? data.subarray(i, i + chunkSize)
-                            : data.slice(i, i + chunkSize);
-                        binary += String.fromCharCode.apply(null, chunk);
-                    }
-                    const base64 = btoa(binary);
-                    const format = ((picture.format || 'image/jpeg').split(' ')[0] || 'image/jpeg').toLowerCase();
-                    return 'data:' + format + ';base64,' + base64;
-                } catch (e) {
-                    console.warn('pictureToDataUrl failed:', e);
-                    return '';
-                }
-            }
-
-            function fetchTrackMeta(url) {
-                if (musicMetaCache.has(url)) return Promise.resolve(musicMetaCache.get(url));
-                if (musicMetaPending.has(url)) return musicMetaPending.get(url);
-
-                const p = (async function() {
-                    const fallback = deriveFromUrl(url);
-                    if (typeof jsmediatags === 'undefined') {
-                        musicMetaCache.set(url, fallback);
-                        return fallback;
-                    }
-                    try {
-                        const absoluteUrl = new URL(url, window.location.href).href;
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(function() { controller.abort(); }, 20000);
-                        let blob;
-                        try {
-                            const response = await fetch(absoluteUrl, {
-                                headers: { 'Range': 'bytes=0-1048575' },
-                                signal: controller.signal
-                            });
-                            clearTimeout(timeoutId);
-                            if (!response.ok && response.status !== 206) throw new Error('HTTP ' + response.status);
-                            blob = await response.blob();
-                        } catch (e) {
-                            clearTimeout(timeoutId);
-                            throw e;
-                        }
-                        const tags = await new Promise(function(resolve, reject) {
-                            try {
-                                jsmediatags.read(blob, {
-                                    onSuccess: function(tag) { resolve(tag.tags || {}); },
-                                    onError: function(error) { reject(new Error((error && error.type) || 'read error')); }
-                                });
-                            } catch (e) { reject(e); }
-                        });
-                        const meta = {
-                            title:  (tags.title  && String(tags.title).trim())  || fallback.title,
-                            artist: (tags.artist && String(tags.artist).trim()) || fallback.artist,
-                            cover:  pictureToDataUrl(tags.picture)
-                        };
-                        musicMetaCache.set(url, meta);
-                        return meta;
-                    } catch (err) {
-                        console.warn('Metadata read failed for', url, '-', err.message);
-                        musicMetaCache.set(url, fallback);
-                        return fallback;
-                    }
-                })();
-
-                musicMetaPending.set(url, p);
-                p.finally(function() { musicMetaPending.delete(url); });
-                return p;
-            }
-
             function normalizeSong(s) {
-                if (typeof s === 'string') return { url: s };
+                if (typeof s === 'string') return { url: s, title: s, artist: 'Unknown', cover: '' };
                 if (s && typeof s.url === 'string') {
                     return {
                         url: s.url,
-                        title: typeof s.title === 'string' ? s.title : '',
-                        artist: typeof s.artist === 'string' ? s.artist : '',
+                        title: typeof s.title === 'string' ? s.title : 'Untitled',
+                        artist: typeof s.artist === 'string' ? s.artist : 'Unknown Artist',
                         cover: typeof s.cover === 'string' ? s.cover : ''
                     };
                 }
                 return null;
             }
 
-            async function getSongMeta(song) {
-                if (song.title && song.artist) {
-                    return { title: song.title, artist: song.artist, cover: song.cover || '' };
-                }
-                const fetched = await fetchTrackMeta(song.url);
-                return {
-                    title: song.title || fetched.title,
-                    artist: song.artist || fetched.artist,
-                    cover: song.cover || fetched.cover
-                };
-            }
-
-            function applyTrackDisplay(meta) {
-                musicTitle.textContent = meta.title || 'Untitled';
-                musicArtist.textContent = meta.artist || 'Unknown Artist';
-                if (meta.cover) {
-                    musicCover.src = meta.cover;
+            function applyTrackDisplay(song) {
+                musicTitle.textContent = song.title;
+                musicArtist.textContent = song.artist;
+                if (song.cover) {
+                    musicCover.src = song.cover;
                     musicCover.style.display = '';
                 } else {
                     musicCover.removeAttribute('src');
@@ -1465,9 +1293,11 @@
                 MUSIC_PLAYLISTS.forEach(function(p, i) {
                     const isActive = i === currentPlaylistIndex;
                     const name = p.name || p.file.replace(/\.json$/i, '');
+                    let coverHtml = '<i class="fas fa-music"></i>';
+                    if (p._cover) coverHtml = '<img src="' + p._cover.replace(/"/g, '&quot;') + '" alt="" />';
                     html +=
                         '<button type="button" class="music-playlist-item' + (isActive ? ' active' : '') + '" data-index="' + i + '">' +
-                            '<div class="music-playlist-cover" id="playlistCover_' + i + '"><i class="fas fa-music"></i></div>' +
+                            '<div class="music-playlist-cover" id="playlistCover_' + i + '">' + coverHtml + '</div>' +
                             '<span class="music-playlist-name">' + escapeHtml(name) + '</span>' +
                         '</button>';
                 });
@@ -1486,15 +1316,6 @@
 
                 updatePlaylistTriggerLabel();
                 musicPlaylistTrigger.disabled = false;
-
-                MUSIC_PLAYLISTS.forEach(function(p, i) {
-                    fetchPlaylistCover(i).then(function(cover) {
-                        if (!cover) return;
-                        const coverEl = document.getElementById('playlistCover_' + i);
-                        if (!coverEl || coverEl.querySelector('img')) return;
-                        coverEl.innerHTML = '<img src="' + cover.replace(/"/g, '&quot;') + '" alt="" />';
-                    });
-                });
             }
 
             async function fetchPlaylistCover(index) {
@@ -1509,8 +1330,7 @@
                     const raw = Array.isArray(data) ? data : (data.songs || []);
                     const songs = raw.map(normalizeSong).filter(Boolean);
                     if (songs.length === 0) { p._cover = null; return null; }
-                    const meta = await fetchTrackMeta(songs[0].url);
-                    p._cover = meta.cover || null;
+                    p._cover = songs[0].cover || null;
                     return p._cover;
                 } catch (e) {
                     p._cover = null;
@@ -1519,29 +1339,27 @@
             }
 
             async function renderTrackMenu() {
+                musicTrackMenu.innerHTML = '';
                 if (!currentPlaylist || currentPlaylist.songs.length === 0) {
                     musicTrackMenu.innerHTML = '<div class="music-playlist-empty">No songs available</div>';
-                    musicTrackListBtn.disabled = true;
                     return;
                 }
 
-                musicTrackListBtn.disabled = false;
-                musicTrackMenu.innerHTML = '';
-
                 currentPlaylist.songs.forEach(function(song, i) {
                     const isActive = i === currentTrackIndex;
-                    const initialMeta = deriveFromUrl(song.url);
-
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'music-track-item' + (isActive ? ' active' : '');
                     btn.dataset.index = i;
                     
+                    let coverHtml = '<i class="fas fa-music"></i>';
+                    if (song.cover) coverHtml = '<img src="' + song.cover.replace(/"/g, '&quot;') + '" alt="" />';
+
                     btn.innerHTML = 
-                        '<div class="music-track-cover" id="trackCover_' + i + '"><i class="fas fa-music"></i></div>' +
+                        '<div class="music-track-cover">' + coverHtml + '</div>' +
                         '<div class="music-track-info">' +
-                            '<div class="music-track-name" id="trackName_' + i + '">' + escapeHtml(initialMeta.title) + '</div>' +
-                            '<div class="music-track-artist" id="trackArtist_' + i + '">' + escapeHtml(initialMeta.artist) + '</div>' +
+                            '<div class="music-track-name">' + escapeHtml(song.title) + '</div>' +
+                            '<div class="music-track-artist">' + escapeHtml(song.artist) + '</div>' +
                         '</div>';
 
                     btn.addEventListener('click', function(e) {
@@ -1553,16 +1371,6 @@
                     });
 
                     musicTrackMenu.appendChild(btn);
-
-                    // Fetch metadata async for this menu item
-                    fetchTrackMeta(song.url).then(function(meta) {
-                        const coverEl = document.getElementById('trackCover_' + i);
-                        const nameEl = document.getElementById('trackName_' + i);
-                        const artistEl = document.getElementById('trackArtist_' + i);
-                        if (coverEl && meta.cover) coverEl.innerHTML = '<img src="' + meta.cover.replace(/"/g, '&quot;') + '" alt="" />';
-                        if (nameEl) nameEl.textContent = meta.title || 'Untitled';
-                        if (artistEl) artistEl.textContent = meta.artist || 'Unknown Artist';
-                    });
                 });
             }
 
@@ -1605,6 +1413,18 @@
                     if (MUSIC_PLAYLISTS.length === 0) throw new Error('No playlists in manifest');
 
                     renderPlaylistMenu();
+                    
+                    // Pre-fetch covers for all playlists
+                    for (let i = 0; i < MUSIC_PLAYLISTS.length; i++) {
+                        fetchPlaylistCover(i).then(function(cover) {
+                            if (!cover) return;
+                            const coverEl = document.getElementById('playlistCover_' + i);
+                            if (coverEl && !coverEl.querySelector('img')) {
+                                coverEl.innerHTML = '<img src="' + cover.replace(/"/g, '&quot;') + '" alt="" />';
+                            }
+                        });
+                    }
+
                     await selectPlaylist(0);
                 } catch (err) {
                     console.warn('Music manifest failed:', err);
@@ -1613,6 +1433,7 @@
                     musicPlaylistMenu.innerHTML = '<div class="music-playlist-empty">No playlists available</div>';
                     musicPlaylistTriggerName.textContent = 'No playlists';
                     musicPlaylistTrigger.disabled = true;
+                    musicTrackMenu.innerHTML = '<div class="music-playlist-empty">No songs available</div>';
                 }
             }
 
@@ -1637,6 +1458,7 @@
                         songs: songs
                     };
                     currentTrackIndex = 0;
+                    await renderTrackMenu();
                     await loadTrack(0, false);
                 } catch (err) {
                     console.warn('Playlist load failed:', err);
@@ -1651,7 +1473,7 @@
                 currentTrackIndex = ((index % total) + total) % total;
                 const song = currentPlaylist.songs[currentTrackIndex];
 
-                applyTrackDisplay(deriveFromUrl(song.url));
+                applyTrackDisplay(song);
                 await buildPlayerAudio(song.url);
 
                 if (autoplay && musicAudioEl) {
@@ -1661,13 +1483,6 @@
                 // Update menu highlight
                 musicTrackMenu.querySelectorAll('.music-track-item').forEach(function(el, i) {
                     el.classList.toggle('active', i === currentTrackIndex);
-                });
-
-                const urlAtStart = song.url;
-                getSongMeta(song).then(function(meta) {
-                    if (!currentPlaylist || !currentPlaylist.songs[currentTrackIndex]) return;
-                    if (currentPlaylist.songs[currentTrackIndex].url !== urlAtStart) return;
-                    applyTrackDisplay(meta);
                 });
             }
 
