@@ -106,16 +106,13 @@
         .music-playlist-selector {
             position: relative;
             margin-bottom: 12px;
-            display: flex;
-            justify-content: flex-end;
         }
         .music-playlist-trigger {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            min-width: 160px;
-            max-width: 100%;
+            width: 100%;
             padding: 9px 12px;
             font-family: inherit;
             font-size: 12.5px;
@@ -159,14 +156,11 @@
             color: var(--primary);
         }
 
-        /* ✅ Menu now opens on the RIGHT side of the trigger (right-aligned) */
         .music-playlist-menu {
             position: absolute;
             top: calc(100% + 4px);
+            left: 0;
             right: 0;
-            left: auto;
-            min-width: 220px;
-            max-width: 280px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -178,7 +172,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(-4px) scale(0.98);
-            transform-origin: top right;
+            transform-origin: top center;
             transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
         }
         .music-playlist-menu.open {
@@ -273,6 +267,7 @@
         .music-ctrl:disabled { opacity: .35; cursor: not-allowed; }
         .music-ctrl.active { background: var(--primary-light); color: var(--primary); border-color: rgba(0,212,255,.4); }
 
+        /* Player sits BELOW the song section — background-free */
         .music-player-slot {
             margin-top: 12px;
             min-height: 40px;
@@ -489,6 +484,7 @@
                         </button>
                     </div>
 
+                    <!-- Playlist selector: button (name only) → dropdown menu (with covers) -->
                     <div class="music-playlist-selector" id="musicPlaylistSelector">
                         <button class="music-playlist-trigger" id="musicPlaylistTrigger" type="button" disabled>
                             <span class="music-playlist-trigger-name" id="musicPlaylistTriggerName">Loading playlists…</span>
@@ -497,6 +493,7 @@
                         <div class="music-playlist-menu" id="musicPlaylistMenu"></div>
                     </div>
 
+                    <!-- Song section: cover + name + controls -->
                     <div class="music-song">
                         <div class="music-now-playing">
                             <img class="music-cover" id="musicCover" src="" alt="" style="display:none;" />
@@ -518,6 +515,7 @@
                         </div>
                     </div>
 
+                    <!-- Player sits BELOW the song section — background-free -->
                     <div class="music-player-slot" id="musicPlayerSlot"></div>
                 </div>
             </div>
@@ -1435,6 +1433,7 @@
                 }
             }
 
+            // ─── PLAYLIST DROPDOWN ───
             function updatePlaylistTriggerLabel() {
                 const p = MUSIC_PLAYLISTS[currentPlaylistIndex];
                 if (!p) {
@@ -1478,6 +1477,7 @@
                 updatePlaylistTriggerLabel();
                 musicPlaylistTrigger.disabled = false;
 
+                // Load covers in the background (parallel)
                 MUSIC_PLAYLISTS.forEach(function(p, i) {
                     fetchPlaylistCover(i).then(function(cover) {
                         if (!cover) return;
@@ -1488,6 +1488,7 @@
                 });
             }
 
+            // Fetch the first song's cover art for a playlist
             async function fetchPlaylistCover(index) {
                 const p = MUSIC_PLAYLISTS[index];
                 if (!p) return null;
@@ -1650,6 +1651,7 @@
             musicPrevBtn.addEventListener('click', function() { prevTrack(); });
             musicNextBtn.addEventListener('click', function() { nextTrack(true); });
 
+            // ─── QUIZ EVENTS ───
             knowBtn.addEventListener('click', markKnown);
             dontKnowBtn.addEventListener('click', markUnknown);
             resetBtn.addEventListener('click', restartQuiz);
