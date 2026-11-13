@@ -1,0 +1,40 @@
+name: Update Music Metadata
+
+on:
+  push:
+    paths:
+      - 'music/**' # Triggers only if files in music/ folder change
+
+jobs:
+  fetch-metadata:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install jsmediatags node-fetch
+
+      - name: Run Metadata Script
+        run: node scripts/update_metadata.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add music/
+          # Only commit if there are changes
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update music metadata [skip ci]"
+            git push
+          else
+            echo "No metadata changes detected."
+          fi
